@@ -1,0 +1,20 @@
+{
+  "name": "refrigerator-frontend",
+  "version": "1.0.0",
+  "description": "냉장고를 부탁해 - 프론트엔드",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.5",
+    "pinia": "^2.1.7",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.8"
+  }
+}
