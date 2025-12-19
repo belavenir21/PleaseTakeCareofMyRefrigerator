@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = '협업을 위한 초기 데이터(fixtures) 내보내기'
 
     def handle(self, *args, **options):
-        self.stdout.write('📦 Fixtures 내보내기 시작...\n')
+        self.stdout.write('[INFO] Fixtures 내보내기 시작...\n')
         
         # Fixtures 디렉토리 생성
         fixtures_dir = 'fixtures'
@@ -24,37 +24,37 @@ class Command(BaseCommand):
         self.export_model(
             IngredientMaster,
             f'{fixtures_dir}/master_ingredients.json',
-            '🥬 마스터 재료 데이터'
+            '[MASTER] 마스터 재료 데이터'
         )
         
         # 2. 레시피 데이터 내보내기
         self.export_model(
             Recipe,
             f'{fixtures_dir}/recipes.json',
-            '📖 레시피 데이터'
+            '[RECIPE] 레시피 데이터'
         )
         
         # 3. 레시피 재료 데이터 내보내기
         self.export_model(
             RecipeIngredient,
             f'{fixtures_dir}/recipe_ingredients.json',
-            '🥘 레시피 재료 데이터'
+            '[INGREDIENTS] 레시피 재료 데이터'
         )
         
         # 4. 조리 단계 데이터 내보내기
         self.export_model(
             CookingStep,
             f'{fixtures_dir}/cooking_steps.json',
-            '👨‍🍳 조리 단계 데이터'
+            '[STEPS] 조리 단계 데이터'
         )
         
         self.stdout.write('\n' + '='*60)
         self.stdout.write(
-            self.style.SUCCESS('✅ 모든 fixtures 내보내기 완료!')
+            self.style.SUCCESS('[SUCCESS] 모든 fixtures 내보내기 완료!')
         )
         self.stdout.write('='*60 + '\n')
         
-        self.stdout.write('📌 사용법:')
+        self.stdout.write('[USAGE] 사용법:')
         self.stdout.write('  새 환경에서 데이터 불러오기:')
         self.stdout.write(f'    python manage.py loaddata {fixtures_dir}/master_ingredients.json')
         self.stdout.write(f'    python manage.py loaddata {fixtures_dir}/recipes.json')
@@ -69,7 +69,7 @@ class Command(BaseCommand):
         self.stdout.write(f'{description}: {count}개')
         
         if count == 0:
-            self.stdout.write(self.style.WARNING(f'  ⚠️  데이터가 없어 {filepath} 파일을 생성하지 않았습니다.\n'))
+            self.stdout.write(self.style.WARNING(f'  [WARNING] 데이터가 없어 {filepath} 파일을 생성하지 않았습니다.\n'))
             return
         
         # JSON으로 직렬화
@@ -79,4 +79,4 @@ class Command(BaseCommand):
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(data)
         
-        self.stdout.write(self.style.SUCCESS(f'  ✅ {filepath} 저장 완료\n'))
+        self.stdout.write(self.style.SUCCESS(f'  [OK] {filepath} 저장 완료\n'))

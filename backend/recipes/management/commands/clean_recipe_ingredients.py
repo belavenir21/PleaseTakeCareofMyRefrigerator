@@ -24,7 +24,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         dry_run = options['dry_run']
         
-        self.stdout.write('🧹 레시피 재료 데이터 정제 시작...\n')
+        self.stdout.write('[INFO] 레시피 재료 데이터 정제 시작...\n')
         
         all_ingredients = RecipeIngredient.objects.all()
         total_count = all_ingredients.count()
@@ -52,7 +52,7 @@ class Command(BaseCommand):
             # 변경 사항이 있으면 출력 및 저장
             if cleaned_name != original_name or cleaned_quantity != original_quantity:
                 self.stdout.write(
-                    f'[{idx}/{total_count}] 🔧 {ingredient.recipe.title}\n'
+                    f'[{idx}/{total_count}] [UPDATE] {ingredient.recipe.title}\n'
                     f'  이름: "{original_name}" → "{cleaned_name}"\n'
                     f'  수량: "{original_quantity}" → "{cleaned_quantity}"\n'
                 )
@@ -71,7 +71,7 @@ class Command(BaseCommand):
             self.stdout.write('실제 적용하려면 --dry-run 옵션 없이 다시 실행하세요.')
         else:
             self.stdout.write(
-                self.style.SUCCESS(f'\n✅ 완료! {updated_count}/{total_count} 개의 재료를 정제했습니다.')
+                self.style.SUCCESS(f'\n[SUCCESS] 완료! {updated_count}/{total_count} 개의 재료를 정제했습니다.')
             )
 
     def clean_ingredient_name(self, name):
