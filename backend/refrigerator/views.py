@@ -3,9 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from .models import UserIngredient
 from .serializers import (
     UserIngredientSerializer, 
@@ -42,24 +40,20 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
     ordering_fields = ['expiry_date', 'name', 'created_at']
     ordering = ['expiry_date']
 
-    # CSRF 검증 없는 SessionAuthentication 사용
     from config.authentication import CsrfExemptSessionAuthentication
     authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """현재 사용자의 식재료만 조회"""
         return UserIngredient.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
-        """액션에 따라 다른 Serializer 사용"""
         if self.action == 'list':
             return UserIngredientListSerializer
         return UserIngredientSerializer
     
     @action(detail=False, methods=['get'])
     def alerts(self, request):
-        """유통기한 임박 식재료 조회"""
         soon_date = date.today() + timedelta(days=3)
         expiring_ingredients = self.get_queryset().filter(
             expiry_date__lte=soon_date,
@@ -76,169 +70,220 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         detail=False, 
         methods=['post'], 
         permission_classes=[permissions.AllowAny],
-        authentication_classes=[]  # No authentication needed for testing
+        authentication_classes=[]
     )
     def scan(self, request):
-        """사진으로 식재료 인식 (AI Object Detection)"""
+        """영수증 스캔 - 쪼개진 줄 합치기"""
         serializer = IngredientScanSerializer(data=request.data)
         
         if serializer.is_valid():
             image = serializer.validated_data['image']
             
-            # Hugging Face API를 통한 실제 Object Detection
-            from django.conf import settings
-            from huggingface_hub import InferenceClient
-            from collections import Counter
-            import io
-            
-            # OCR을 사용한 영수증 인식 (Tesseract)
             try:
-                import pytesseract
+                import easyocr
                 from PIL import Image as PILImage
                 import re
+                import numpy as np
                 
-                # 이미지 파일 열기
                 image.seek(0)
                 img = PILImage.open(image)
                 
+                print(f'\n{"="*60}')
                 print(f'🖼️  Image size: {img.size}')
-                print('🤖 Running OCR on receipt...')
+                print(f'{"="*60}')
                 
-                # Tesseract 경로 설정 (Windows)
-                pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+                reader = easyocr.Reader(['ko', 'en'], gpu=False)
+                img_array = np.array(img)
+                results = reader.readtext(img_array)
                 
-                # OCR 수행 (한글+영어)
-                text = pytesseract.image_to_string(img, lang='kor+eng')
+                print(f'✅ OCR completed - {len(results)} text blocks\n')
                 
-                print(f'✅ OCR completed')
-                print(f'📄 Extracted text preview: {text[:200]}...')
+                all_lines = [detection[1].strip() for detection in results]
                 
-                # 텍스트에서 식재료와 수량 파싱
-                lines = text.split('\n')
-                detected_ingredients = []
+                # 구매 날짜 추출
+                purchase_date = None
+                for line in all_lines[:15]:
+                    match = re.search(r'(\d{4}[-/]\d{2}[-/]\d{2})', line)
+                    if match:
+                        purchase_date = match.group(1)
+                        print(f'📅 Purchase date: {purchase_date}\n')
+                        break
                 
-                # 식재료 키워드 (한글 + 영어)
-                food_keywords_kr = [
-                    '사과', '바나나', '오렌지', '포도', '딸기', '수박', '참외', '배',
-                    '감자', '고구마', '당근', '무', '배추', '양배추', '양파', '대파',
-                    '마늘', '생강', '고추', '파프리카', '토마토', '오이', '호박',
-                    '상추', '깻잎', '시금치', '부추', '미나리', '콩나물', '숙주',
-                    '버섯', '느타리', '팽이', '새송이', '표고', '양송이',
-                    '소고기', '돼지고기', '닭고기', '삼겹살', '목살', '갈비',
-                    '우유', '두유', '요거트', '치즈', '계란', '달걀',
-                    '두부', '순두부', '라면', '우동', '김치', '된장', '고추장',
-                    '햄', '소시지', '베이컨', '참치', '김', '김밥', '떡'
+                # ===== 핵심: 번호 줄부터 다음 번호 줄까지 합치기 =====
+                numbered_indices = []
+                for idx, line in enumerate(all_lines):
+                    # 01*, 02, 03 같은 번호 패턴
+                    if re.match(r'^\d{1,2}[\*\#]?$', line.strip()):
+                        numbered_indices.append(idx)
+                
+                print(f'🔢 Found {len(numbered_indices)} item numbers: {numbered_indices}\n')
+                
+                all_items = []
+                
+                # Footer 키워드 (더 구체적으로)
+                footer_patterns = [
+                    r'^\(*\s*면세',
+                    r'^\(*\s*과세', 
+                    r'부가\s*세',
+                    r'합\s*계',
                 ]
                 
-                # 영어 키워드와 한글 매핑
-                food_keywords_en = {
-                    'apple': '사과', 'banana': '바나나', 'orange': '오렌지',
-                    'grape': '포도', 'strawberry': '딸기', 'watermelon': '수박',
-                    'potato': '감자', 'sweet potato': '고구마', 'carrot': '당근',
-                    'radish': '무', 'cabbage': '배추', 'onion': '양파',
-                    'garlic': '마늘', 'ginger': '생강', 'pepper': '고추',
-                    'tomato': '토마토', 'cucumber': '오이', 'pumpkin': '호박',
-                    'lettuce': '상추', 'spinach': '시금치', 'mushroom': '버섯',
-                    'beef': '소고기', 'pork': '돼지고기', 'chicken': '닭고기',
-                    'milk': '우유', 'yogurt': '요거트', 'cheese': '치즈',
-                    'egg': '계란', 'tofu': '두부', 'ramen': '라면',
-                    'ham': '햄', 'bacon': '베이컨'
-                }
+                print('🔍 Parsing items:')
+                print('-' * 60)
                 
-                food_keywords = food_keywords_kr
-                
-                for line in lines:
-                    line = line.strip()
-                    if not line:
+                for i, start_idx in enumerate(numbered_indices):
+                    # 다음 번호까지가 한 상품
+                    if i < len(numbered_indices) - 1:
+                        end_idx = numbered_indices[i + 1]
+                    else:
+                        end_idx = len(all_lines)
+                    
+                    # 번호부터 다음 번호 전까지 합치기
+                    item_lines = all_lines[start_idx:end_idx]
+                    
+                    # 너무 짧으면 스킵 (번호 하나만 있고 내용 없음)
+                    if len(item_lines) < 2:
                         continue
                     
-                    # 공백 제거 (OCR이 "오 뚜 기 햄" 같이 읽는 경우 대비)
-                    line_no_space = line.replace(' ', '')
+                    item_number = item_lines[0]  # "01*"
                     
-                    # 각 줄에서 식재료 찾기
-                    for keyword in food_keywords:
-                        if keyword in line or keyword in line_no_space:
-                            # 수량 찾기 (숫자 + 단위)
-                            quantity_match = re.search(r'(\d+)\s*(개|ea|EA|봉|팩|kg|g|단|마리)?', line)
-                            
-                            quantity = 1
-                            unit = '개'
-                            
-                            if quantity_match:
-                                quantity = int(quantity_match.group(1))
-                                unit_found = quantity_match.group(2)
-                                if unit_found:
-                                    unit = unit_found
-                            
-                            # 중복 체크
-                            existing = next((item for item in detected_ingredients if item['name'] == keyword), None)
-                            if existing:
-                                existing['quantity'] += quantity
-                            else:
-                                detected_ingredients.append({
-                                    'name': keyword,
-                                    'quantity': quantity,
-                                    'unit': unit,
-                                    'storage_method': '냉장',
-                                    'expiry_date': (date.today() + timedelta(days=7)).isoformat()
-                                })
-                            
-                            break  # 한 줄에서 하나만 찾기
+                    # Footer 도달 체크
+                    if any(re.search(pattern, ' '.join(item_lines)) for pattern in footer_patterns):
+                        print(f'🛑 Footer section detected at item {item_number}')
+                        break
+                    
+                    print(f'\n  [{item_number}] Raw lines: {item_lines[:5]}')  # 처음 5줄만
+                    
+                    # 상품명 찾기 (한글이 2글자 이상 있는 첫 번째 줄)
+                    item_name = None
+                    for line in item_lines[1:]:  # 번호 다음부터
+                        if len(re.findall(r'[가-힣]', line)) >= 2:
+                            item_name = line
+                            break
+                    
+                    if not item_name:
+                        print(f'  ❌ No valid name found')
+                        continue
+                    
+                    # 상품명 정리
+                    item_name = re.sub(r'[\(\)\*\#\~\[\]]', ' ', item_name)
+                    item_name = re.sub(r'\s+', ' ', item_name).strip()
+                    
+                    # 수량 찾기 (쉼표 없는 1~99 사이 숫자)
+                    quantity = 1
+                    for line in item_lines:
+                        numbers = re.findall(r'\b(\d{1,2})\b', line)  # 1~2자리 숫자
+                        for num in numbers:
+                            num_int = int(num)
+                            if 1 <= num_int <= 99:
+                                quantity = num_int
+                                break
+                        if quantity > 1:
+                            break
+                    
+                    # 유통기한
+                    if purchase_date:
+                        try:
+                            purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+                            expiry_dt = purchase_dt + timedelta(days=7)
+                            expiry_date = expiry_dt.strftime('%Y-%m-%d')
+                        except:
+                            expiry_date = (date.today() + timedelta(days=7)).isoformat()
+                    else:
+                        expiry_date = (date.today() + timedelta(days=7)).isoformat()
+                    
+                    all_items.append({
+                        'original_text': ' '.join(item_lines[:3]),  # 처음 3줄 표시
+                        'name': item_name,
+                        'quantity': quantity,
+                        'unit': '개',
+                        'storage_method': '냉장',
+                        'expiry_date': expiry_date,
+                        'purchase_date': purchase_date
+                    })
+                    
+                    print(f'  ✅ {item_name} x {quantity}')
                 
-                if not detected_ingredients:
-                    print('⚠️  No ingredients found in receipt')
+                print('-' * 60)
+                print(f'\n🛒 Total items: {len(all_items)}\n')
+                print('=' * 60)
+                
+                if not all_items:
                     return Response({
-                        'message': '영수증에서 식재료를 찾을 수 없습니다. 직접 입력해주세요.',
-                        'detected_ingredients': [],
-                        'ocr_text': text[:500]  # 디버깅용
+                        'message': '영수증에서 상품을 찾을 수 없습니다.',
+                        'items': [],
+                        'purchase_date': purchase_date
                     }, status=status.HTTP_200_OK)
                 
-                print(f'🛒 Found {len(detected_ingredients)} ingredients')
-                for item in detected_ingredients:
-                    print(f'   - {item["name"]}: {item["quantity"]}{item["unit"]}')
-                
                 return Response({
-                    'message': f'영수증에서 {len(detected_ingredients)}개 식재료 인식 완료!',
-                    'detected_ingredients': detected_ingredients,
-                    'ocr_text': text[:200]  # 미리보기
+                    'message': f'영수증에서 {len(all_items)}개 상품을 인식했습니다.',
+                    'items': all_items,
+                    'purchase_date': purchase_date
                 }, status=status.HTTP_200_OK)
                 
-            except ImportError:
-                print('❌ pytesseract not installed')
-                return Response({
-                    'message': 'OCR 기능이 설치되지 않았습니다.',
-                    'detected_ingredients': []
-                }, status=status.HTTP_200_OK)
             except Exception as e:
-                print(f'❌ OCR Error: {type(e).__name__}')
-                print(f'   Message: {str(e)}')
+                print(f'\n❌ ERROR: {type(e).__name__}')
+                print(f'   {str(e)}')
                 import traceback
                 traceback.print_exc()
-                return self._return_dummy_data()
+                return Response({
+                    'error': f'OCR 처리 중 오류: {str(e)}',
+                    'items': []
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def _return_dummy_data(self):
-        """더미 데이터 반환"""
-        detected_ingredients = [
-            {
-                'name': '사과',
-                'quantity': 3,
-                'unit': '개',
-                'storage_method': '냉장',
-                'expiry_date': (date.today() + timedelta(days=7)).isoformat()
-            }
-        ]
+    @action(detail=False, methods=['post'])
+    def batch_create(self, request):
+        """여러 식재료를 한 번에 추가"""
+        ingredients_data = request.data.get('ingredients', [])
         
-        return Response({
-            'message': '식재료 인식 완료 (테스트 모드)',
-            'detected_ingredients': detected_ingredients
-        }, status=status.HTTP_200_OK)
-
+        if not ingredients_data:
+            return Response({
+                'error': '추가할 식재료가 없습니다.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        created_ingredients = []
+        errors = []
+        
+        for idx, ingredient_data in enumerate(ingredients_data):
+            try:
+                ingredient_data.pop('purchase_date', None)
+                ingredient_data['user'] = request.user.id
+                
+                serializer = UserIngredientSerializer(data=ingredient_data)
+                if serializer.is_valid():
+                    ingredient = serializer.save(user=request.user)
+                    created_ingredients.append(serializer.data)
+                else:
+                    errors.append({
+                        'index': idx,
+                        'data': ingredient_data,
+                        'errors': serializer.errors
+                    })
+            except Exception as e:
+                errors.append({
+                    'index': idx,
+                    'data': ingredient_data,
+                    'errors': str(e)
+                })
+        
+        response_data = {
+            'message': f'{len(created_ingredients)}개 식재료가 추가되었습니다.',
+            'created': created_ingredients,
+            'success_count': len(created_ingredients),
+            'total_count': len(ingredients_data)
+        }
+        
+        if errors:
+            response_data['errors'] = errors
+            response_data['error_count'] = len(errors)
+        
+        return Response(response_data, status=status.HTTP_201_CREATED)
     
     @action(detail=True, methods=['post'])
     def consume(self, request, pk=None):
-        """식재료 소진 (수량 차감)"""
+        """식재료 소진"""
         ingredient = self.get_object()
         quantity = request.data.get('quantity', 0)
         
@@ -248,13 +293,11 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
         
         if quantity >= ingredient.quantity:
-            # 전체 소진
             ingredient.delete()
             return Response({
                 'message': '식재료가 모두 소진되었습니다.'
             })
         else:
-            # 일부 소진
             ingredient.quantity -= quantity
             ingredient.save()
             

@@ -127,6 +127,22 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     }
   }
 
+  // 여러 식재료 일괄 추가 (NEW!)
+  const batchCreateIngredients = async (ingredientsList) => {
+    try {
+      const response = await refrigeratorAPI.batchCreateIngredients(ingredientsList)
+      
+      // 성공한 항목들을 현재 목록에 추가
+      if (response.created && response.created.length > 0) {
+        ingredients.value.push(...response.created)
+      }
+      
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   // 정렬 방식 변경
   const setSortBy = (sort) => {
     sortBy.value = sort
@@ -156,6 +172,7 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     deleteIngredient,
     consumeIngredient,
     scanIngredient,
+    batchCreateIngredients,  // NEW!
     setSortBy,
     searchMasterIngredients,
   }

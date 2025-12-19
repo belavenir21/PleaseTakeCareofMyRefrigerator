@@ -40,6 +40,13 @@ export const refrigeratorAPI = {
     })
   },
 
+  // 여러 식재료 일괄 추가 (NEW!)
+  batchCreateIngredients(ingredientsList) {
+    return api.post('/refrigerator/ingredients/batch_create/', {
+      ingredients: ingredientsList
+    })
+  },
+
   // 식재료 소진
   consumeIngredient(id, quantity) {
     return api.post(`/refrigerator/ingredients/${id}/consume/`, { quantity })

@@ -8,7 +8,7 @@
 
     <div class="container">
       <!-- 입력 방식 선택 -->
-      <div v-if="!isManualMode" class="input-methods">
+      <div v-if="!isManualMode && !showDetectedList" class="input-methods">
         <div class="card method-card" @click="handleReceipt">
           <div class="icon">🧾</div>
           <h3>영수증</h3>
@@ -29,7 +29,7 @@
       </div>
 
       <!-- 수동 입력 폼 -->
-      <div v-else class="manual-input">
+      <div v-if="isManualMode && !showDetectedList" class="manual-input">
         <div class="card">
           <!-- 이미지 미리보기 -->
           <div v-if="imagePreview" class="image-preview">
@@ -110,35 +110,81 @@
       </div>
     </div>
 
-    <!-- OCR 인식 결과 리스트 -->
+    <!-- OCR 인식 결과 리스트 (개선된 버전) -->
     <div v-if="showDetectedList" class="container detected-section">
-      <h2>🛒 인식된 식재료 ({{ detectedList.length}}개)</h2>
-      <p class="hint">수정한 후 아래 '모두 저장' 버튼을 눌러주세요</p>
+      <div class="section-header">
+        <h2>🛒 인식된 항목 ({{ detectedList.length }}개)</h2>
+        <button @click="selectAll" class="btn-select-all">
+          {{ allSelected ? '전체 해제' : '전체 선택' }}
+        </button>
+      </div>
+      
+      <p class="hint">
+        ✏️ 원하는 항목을 선택하고 수정한 후 <strong>선택 항목 추가</strong> 버튼을 눌러주세요
+      </p>
       
       <div class="detected-list">
-        <div v-for="(item, index) in detectedList" :key="item.id" class="detected-item">
+        <div 
+          v-for="(item, index) in detectedList" 
+          :key="index" 
+          class="detected-item"
+          :class="{ 'selected': item.selected }"
+        >
+          <!-- 체크박스 -->
+          <div class="checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              :id="`item-${index}`"
+              v-model="item.selected"
+              class="item-checkbox"
+            />
+            <label :for="`item-${index}`" class="checkbox-label"></label>
+          </div>
+          
           <div class="item-number">{{ index + 1 }}</div>
           
           <div class="item-fields">
+            <!-- OCR 원본 텍스트 표시 (디버깅용) -->
+            <div v-if="item.original_text" class="original-text">
+              📄 원본: {{ item.original_text }}
+            </div>
+            
             <div class="field-row">
-              <div class="field">
+              <div class="field field-name">
                 <label>재료명</label>
-                <input v-model="item.name" type="text" class="input-small" />
+                <input 
+                  v-model="item.name" 
+                  type="text" 
+                  class="input-small" 
+                  :disabled="!item.selected"
+                />
               </div>
               
-              <div class="field">
+              <div class="field field-qty">
                 <label>수량</label>
-                <input v-model="item.quantity" type="number" class="input-small" />
+                <input 
+                  v-model.number="item.quantity" 
+                  type="number" 
+                  min="1"
+                  class="input-small" 
+                  :disabled="!item.selected"
+                />
               </div>
               
-              <div class="field">
+              <div class="field field-unit">
                 <label>단위</label>
-                <select v-model="item.unit" class="select-small">
+                <select 
+                  v-model="item.unit" 
+                  class="select-small"
+                  :disabled="!item.selected"
+                >
                   <option value="g">g</option>
                   <option value="ml">ml</option>
                   <option value="개">개</option>
                   <option value="봉">봉</option>
                   <option value="팩">팩</option>
+                  <option value="kg">kg</option>
+                  <option value="L">L</option>
                 </select>
               </div>
             </div>
@@ -146,7 +192,11 @@
             <div class="field-row">
               <div class="field">
                 <label>보관방법</label>
-                <select v-model="item.storage_method" class="select-small">
+                <select 
+                  v-model="item.storage_method" 
+                  class="select-small"
+                  :disabled="!item.selected"
+                >
                   <option value="냉장">냉장</option>
                   <option value="냉동">냉동</option>
                   <option value="실온">실온</option>
@@ -155,23 +205,53 @@
               
               <div class="field">
                 <label>유통기한</label>
-                <input v-model="item.expiry_date" type="date" class="input-small" />
+                <input 
+                  v-model="item.expiry_date" 
+                  type="date" 
+                  class="input-small" 
+                  :disabled="!item.selected"
+                />
               </div>
               
-              <div class="field">
-                <button @click="removeDetectedItem(index)" class="btn-remove">삭제</button>
+              <div class="field field-action">
+                <button 
+                  @click="removeDetectedItem(index)" 
+                  class="btn-remove"
+                  :disabled="!item.selected"
+                >
+                  🗑️ 삭제
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
       
+      <!-- 선택 항목 개수 표시 -->
+      <div class="selection-info">
+        <span class="selected-count">
+          선택된 항목: <strong>{{ selectedCount }}</strong>개
+        </span>
+      </div>
+      
       <div class="button-group">
-        <button @click="cancelDetected" class="btn btn-secondary">취소</button>
-        <button @click="saveAllDetected" class="btn btn-primary" :disabled="loading">
-          {{ loading ? '저장 중...' : '모두 저장' }}
+        <button @click="cancelDetected" class="btn btn-secondary">
+          취소
+        </button>
+        <button 
+          @click="saveSelectedItems" 
+          class="btn btn-primary" 
+          :disabled="loading || selectedCount === 0"
+        >
+          {{ loading ? '저장 중...' : `선택한 ${selectedCount}개 추가하기` }}
         </button>
       </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>{{ loadingMessage }}</p>
     </div>
 
     <!-- 파일 입력 (숨김) -->
@@ -195,7 +275,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 
@@ -205,6 +285,7 @@ const refrigeratorStore = useRefrigeratorStore()
 const isManualMode = ref(false)
 const imagePreview = ref(null)
 const loading = ref(false)
+const loadingMessage = ref('처리 중...')
 const fileInput = ref(null)
 const cameraInput = ref(null)
 
@@ -224,6 +305,25 @@ const formData = ref({
   expiry_date: '',
 })
 
+// 선택된 항목 개수 계산
+const selectedCount = computed(() => {
+  return detectedList.value.filter(item => item.selected).length
+})
+
+// 전체 선택 여부
+const allSelected = computed(() => {
+  return detectedList.value.length > 0 && 
+         detectedList.value.every(item => item.selected)
+})
+
+// 전체 선택/해제
+const selectAll = () => {
+  const shouldSelect = !allSelected.value
+  detectedList.value.forEach(item => {
+    item.selected = shouldSelect
+  })
+}
+
 const handleNameInput = async () => {
   if (formData.value.name.length < 1) {
     autocompleteResults.value = []
@@ -237,7 +337,6 @@ const handleNameInput = async () => {
 }
 
 const handleBlur = () => {
-  // 클릭 이벤트가 발생하기 전에 닫히는 것을 방지
   setTimeout(() => {
     showAutocomplete.value = false
   }, 200)
@@ -247,7 +346,6 @@ const selectAutocomplete = (item) => {
   formData.value.name = item.name
   formData.value.unit = item.default_unit || '개'
   
-  // 카테고리에 따른 보관방법 및 유통기한 자동 설정
   const { method, days } = getStorageInfo(item.category)
   formData.value.storage_method = method
   
@@ -294,73 +392,79 @@ const handleFileChange = async (event) => {
   // AI 스캔
   try {
     loading.value = true
+    loadingMessage.value = '영수증 인식 중...'
+    
     const result = await refrigeratorStore.scanIngredient(file)
     
-    // 스캔 결과 처리 - 여러 개 인식된 경우 모두 표시
-    if (result.detected_ingredients && result.detected_ingredients.length > 0) {
-      // 인식된 식재료를 detectedList에 저장 (사용자가 수정 가능하도록)
-      detectedList.value = result.detected_ingredients.map((item, index) => ({
+    // 백엔드 API 응답이 items로 변경됨
+    const items = result.items || result.detected_ingredients || []
+    
+    if (items.length > 0) {
+      // 인식된 식재료를 detectedList에 저장 (모두 기본으로 선택됨)
+      detectedList.value = items.map((item, index) => ({
         id: index,
-        name: item.name,
-        quantity: item.quantity,
+        original_text: item.original_text || '',
+        name: item.name || '',
+        quantity: item.quantity || 1,
         unit: item.unit || '개',
         storage_method: item.storage_method || '냉장',
-        expiry_date: item.expiry_date ? new Date(item.expiry_date).toISOString().split('T')[0] : ''
+        expiry_date: item.expiry_date || getTodayPlusDays(7),
+        selected: true  // 기본으로 모두 선택
       }))
       
-      // 수정 가능한 리스트 표시
       showDetectedList.value = true
       isManualMode.value = false
       
-      alert(`✅ ${detectedList.value.length}개 식재료 인식 완료!\n\n아래 목록을 확인하고 수정한 후 저장하세요.`)
+      alert(`✅ ${items.length}개 항목을 인식했습니다!\n\n✏️ 아래 목록을 확인하고 수정한 후 저장하세요.`)
     } else {
-      alert('⚠️ 식재료를 인식하지 못했습니다. 직접 입력해주세요.')
+      alert('⚠️ 항목을 인식하지 못했습니다.\n직접 입력해주세요.')
       isManualMode.value = true
     }
     
   } catch (error) {
     console.error('Scan failed:', error)
-    alert('❌ 이미지 인식에 실패했습니다. 직접 입력해주세요.')
+    alert('❌ 이미지 인식에 실패했습니다.\n직접 입력해주세요.')
     isManualMode.value = true
   } finally {
     loading.value = false
   }
 }
 
-// 인식된 식재료 모두 저장
-const saveAllDetected = async () => {
-  if (detectedList.value.length === 0) {
-    alert('저장할 식재료가 없습니다.')
+// 날짜 계산 헬퍼
+const getTodayPlusDays = (days) => {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  return date.toISOString().split('T')[0]
+}
+
+// 선택된 식재료만 저장 (batch_create API 사용)
+const saveSelectedItems = async () => {
+  const selectedItems = detectedList.value.filter(item => item.selected)
+  
+  if (selectedItems.length === 0) {
+    alert('선택된 항목이 없습니다.')
     return
   }
   
-  loading.value = true
-  let successCount = 0
-  let failCount = 0
-  
-  for (const item of detectedList.value) {
-    try {
-      await refrigeratorStore.addIngredient({
-        name: item.name,
-        quantity: item.quantity,
-        unit: item.unit,
-        storage_method: item.storage_method,
-        expiry_date: item.expiry_date
-      })
-      successCount++
-    } catch (error) {
-      console.error('Failed to save ingredient:', item.name, error)
-      failCount++
+  try {
+    loading.value = true
+    loadingMessage.value = `${selectedItems.length}개 항목 저장 중...`
+    
+    // batch_create API 호출
+    const result = await refrigeratorStore.batchCreateIngredients(selectedItems)
+    
+    loading.value = false
+    
+    if (result.success_count > 0) {
+      alert(`✅ ${result.success_count}개 식재료가 추가되었습니다!${result.error_count > 0 ? `\n⚠️ ${result.error_count}개 실패` : ''}`)
+      router.push({ name: 'Pantry' })
+    } else {
+      alert('❌ 저장에 실패했습니다.')
     }
-  }
-  
-  loading.value = false
-  
-  if (successCount > 0) {
-    alert(`✅ ${successCount}개 식재료가 저장되었습니다!${failCount > 0 ? `\n⚠️ ${failCount}개 실패` : ''}`)
-    router.push({ name: 'Pantry' })
-  } else {
-    alert('❌ 저장에 실패했습니다.')
+  } catch (error) {
+    loading.value = false
+    console.error('Failed to save ingredients:', error)
+    alert('❌ 저장 중 오류가 발생했습니다.')
   }
 }
 
@@ -381,13 +485,14 @@ const cancelDetected = () => {
 
 const handleSubmit = async () => {
   loading.value = true
+  loadingMessage.value = '저장 중...'
   
   try {
     await refrigeratorStore.addIngredient(formData.value)
-    alert('재료가 등록되었습니다!')
+    alert('✅ 재료가 등록되었습니다!')
     router.push({ name: 'Pantry' })
   } catch (error) {
-    alert('등록에 실패했습니다.')
+    alert('❌ 등록에 실패했습니다.')
   } finally {
     loading.value = false
   }
@@ -410,6 +515,7 @@ const cancelInput = () => {
 .ingredient-input-view {
   min-height: 100vh;
   background: #f8f9fa;
+  padding-bottom: 80px;
 }
 
 .header {
@@ -433,13 +539,6 @@ const cancelInput = () => {
   color: #333;
 }
 
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
 .input-methods {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -451,6 +550,12 @@ const cancelInput = () => {
   cursor: pointer;
   text-align: center;
   padding: 30px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.method-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
 .method-card .icon {
@@ -492,24 +597,55 @@ const cancelInput = () => {
   flex: 1;
 }
 
-/* 인식된 리스트 스타일 */
+/* 인식된 리스트 스타일 (개선) */
 .detected-section {
-  margin-top: 30px;
-  padding: 30px;
+  margin: 20px;
+  padding: 25px;
   background: white;
   border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
 
-.detected-section h2 {
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
-  color: var(--primary);
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.btn-select-all {
+  padding: 8px 16px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.btn-select-all:hover {
+  background: #5a6268;
 }
 
 .hint {
   color: #666;
   margin-bottom: 20px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  padding: 12px;
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+}
+
+.hint strong {
+  color: #856404;
 }
 
 .detected-list {
@@ -522,72 +658,154 @@ const cancelInput = () => {
 .detected-item {
   display: flex;
   gap: 15px;
-  padding: 15px;
+  padding: 20px;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 2px solid #e9ecef;
+  transition: all 0.3s;
+}
+
+.detected-item.selected {
+  background: #e7f5ff;
+  border-color: #4dabf7;
+  box-shadow: 0 2px 8px rgba(77, 171, 247, 0.2);
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.item-checkbox {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: #4dabf7;
 }
 
 .item-number {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: var(--primary);
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 50%;
   font-weight: bold;
+  font-size: 1.1rem;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
 .item-fields {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+}
+
+.original-text {
+  font-size: 0.85rem;
+  color: #868e96;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  border-left: 3px solid #adb5bd;
+  font-family: 'Courier New', monospace;
 }
 
 .field-row {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+}
+
+.field-row:last-child {
+  grid-template-columns: 1fr 1fr 120px;
 }
 
 .field {
-  flex: 1;
   min-width: 0;
+}
+
+.field-name {
+  grid-column: span 1;
 }
 
 .field label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   font-size: 0.85rem;
-  color: #666;
+  color: #495057;
+  font-weight: 600;
 }
 
 .input-small,
 .select-small {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  padding: 10px 12px;
+  border: 2px solid #dee2e6;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.input-small:focus,
+.select-small:focus {
+  border-color: #4dabf7;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+}
+
+.input-small:disabled,
+.select-small:disabled {
+  background: #e9ecef;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-remove {
-  padding: 8px 12px;
+  width: 100%;
+  padding: 10px 12px;
   background: #dc3545;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  height: fit-content;
-  margin-top: auto;
+  transition: all 0.2s;
+  margin-top: 24px;
 }
 
-.btn-remove:hover {
+.btn-remove:hover:not(:disabled) {
   background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selection-info {
+  padding: 15px;
+  background: #e7f5ff;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid #4dabf7;
+}
+
+.selected-count {
+  font-size: 1rem;
+  color: #1971c2;
+}
+
+.selected-count strong {
+  font-size: 1.3rem;
+  color: #0c5ca7;
 }
 
 .relative {
@@ -643,5 +861,71 @@ const cancelInput = () => {
 .item-category {
   font-size: 0.8rem;
   color: #888;
+}
+
+/* 로딩 오버레이 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #4dabf7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+  color: white;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .field-row:last-child {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-remove {
+    margin-top: 0;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .detected-item {
+    flex-direction: column;
+    padding: 15px;
+  }
+  
+  .checkbox-wrapper {
+    align-self: flex-start;
+  }
 }
 </style>
