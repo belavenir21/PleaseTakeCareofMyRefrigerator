@@ -45,7 +45,9 @@
                 class="input" 
                 required 
                 @input="handleNameInput"
-                @focus="showAutocomplete = true"
+                @compositionstart="isComposing = true"
+                @compositionend="handleCompositionEnd"
+                @focus="handleNameFocus"
                 @blur="handleBlur"
               />
               <!-- 자동완성 드롭다운 -->
@@ -150,14 +152,37 @@
             </div>
             
             <div class="field-row">
-              <div class="field field-name">
+              <div class="field field-name relative">
                 <label>재료명</label>
                 <input 
                   v-model="item.name" 
                   type="text" 
                   class="input-small" 
                   :disabled="!item.selected"
+                  @input="handleDetectedItemNameInput(index)"
+                  @compositionstart="item.isComposing = true"
+                  @compositionend="handleDetectedItemCompositionEnd(index)"
+                  @focus="item.showAutocomplete = true"
+                  @blur="handleDetectedItemBlur(index)"
                 />
+                <!-- 자동완성 드롭다운 -->
+                <div 
+                  v-if="item.showAutocomplete && item.autocompleteResults?.length > 0" 
+                  class="autocomplete-dropdown-detected"
+                >
+                  <div 
+                    v-for="result in item.autocompleteResults" 
+                    :key="result.id" 
+                    class="autocomplete-item"
+                    @mousedown="selectDetectedItemAutocomplete(index, result)"
+                  >
+                    <span class="item-icon">{{ result.icon || '🥘' }}</span>
+                    <div class="item-details">
+                      <span class="item-name">{{ result.name }}</span>
+                      <span class="item-category">{{ result.category }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <div class="field field-qty">
@@ -255,27 +280,29 @@
     </div>
 
     <!-- 파일 입력 (숨김) -->
+    <!-- 영수증용 (OCR) -->
     <input
       ref="fileInput"
       type="file"
       accept="image/*"
       style="display: none"
-      @change="handleFileChange"
+      @change="handleReceiptScan"
     />
 
+    <!-- 카메라용 (Vision API) -->
     <input
       ref="cameraInput"
       type="file"
       accept="image/*"
       capture="environment"
       style="display: none"
-      @change="handleFileChange"
+      @change="handleCameraCapture"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 
@@ -288,6 +315,11 @@ const loading = ref(false)
 const loadingMessage = ref('처리 중...')
 const fileInput = ref(null)
 const cameraInput = ref(null)
+
+// 한글 입력 조합 중인지 여부
+const isComposing = ref(false)
+// 디바운스 타이머
+let debounceTimer = null
 
 // OCR로 인식된 식재료 리스트
 const detectedList = ref([])
@@ -325,15 +357,59 @@ const selectAll = () => {
 }
 
 const handleNameInput = async () => {
+  console.log('🔍 handleNameInput called, name:', formData.value.name, 'isComposing:', isComposing.value)
+  
+  // 한글 조합 중이면 검색하지 않음
+  if (isComposing.value) {
+    console.log('⏸️ Composition in progress, skipping search')
+    return
+  }
+  
   if (formData.value.name.length < 1) {
     autocompleteResults.value = []
     showAutocomplete.value = false
     return
   }
   
-  const results = await refrigeratorStore.searchMasterIngredients(formData.value.name)
-  autocompleteResults.value = results
-  showAutocomplete.value = results.length > 0
+  // 기존 타이머 취소
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  
+  // 300ms 후에 검색 (디바운싱)
+  debounceTimer = setTimeout(async () => {
+    try {
+      console.log('🔎 Executing search for:', formData.value.name)
+      const results = await refrigeratorStore.searchMasterIngredients(formData.value.name)
+      console.log('✅ Search results:', results)
+      autocompleteResults.value = results
+      showAutocomplete.value = results.length > 0
+      console.log('📋 autocompleteResults.value:', autocompleteResults.value)
+      console.log('👁️ showAutocomplete.value:', showAutocomplete.value)
+    } catch (error) {
+      console.error('❌ Search failed:', error)
+      autocompleteResults.value = []
+      showAutocomplete.value = false
+    }
+  }, 150) // 150ms 디바운스 (빠른 응답)
+}
+
+// 한글 조합 완료 시 즉시 검색
+const handleCompositionEnd = () => {
+  console.log('✍️ Composition ended')
+  isComposing.value = false
+  // 조합이 끝나면 즉시 검색
+  handleNameInput()
+}
+
+const handleNameFocus = () => {
+  console.log('👁️ handleNameFocus called, name:', formData.value.name)
+  // 이미 입력된 값이 있으면 검색 실행
+  if (formData.value.name && formData.value.name.length >= 1) {
+    handleNameInput()
+  } else {
+    showAutocomplete.value = true
+  }
 }
 
 const handleBlur = () => {
@@ -370,6 +446,67 @@ const getStorageInfo = (category) => {
   }
 }
 
+// OCR 인식된 항목의 자동완성 처리
+const handleDetectedItemNameInput = async (index) => {
+  const item = detectedList.value[index]
+  
+  // 한글 조합 중이면 검색하지 않음
+  if (item.isComposing) {
+    return
+  }
+  
+  if (!item.name || item.name.length < 1) {
+    item.autocompleteResults = []
+    item.showAutocomplete = false
+    return
+  }
+  
+  // 기존 타이머 취소
+  if (item.debounceTimer) {
+    clearTimeout(item.debounceTimer)
+  }
+  
+  // 150ms 후에 검색 (디바운싱)
+  item.debounceTimer = setTimeout(async () => {
+    const results = await refrigeratorStore.searchMasterIngredients(item.name)
+    item.autocompleteResults = results
+    item.showAutocomplete = results.length > 0
+  }, 150)
+}
+
+// 한글 조합 완료 시 즉시 검색
+const handleDetectedItemCompositionEnd = (index) => {
+  const item = detectedList.value[index]
+  item.isComposing = false
+  handleDetectedItemNameInput(index)
+}
+
+const handleDetectedItemBlur = (index) => {
+  setTimeout(() => {
+    const item = detectedList.value[index]
+    item.showAutocomplete = false
+  }, 200)
+}
+
+const selectDetectedItemAutocomplete = (index, masterItem) => {
+  const item = detectedList.value[index]
+  
+  // 마스터 재료의 정보로 업데이트
+  item.name = masterItem.name
+  item.unit = masterItem.default_unit || '개'
+  
+  const { method, days } = getStorageInfo(masterItem.category)
+  item.storage_method = method
+  
+  // 유통기한 재계산
+  const today = new Date()
+  today.setDate(today.getDate() + days)
+  item.expiry_date = today.toISOString().split('T')[0]
+  
+  item.showAutocomplete = false
+  item.autocompleteResults = []
+}
+
 const handleReceipt = () => {
   fileInput.value?.click()
 }
@@ -378,79 +515,182 @@ const handleCamera = () => {
   cameraInput.value?.click()
 }
 
-const handleFileChange = async (event) => {
+// 이미지 압축 헬퍼 함수 (GMS API 크기 제한 고려)
+const compressImage = (file, maxWidth = 800, quality = 0.60) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (event) => {
+      const img = new Image()
+      img.src = event.target.result
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+
+        // 리사이징 계산
+        if (width > maxWidth || height > maxWidth) {
+          if (width > height) {
+            height = (height / width) * maxWidth
+            width = maxWidth
+          } else {
+            width = (width / height) * maxWidth
+            height = maxWidth
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+
+        // JPEG로 변환 (quality 0.85)
+        canvas.toBlob(
+          (blob) => {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            })
+            console.log(`📦 Image compressed: ${(file.size / 1024).toFixed(1)} KB → ${(compressedFile.size / 1024).toFixed(1)} KB`)
+            resolve(compressedFile)
+          },
+          'image/jpeg',
+          quality
+        )
+      }
+      img.onerror = reject
+    }
+    reader.onerror = reject
+  })
+}
+
+// 영수증 스캔 (EasyOCR)
+const handleReceiptScan = async (event) => {
   const file = event.target.files[0]
   if (!file) return
 
-  // 이미지 미리보기
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    imagePreview.value = e.target.result
-  }
-  reader.readAsDataURL(file)
-
-  // AI 스캔
   try {
     loading.value = true
+    loadingMessage.value = '이미지 처리 중...'
+
+    // 이미지 압축
+    const compressedFile = await compressImage(file)
+
+    // 이미지 미리보기
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imagePreview.value = e.target.result
+    }
+    reader.readAsDataURL(compressedFile)
+
+    // OCR 스캔
     loadingMessage.value = '영수증 인식 중...'
     
     console.log('📤 Starting OCR scan...')
-    const result = await refrigeratorStore.scanIngredient(file)
+    const result = await refrigeratorStore.scanIngredient(compressedFile)
     console.log('📥 OCR scan result:', result)
     
-    // 백엔드 API 응답이 items로 변경됨
-    const items = result.items || result.detected_ingredients || []
-    
-    if (items.length > 0) {
-      // 인식된 식재료를 detectedList에 저장 (모두 기본으로 선택됨)
-      detectedList.value = items.map((item, index) => ({
-        id: index,
-        original_text: item.original_text || '',
-        name: item.name || '',
-        quantity: item.quantity || 1,
-        unit: item.unit || '개',
-        storage_method: item.storage_method || '냉장',
-        expiry_date: item.expiry_date || getTodayPlusDays(7),
-        selected: true  // 기본으로 모두 선택
-      }))
-      
-      showDetectedList.value = true
-      isManualMode.value = false
-      
-      alert(`✅ ${items.length}개 항목을 인식했습니다!\n\n✏️ 아래 목록을 확인하고 수정한 후 저장하세요.`)
-    } else {
-      console.warn('⚠️ No items detected:', result)
-      alert('⚠️ 항목을 인식하지 못했습니다.\n직접 입력해주세요.')
-      isManualMode.value = true
-    }
+    processRecognitionResult(result)
     
   } catch (error) {
-    console.error('❌ OCR Scan failed:', error)
-    console.error('Error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      code: error.code
-    })
-    
-    let errorMsg = '❌ 이미지 인식에 실패했습니다.\n\n'
-    
-    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-      errorMsg += '⏱️ 처리 시간이 너무 오래 걸렸습니다.\n이미지 크기를 줄이거나 다시 시도해주세요.'
-    } else if (error.response) {
-      errorMsg += `서버 오류: ${error.response.status}\n${JSON.stringify(error.response.data)}`
-    } else if (error.request) {
-      errorMsg += '서버에 연결할 수 없습니다.\n백엔드가 실행 중인지 확인하세요.'
-    } else {
-      errorMsg += `오류: ${error.message}`
-    }
-    
-    errorMsg += '\n\n직접 입력해주세요.'
-    alert(errorMsg)
-    isManualMode.value = true
+    handleRecognitionError(error, 'OCR')
   } finally {
     loading.value = false
   }
+}
+
+// 카메라 촬영 (Gemini Vision)
+const handleCameraCapture = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  try {
+    loading.value = true
+    loadingMessage.value = '이미지 처리 중...'
+
+    // 이미지 압축
+    const compressedFile = await compressImage(file)
+
+    // 이미지 미리보기
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imagePreview.value = e.target.result
+    }
+    reader.readAsDataURL(compressedFile)
+
+    // Vision AI 인식
+    loadingMessage.value = '🤖 Gemini Vision으로 재료 인식 중...'
+    
+    console.log('📤 Starting Gemini Vision recognition...')
+    const result = await refrigeratorStore.visionRecognize(compressedFile)
+    console.log('📥 Vision result:', result)
+    
+    processRecognitionResult(result)
+    
+  } catch (error) {
+    handleRecognitionError(error, 'Vision')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 인식 결과 공통 처리
+const processRecognitionResult = (result) => {
+  const items = result.items || result.detected_ingredients || []
+  
+  if (items.length > 0) {
+    detectedList.value = items.map((item, index) => ({
+      id: index,
+      original_text: item.original_text || '',
+      name: item.name || '',
+      quantity: item.quantity || 1,
+      unit: item.unit || '개',
+      storage_method: item.storage_method || '냉장',
+      expiry_date: item.expiry_date || getTodayPlusDays(7),
+      selected: true,
+      showAutocomplete: false,
+      autocompleteResults: [],
+      isComposing: false,
+      debounceTimer: null
+    }))
+    
+    showDetectedList.value = true
+    isManualMode.value = false
+    
+    alert(`✅ ${items.length}개 항목을 인식했습니다!\n\n✏️ 아래 목록을 확인하고 수정한 후 저장하세요.`)
+  } else {
+    console.warn('⚠️ No items detected:', result)
+    alert('⚠️ 항목을 인식하지 못했습니다.\n직접 입력해주세요.')
+    isManualMode.value = true
+  }
+}
+
+// 인식 오류 공통 처리
+const handleRecognitionError = (error, type) => {
+  console.error(`❌ ${type} failed:`, error)
+  console.error('Error details:', {
+    message: error.message,
+    response: error.response?.data,
+    status: error.response?.status,
+    code: error.code
+  })
+  
+  let errorMsg = `❌ ${type} 인식에 실패했습니다.\n\n`
+  
+  if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+    errorMsg += '⏱️ 처리 시간이 너무 오래 걸렸습니다.\n이미지 크기를 줄이거나 다시 시도해주세요.'
+  } else if (error.response) {
+    errorMsg += `서버 오류: ${error.response.status}\n${JSON.stringify(error.response.data)}`
+  } else if (error.request) {
+    errorMsg += '서버에 연결할 수 없습니다.\n백엔드가 실행 중인지 확인하세요.'
+  } else {
+    errorMsg += `오류: ${error.message}`
+  }
+  
+  errorMsg += '\n\n직접 입력해주세요.'
+  alert(errorMsg)
+  isManualMode.value = true
 }
 
 // 날짜 계산 헬퍼
@@ -567,6 +807,37 @@ const cancelInput = () => {
     expiry_date: '',
   }
 }
+
+// 백스페이스로 인한 뒤로가기 방지
+const preventBackspaceNav = (event) => {
+  // 백스페이스 키인지 확인
+  if (event.key === 'Backspace' || event.keyCode === 8) {
+    const target = event.target
+    const tagName = target.tagName.toLowerCase()
+    
+    // input, textarea가 아니거나, readonly/disabled인 경우 뒤로가기 방지
+    if (
+      (tagName !== 'input' && tagName !== 'textarea') ||
+      target.readOnly ||
+      target.disabled
+    ) {
+      event.preventDefault()
+      console.log('⚠️ Backspace navigation prevented')
+    }
+  }
+}
+
+// 컴포넌트 마운트 시 이벤트 리스너 추가
+onMounted(() => {
+  document.addEventListener('keydown', preventBackspaceNav)
+  console.log('✅ Backspace prevention enabled')
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', preventBackspaceNav)
+  console.log('🔄 Backspace prevention removed')
+})
+
 </script>
 
 <style scoped>
@@ -919,6 +1190,22 @@ const cancelInput = () => {
 .item-category {
   font-size: 0.8rem;
   color: #888;
+}
+
+/* 인식된 항목의 자동완성 드롭다운 */
+.autocomplete-dropdown-detected {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #4dabf7;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 5px;
 }
 
 /* 로딩 오버레이 */

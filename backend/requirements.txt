@@ -29,7 +29,11 @@ pillow==10.4.0
 pyclipper==1.4.0
 PyJWT==2.8.0
 pytesseract==0.3.10
-python-bidi==0.6.7
+google-genai
+easyocr
+numpy
+pillow
+requests
 python-decouple==3.8
 pytz==2025.2
 PyYAML==6.0.3
@@ -48,3 +52,4 @@ typing_extensions==4.15.0
 tzdata==2025.2
 uritemplate==4.2.0
 urllib3==2.5.0
+google-generativeai==0.3.2

@@ -2,6 +2,7 @@
 Management command to fetch recipe data from external API (Food Safety Korea API)
 """
 import requests
+import time
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from recipes.models import Recipe, RecipeIngredient, CookingStep
@@ -15,84 +16,117 @@ class Command(BaseCommand):
             '--limit',
             type=int,
             default=50,
-            help='Limit the number of recipes to fetch (default: 50)'
+            help='Total number of recipes to fetch (default: 50)'
+        )
+        parser.add_argument(
+            '--batch-size',
+            type=int,
+            default=50,
+            help='Number of recipes per batch to prevent timeout (default: 50)'
         )
 
     def handle(self, *args, **options):
         limit = options['limit']
+        batch_size = options['batch_size']
         api_key = settings.FOODSAFETY_API_KEY
         
         if api_key == 'YOUR_API_KEY_HERE':
             self.stdout.write(
                 self.style.WARNING(
-                    '⚠️  API 키가 설정되지 않았습니다. '
-                    '.env 파일에 FOODSAFETY_API_KEY를 설정해주세요.'
+                    'API Key is not set. '
+                    'Please set FOODSAFETY_API_KEY in .env file.'
                 )
             )
             self.stdout.write(
                 self.style.SUCCESS(
-                    '📝 샘플 레시피 데이터를 사용하여 데이터베이스를 초기화합니다...'
+                    'Initializing with sample recipe data...'
                 )
             )
             self._populate_sample_recipes()
             return
         
         self.stdout.write(
-            self.style.SUCCESS(f'🔄 Food Safety Korea API에서 레시피를 가져옵니다... (최대 {limit}개)')
+            self.style.SUCCESS(f'Fetching {limit} recipes from Food Safety Korea API...')
         )
+        self.stdout.write(f'Batch size: {batch_size} (to prevent timeout)')
+        
+        total_added = 0
         
         try:
-            # Food Safety Korea API 호출 (정상 작동 확인됨)
-            base_url = f"{settings.FOODSAFETY_API_URL}/{api_key}/COOKRCP01/json/1/{limit}"
+            # Calculate number of batches needed
+            num_batches = (limit + batch_size - 1) // batch_size
             
-            self.stdout.write(f'📡 API 호출: {base_url[:80]}...')
-            
-            response = requests.get(base_url, timeout=30)
-            
-            if response.status_code == 200:
-                data = response.json()
+            for batch_num in range(num_batches):
+                start_idx = batch_num * batch_size + 1
+                end_idx = min((batch_num + 1) * batch_size, limit)
                 
-                # API 응답 구조 확인
-                if 'COOKRCP01' in data:
-                    result = data['COOKRCP01']
+                self.stdout.write(f'\n[Batch {batch_num + 1}/{num_batches}] Fetching recipes {start_idx} to {end_idx}...')
+                
+                # API 호출
+                base_url = f"{settings.FOODSAFETY_API_URL}/{api_key}/COOKRCP01/json/{start_idx}/{end_idx}"
+                
+                try:
+                    response = requests.get(base_url, timeout=30)
                     
-                    # RESULT 필드로 성공/실패 확인
-                    if 'RESULT' in result:
-                        result_info = result['RESULT']
-                        if result_info.get('CODE') == 'INFO-000':
-                            self.stdout.write(
-                                self.style.SUCCESS(f'✅ {result_info.get("MSG", "API 호출 성공")}')
-                            )
-                            self._process_api_data(data)
+                    if response.status_code == 200:
+                        data = response.json()
+                        
+                        if 'COOKRCP01' in data:
+                            result = data['COOKRCP01']
+                            
+                            if 'RESULT' in result:
+                                result_info = result['RESULT']
+                                if result_info.get('CODE') == 'INFO-000':
+                                    batch_count = self._process_api_data(data)
+                                    total_added += batch_count
+                                    self.stdout.write(
+                                        self.style.SUCCESS(f'  -> Added {batch_count} recipes from this batch')
+                                    )
+                                else:
+                                    self.stdout.write(
+                                        self.style.ERROR(
+                                            f'  -> API ERROR: {result_info.get("MSG", "Unknown Error")}'
+                                        )
+                                    )
+                            else:
+                                batch_count = self._process_api_data(data)
+                                total_added += batch_count
+                                self.stdout.write(
+                                    self.style.SUCCESS(f'  -> Added {batch_count} recipes from this batch')
+                                )
                         else:
                             self.stdout.write(
-                                self.style.ERROR(
-                                    f'❌ API 오류: {result_info.get("MSG", "알 수 없는 오류")}'
-                                )
+                                self.style.ERROR('  -> Unexpected API response format')
                             )
-                            self._populate_sample_recipes()
                     else:
-                        # RESULT 필드가 없으면 데이터 처리
-                        self._process_api_data(data)
-                else:
+                        self.stdout.write(
+                            self.style.ERROR(f'  -> API Call Failed: HTTP {response.status_code}')
+                        )
+                    
+                    # Delay between batches to be nice to the API server
+                    if batch_num < num_batches - 1:
+                        time.sleep(1)
+                        
+                except Exception as batch_error:
                     self.stdout.write(
-                        self.style.ERROR('❌ 예상하지 못한 API 응답 형식')
+                        self.style.ERROR(f'  -> Batch error: {str(batch_error)}')
                     )
-                    self._populate_sample_recipes()
-            else:
-                self.stdout.write(
-                    self.style.ERROR(f'❌ API 호출 실패: HTTP {response.status_code}')
-                )
-                self._populate_sample_recipes()
+                    continue
+            
+            self.stdout.write('\n' + '='*60)
+            self.stdout.write(
+                self.style.SUCCESS(f'TOTAL: {total_added} new recipes added successfully!')
+            )
+            self.stdout.write('='*60 + '\n')
                 
         except Exception as e:
             self.stdout.write(
-                self.style.ERROR(f'❌ 오류 발생: {str(e)}')
+                self.style.ERROR(f'Error occurred: {str(e)}')
             )
             self._populate_sample_recipes()
 
     def _process_api_data(self, data):
-        """Process API response data"""
+        """Process API response data and return count of added recipes"""
         count = 0
         
         try:
@@ -120,15 +154,14 @@ class Command(BaseCommand):
                         # 조리 단계 추가
                         self._add_cooking_steps(recipe, item)
                         count += 1
-                        
-            self.stdout.write(
-                self.style.SUCCESS(f'✅ {count}개의 새로운 레시피가 추가되었습니다.')
-            )
+            
+            return count
             
         except Exception as e:
             self.stdout.write(
-                self.style.ERROR(f'❌ 데이터 처리 중 오류: {str(e)}')
+                self.style.ERROR(f'ERROR parsing data: {str(e)}')
             )
+            return 0
 
     def _parse_time(self, time_str):
         """Parse cooking time from string"""
@@ -318,6 +351,6 @@ class Command(BaseCommand):
         
         self.stdout.write(
             self.style.SUCCESS(
-                f'✅ {count}개의 샘플 레시피가 추가되었습니다. (총 {len(sample_recipes)}개)'
+                f'SUCCESS: {count} sample recipes added. (Total: {len(sample_recipes)})'
             )
         )

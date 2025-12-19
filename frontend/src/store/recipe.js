@@ -6,6 +6,7 @@ export const useRecipeStore = defineStore('recipe', () => {
   const recipes = ref([])
   const currentRecipe = ref(null)
   const recommendations = ref([])
+  const userIngredientCount = ref(0)
   const loading = ref(false)
 
   // 레시피 목록 조회
@@ -43,6 +44,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     try {
       const response = await recipeAPI.getRecommendations()
       recommendations.value = response.recipes || []
+      userIngredientCount.value = response.user_ingredient_count || 0
       return response
     } catch (error) {
       console.error('Failed to fetch recommendations:', error)
@@ -67,6 +69,7 @@ export const useRecipeStore = defineStore('recipe', () => {
     recipes,
     currentRecipe,
     recommendations,
+    userIngredientCount,
     loading,
     fetchRecipes,
     fetchRecipe,

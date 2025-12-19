@@ -31,9 +31,18 @@ export const refrigeratorAPI = {
     return api.get('/refrigerator/ingredients/alerts/')
   },
 
-  // 사진으로 식재료 인식
+  // 사진으로 식재료 인식 (EasyOCR - 영수증용)
   scanIngredient(formData) {
     return api.post('/refrigerator/ingredients/scan/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+
+  // 사진으로 식재료 인식 (Gemini Vision - 일반 사진용)
+  visionRecognize(formData) {
+    return api.post('/refrigerator/ingredients/vision/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

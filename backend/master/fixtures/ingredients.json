@@ -1,0 +1,9 @@
+[
+{
+    "model": "master.ingredientmaster",
+    "pk": 1,
+    "fields": {
+        "name": "±¹¹ä",
+        "category": "°î·ù",
+        "default_unit": "°³",
+        "icon": 

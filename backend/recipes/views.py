@@ -49,7 +49,7 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
     
     @action(detail=False, methods=['get'])
     def recommendations(self, request):
-        """맞춤 레시피 추천"""
+        """맞춤 레시피 추천 (부분 매칭 포함)"""
         user = request.user
         
         # 사용자의 보관 중인 식재료 가져오기
@@ -67,20 +67,32 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             if recipe_ingredients:
                 match_count = len(recipe_ingredients & user_ingredients_set)
                 match_ratio = match_count / len(recipe_ingredients)
+                missing_count = len(recipe_ingredients) - match_count
                 
-                if match_ratio >= 0.5:  # 50% 이상 매칭
+                # 30% 이상 매칭되면 추천 (부분 매칭 허용)
+                if match_ratio >= 0.3:
+                    # 매칭 상태 판별
+                    if match_ratio >= 0.95:
+                        match_status = 'full'  # 완전 매칭 (95% 이상)
+                    elif match_ratio >= 0.7:
+                        match_status = 'high'  # 높은 매칭 (70% 이상)
+                    else:
+                        match_status = 'partial'  # 부분 매칭 (30~70%)
+                    
                     recommended_recipes.append({
                         'recipe': recipe,
                         'match_ratio': match_ratio,
                         'match_count': match_count,
-                        'total_ingredients': len(recipe_ingredients)
+                        'missing_count': missing_count,
+                        'total_ingredients': len(recipe_ingredients),
+                        'match_status': match_status
                     })
         
         # 매칭 비율 순으로 정렬
         recommended_recipes.sort(key=lambda x: x['match_ratio'], reverse=True)
         
-        # 최대 10개까지 추천
-        recommended_recipes = recommended_recipes[:10]
+        # 최대 20개까지 추천 (더 많은 옵션 제공)
+        recommended_recipes = recommended_recipes[:20]
         
         # Serialize
         recipes_data = []
@@ -88,10 +100,13 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             recipe_data = RecipeListSerializer(item['recipe']).data
             recipe_data['match_ratio'] = round(item['match_ratio'] * 100, 1)
             recipe_data['match_count'] = item['match_count']
+            recipe_data['missing_count'] = item['missing_count']
             recipe_data['total_ingredients'] = item['total_ingredients']
+            recipe_data['match_status'] = item['match_status']
             recipes_data.append(recipe_data)
         
         return Response({
             'count': len(recipes_data),
-            'recipes': recipes_data
+            'recipes': recipes_data,
+            'user_ingredient_count': len(user_ingredients_set)
         })

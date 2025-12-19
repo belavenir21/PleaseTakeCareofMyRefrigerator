@@ -115,7 +115,7 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     }
   }
 
-  // 사진으로 식재료 인식
+  // 사진으로 식재료 인식 (EasyOCR - 영수증)
   const scanIngredient = async (file) => {
     try {
       const formData = new FormData()
@@ -127,16 +127,28 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     }
   }
 
+  // 사진으로 식재료 인식 (Gemini Vision - 일반 사진)
+  const visionRecognize = async (file) => {
+    try {
+      const formData = new FormData()
+      formData.append('image', file)
+      const response = await refrigeratorAPI.visionRecognize(formData)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   // 여러 식재료 일괄 추가 (NEW!)
   const batchCreateIngredients = async (ingredientsList) => {
     try {
       const response = await refrigeratorAPI.batchCreateIngredients(ingredientsList)
-      
+
       // 성공한 항목들을 현재 목록에 추가
       if (response.created && response.created.length > 0) {
         ingredients.value.push(...response.created)
       }
-      
+
       return response
     } catch (error) {
       throw error
@@ -172,7 +184,8 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     deleteIngredient,
     consumeIngredient,
     scanIngredient,
-    batchCreateIngredients,  // NEW!
+    visionRecognize,  // NEW!
+    batchCreateIngredients,
     setSortBy,
     searchMasterIngredients,
   }

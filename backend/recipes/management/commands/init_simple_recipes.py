@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Initialize simple recipes for beginners (Verified Data)'
 
     def handle(self, *args, **options):
-        self.stdout.write('🍳 Adding verified simple recipes...')
+        self.stdout.write('Adding verified simple recipes...')
 
         # 검색된 실제 레시피 데이터
         simple_recipes = [
@@ -266,4 +266,4 @@ class Command(BaseCommand):
                     description=step_desc
                 )
 
-        self.stdout.write(self.style.SUCCESS('✅ Successfully added verified simple recipes!'))
+        self.stdout.write(self.style.SUCCESS('Successfully added verified simple recipes!'))

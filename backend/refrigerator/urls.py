@@ -5,7 +5,7 @@ from . import views
 app_name = 'refrigerator'
 
 router = DefaultRouter()
-router.register(r'ingredients', views.UserIngredientViewSet, basename='ingredient')
+router.register('ingredients', views.UserIngredientViewSet, basename='ingredient')
 
 urlpatterns = [
     path('', include(router.urls)),

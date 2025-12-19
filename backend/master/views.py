@@ -1,10 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .models import IngredientMaster
 from .serializers import IngredientMasterSerializer
 
 class IngredientMasterViewSet(viewsets.ReadOnlyModelViewSet):
     """식재료 마스터 데이터 조회 (검색용)"""
     serializer_class = IngredientMasterSerializer
+    permission_classes = [permissions.AllowAny]  # 누구나 검색 가능
     
     def get_queryset(self):
         # 검색어(search)가 있을 때만 결과를 반환 (성능 및 UX 고려)
