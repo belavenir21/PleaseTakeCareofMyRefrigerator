@@ -394,7 +394,9 @@ const handleFileChange = async (event) => {
     loading.value = true
     loadingMessage.value = '영수증 인식 중...'
     
+    console.log('📤 Starting OCR scan...')
     const result = await refrigeratorStore.scanIngredient(file)
+    console.log('📥 OCR scan result:', result)
     
     // 백엔드 API 응답이 items로 변경됨
     const items = result.items || result.detected_ingredients || []
@@ -417,13 +419,34 @@ const handleFileChange = async (event) => {
       
       alert(`✅ ${items.length}개 항목을 인식했습니다!\n\n✏️ 아래 목록을 확인하고 수정한 후 저장하세요.`)
     } else {
+      console.warn('⚠️ No items detected:', result)
       alert('⚠️ 항목을 인식하지 못했습니다.\n직접 입력해주세요.')
       isManualMode.value = true
     }
     
   } catch (error) {
-    console.error('Scan failed:', error)
-    alert('❌ 이미지 인식에 실패했습니다.\n직접 입력해주세요.')
+    console.error('❌ OCR Scan failed:', error)
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      code: error.code
+    })
+    
+    let errorMsg = '❌ 이미지 인식에 실패했습니다.\n\n'
+    
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      errorMsg += '⏱️ 처리 시간이 너무 오래 걸렸습니다.\n이미지 크기를 줄이거나 다시 시도해주세요.'
+    } else if (error.response) {
+      errorMsg += `서버 오류: ${error.response.status}\n${JSON.stringify(error.response.data)}`
+    } else if (error.request) {
+      errorMsg += '서버에 연결할 수 없습니다.\n백엔드가 실행 중인지 확인하세요.'
+    } else {
+      errorMsg += `오류: ${error.message}`
+    }
+    
+    errorMsg += '\n\n직접 입력해주세요.'
+    alert(errorMsg)
     isManualMode.value = true
   } finally {
     loading.value = false
@@ -446,6 +469,8 @@ const saveSelectedItems = async () => {
     return
   }
   
+  console.log('📤 Sending to backend:', selectedItems)
+  
   try {
     loading.value = true
     loadingMessage.value = `${selectedItems.length}개 항목 저장 중...`
@@ -453,20 +478,53 @@ const saveSelectedItems = async () => {
     // batch_create API 호출
     const result = await refrigeratorStore.batchCreateIngredients(selectedItems)
     
+    console.log('📥 Response from backend:', result)
+    
     loading.value = false
     
     if (result.success_count > 0) {
-      alert(`✅ ${result.success_count}개 식재료가 추가되었습니다!${result.error_count > 0 ? `\n⚠️ ${result.error_count}개 실패` : ''}`)
+      let message = `✅ ${result.success_count}개 식재료가 추가되었습니다!`
+      
+      // 오류가 있으면 상세 정보 표시
+      if (result.error_count > 0) {
+        message += `\n\n⚠️ ${result.error_count}개 항목 저장 실패:`
+        result.errors.forEach((err, idx) => {
+          if (idx < 3) { // 최대 3개만 표시
+            message += `\n- ${err.name}: ${JSON.stringify(err.errors)}`
+          }
+        })
+      }
+      
+      alert(message)
       router.push({ name: 'Pantry' })
     } else {
-      alert('❌ 저장에 실패했습니다.')
+      let message = '❌ 저장에 실패했습니다.'
+      if (result.errors && result.errors.length > 0) {
+        message += '\n\n오류 상세:'
+        result.errors.forEach((err, idx) => {
+          if (idx < 3) {
+            message += `\n- ${err.name}: ${JSON.stringify(err.errors)}`
+          }
+        })
+      }
+      alert(message)
     }
   } catch (error) {
     loading.value = false
     console.error('Failed to save ingredients:', error)
-    alert('❌ 저장 중 오류가 발생했습니다.')
+    
+    let errorMsg = '❌ 저장 중 오류가 발생했습니다.\n\n'
+    if (error.response) {
+      errorMsg += `서버 응답: ${JSON.stringify(error.response.data)}`
+    } else if (error.request) {
+      errorMsg += '서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인하세요.'
+    } else {
+      errorMsg += `오류: ${error.message}`
+    }
+    alert(errorMsg)
   }
 }
+
 
 // 리스트에서 항목 제거
 const removeDetectedItem = (index) => {

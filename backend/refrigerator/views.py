@@ -154,55 +154,146 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     
                     print(f'\n  [{item_number}] Raw lines: {item_lines[:5]}')  # 처음 5줄만
                     
-                    # 상품명 찾기 (한글이 2글자 이상 있는 첫 번째 줄)
-                    item_name = None
+                    # 상품명 찾기 (한글이 포함된 여러 줄을 모두 합침)
+                    name_parts = []
                     for line in item_lines[1:]:  # 번호 다음부터
+                        # 한글이 2글자 이상 있으면 상품명의 일부로 취급
                         if len(re.findall(r'[가-힣]', line)) >= 2:
-                            item_name = line
+                            name_parts.append(line.strip())
+                        # 가격이나 수량 패턴이 나오면 중단
+                        elif re.search(r'\d{1,3}(,\d{3})+', line) or len(name_parts) > 0:
                             break
                     
-                    if not item_name:
+                    if not name_parts:
                         print(f'  ❌ No valid name found')
                         continue
+                    
+                    # 여러 줄을 공백으로 연결
+                    item_name = ' '.join(name_parts)
                     
                     # 상품명 정리
                     item_name = re.sub(r'[\(\)\*\#\~\[\]]', ' ', item_name)
                     item_name = re.sub(r'\s+', ' ', item_name).strip()
                     
-                    # 수량 찾기 (쉼표 없는 1~99 사이 숫자)
+                    # ===== 스마트 재료명 매칭 =====
+                    from master.models import IngredientMaster
+                    from difflib import SequenceMatcher
+                    
+                    matched_master = None
+                    original_name = item_name  # OCR 원본 이름 저장
+                    
+                    print(f'  🔍 Searching for: "{item_name}"')
+                    
+                    # 1. 정확히 일치하는 재료 찾기
+                    matched_master = IngredientMaster.objects.filter(name__iexact=item_name).first()
+                    if matched_master:
+                        print(f'  ✅ Exact match: "{item_name}" -> "{matched_master.name}"')
+                    
+                    if not matched_master:
+                        # 2. 부분 일치하는 재료 찾기
+                        # 성능을 위해 이름에 한글이 2글자 이상 포함된 경우만 검색
+                        hangul_chars = re.findall(r'[가-힣]+', item_name)
+                        if hangul_chars:
+                            main_keyword = max(hangul_chars, key=len)  # 가장 긴 한글 부분
+                            if len(main_keyword) >= 2:
+                                # DB에서 해당 키워드를 포함하는 재료 찾기
+                                candidates = IngredientMaster.objects.filter(name__icontains=main_keyword)[:10]
+                                for master in candidates:
+                                    if item_name in master.name or master.name in item_name:
+                                        matched_master = master
+                                        print(f'  📌 Partial match: "{item_name}" -> "{master.name}"')
+                                        break
+                    
+                    if not matched_master:
+                        # 3. 유사도 검사 (0.75 이상이면 같은 재료로 간주)
+                        best_score = 0
+                        best_match = None
+                        # 성능을 위해 상위 100개 재료만 검사
+                        for master in IngredientMaster.objects.all()[:100]:
+                            score = SequenceMatcher(None, item_name, master.name).ratio()
+                            if score > best_score and score >= 0.75:
+                                best_score = score
+                                best_match = master
+                        
+                        if best_match:
+                            matched_master = best_match
+                            print(f'  📌 Fuzzy match ({best_score:.2f}): "{item_name}" -> "{best_match.name}"')
+                    
+                    # 매칭된 재료가 있으면 그 이름 사용, 없으면 새로 추가
+                    if matched_master:
+                        item_name = matched_master.name
+                        category = matched_master.category
+                        default_unit = matched_master.default_unit or '개'
+                        
+                        # 카테고리별 기본 보관방법 및 유통기한 설정
+                        storage_settings = {
+                            '채소': ('냉장', 7),
+                            '과일': ('냉장', 10),
+                            '육류': ('냉장', 3),
+                            '수산물': ('냉장', 2),
+                            '유제품': ('냉장', 14),
+                            '냉동식품': ('냉동', 30),
+                            '곡류': ('실온', 60),
+                            '가공식품': ('실온', 30),
+                        }
+                        storage_method, days = storage_settings.get(category, ('냉장', 14))
+                        print(f'  ✅ Matched! Category: {category}, Storage: {storage_method}, Days: {days}')
+                    else:
+                        # DB에 없는 새로운 재료 -> IngredientMaster에 추가
+                        print(f'  🆕 New ingredient: "{item_name}" - Adding to IngredientMaster')
+                        new_master = IngredientMaster.objects.create(
+                            name=item_name,
+                            category='가공식품',  # 기본 카테고리
+                            default_unit='개',
+                            icon='🍴'
+                        )
+                        matched_master = new_master
+                        storage_method = '냉장'
+                        days = 14
+                        default_unit = '개'
+                    
+                    # 수량 찾기 (영수증 형식: 번호 - 상품명 - 가격 - 개수 - 총가격)
                     quantity = 1
-                    for line in item_lines:
-                        numbers = re.findall(r'\b(\d{1,2})\b', line)  # 1~2자리 숫자
-                        for num in numbers:
-                            num_int = int(num)
-                            if 1 <= num_int <= 99:
-                                quantity = num_int
-                                break
+                    # 첫 번째 줄(항목 번호)을 제외하고 탐색
+                    for idx, line in enumerate(item_lines[1:], 1):  # 번호 다음부터
+                        # 가격 패턴(1,000 이상 또는 쉼표 포함)이 아닌 1~99 사이 숫자 찾기
+                        if not re.search(r'[,.]', line):  # 쉼표나 점이 없는 줄
+                            numbers = re.findall(r'\b(\d{1,2})\b', line)  # 1~2자리 숫자
+                            for num in numbers:
+                                num_int = int(num)
+                                # 항목 번호와 중복되지 않도록 체크
+                                if 1 <= num_int <= 99 and num != item_lines[0].strip('*#'):
+                                    quantity = num_int
+                                    print(f'  📦 Found quantity: {quantity} in line "{line}"')
+                                    break
                         if quantity > 1:
                             break
                     
-                    # 유통기한
+                    # 유통기한 계산
                     if purchase_date:
                         try:
                             purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
-                            expiry_dt = purchase_dt + timedelta(days=7)
+                            expiry_dt = purchase_dt + timedelta(days=days)
                             expiry_date = expiry_dt.strftime('%Y-%m-%d')
                         except:
-                            expiry_date = (date.today() + timedelta(days=7)).isoformat()
+                            expiry_date = (date.today() + timedelta(days=days)).isoformat()
                     else:
-                        expiry_date = (date.today() + timedelta(days=7)).isoformat()
+                        expiry_date = (date.today() + timedelta(days=days)).isoformat()
                     
                     all_items.append({
-                        'original_text': ' '.join(item_lines[:3]),  # 처음 3줄 표시
-                        'name': item_name,
+                        'original_text': ' '.join(item_lines[:3]),  # OCR 원본
+                        'original_name': original_name,  # OCR이 인식한 원본 이름
+                        'name': item_name,  # 정규화된 이름
                         'quantity': quantity,
-                        'unit': '개',
-                        'storage_method': '냉장',
+                        'unit': default_unit if matched_master else '개',
+                        'storage_method': storage_method,
                         'expiry_date': expiry_date,
-                        'purchase_date': purchase_date
+                        'purchase_date': purchase_date,
+                        'matched': matched_master is not None
                     })
                     
-                    print(f'  ✅ {item_name} x {quantity}')
+                    match_indicator = '✅' if matched_master else '🆕'
+                    print(f'  {match_indicator} {item_name} x {quantity} ({storage_method}, {days}일)')
                 
                 print('-' * 60)
                 print(f'\n🛒 Total items: {len(all_items)}\n')
@@ -238,6 +329,12 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         """여러 식재료를 한 번에 추가"""
         ingredients_data = request.data.get('ingredients', [])
         
+        print(f'\n{"="*60}')
+        print(f'📦 Batch Create Request')
+        print(f'   User: {request.user}')
+        print(f'   Items count: {len(ingredients_data)}')
+        print(f'{"="*60}\n')
+        
         if not ingredients_data:
             return Response({
                 'error': '추가할 식재료가 없습니다.'
@@ -248,25 +345,53 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         
         for idx, ingredient_data in enumerate(ingredients_data):
             try:
-                ingredient_data.pop('purchase_date', None)
-                ingredient_data['user'] = request.user.id
+                print(f'\n[{idx + 1}/{len(ingredients_data)}] Processing: {ingredient_data.get("name", "Unknown")}')
+                print(f'   Original data: {ingredient_data}')
                 
-                serializer = UserIngredientSerializer(data=ingredient_data)
+                # purchase_date 제거 (UserIngredient 모델에 없는 필드)
+                if 'purchase_date' in ingredient_data:
+                    ingredient_data.pop('purchase_date')
+                
+                # id, original_text, selected 같은 프론트엔드 전용 필드도 제거
+                ingredient_data.pop('id', None)
+                ingredient_data.pop('original_text', None)
+                ingredient_data.pop('selected', None)
+                
+                # user 필드는 serializer의 create 메서드에서 처리됨
+                ingredient_data.pop('user', None)
+                
+                print(f'   Cleaned data: {ingredient_data}')
+                
+                serializer = UserIngredientSerializer(
+                    data=ingredient_data,
+                    context={'request': request}
+                )
                 if serializer.is_valid():
-                    ingredient = serializer.save(user=request.user)
+                    ingredient = serializer.save()
                     created_ingredients.append(serializer.data)
+                    print(f'   ✅ Saved successfully (ID: {ingredient.id})')
                 else:
+                    print(f'   ❌ Validation failed: {serializer.errors}')
                     errors.append({
                         'index': idx,
+                        'name': ingredient_data.get('name', 'Unknown'),
                         'data': ingredient_data,
                         'errors': serializer.errors
                     })
             except Exception as e:
+                print(f'   ❌ Exception: {type(e).__name__} - {str(e)}')
+                import traceback
+                traceback.print_exc()
                 errors.append({
                     'index': idx,
+                    'name': ingredient_data.get('name', 'Unknown'),
                     'data': ingredient_data,
                     'errors': str(e)
                 })
+        
+        print(f'\n{"="*60}')
+        print(f'✅ Success: {len(created_ingredients)} / ❌ Failed: {len(errors)}')
+        print(f'{"="*60}\n')
         
         response_data = {
             'message': f'{len(created_ingredients)}개 식재료가 추가되었습니다.',
