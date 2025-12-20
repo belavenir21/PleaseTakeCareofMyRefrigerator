@@ -1,132 +1,104 @@
 <template>
   <div class="pantry-view">
-    <header class="header">
-      <button @click="$router.back()" class="btn-back">⬅</button>
-      <h2>내 보관함</h2>
-      <div class="header-actions">
-        <button v-if="!selectionMode" @click="toggleSelectionMode" class="btn-icon-text">
-          ✓ 선택
+    <header class="header-premium">
+      <div class="container header-inner">
+        <!-- 뒤로가기 버튼 확실히 작동하도록 수정 -->
+        <button @click="goBack" class="btn-back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <button v-else @click="toggleSelectionMode" class="btn-icon-text cancel">
-          취소
-        </button>
-        <button @click="$router.push({ name: 'IngredientInput' })" class="btn-icon">
-          ➕
-        </button>
+        <h2 class="view-title">보관함</h2>
+        <button @click="$router.push({ name: 'IngredientInput' })" class="btn-primary-round">+</button>
       </div>
     </header>
 
-    <div class="container">
-      <!-- 카테고리 필터 -->
-      <div class="category-bar">
-        <button 
-          v-for="cat in categories" 
-          :key="cat"
-          :class="['category-chip', { active: selectedCategory === cat }]"
-          @click="selectedCategory = cat"
-        >
-          {{ cat }}
-        </button>
-      </div>
-
-      <!-- 정렬 옵션 -->
-      <div class="sort-bar">
-        <button
-          v-for="option in sortOptions"
-          :key="option.value"
-          :class="['sort-btn', { active: sortBy === option.value }]"
-          @click="handleSort(option.value)"
-        >
-          {{ option.label }}
-        </button>
-      </div>
-
-      <!-- 유통기한 임박 알림 -->
-      <div v-if="expiringIngredients.length > 0" class="alert alert-warning">
-        ⚠️ 유통기한이 임박한 식재료가 {{ expiringIngredients.length }}개 있습니다!
-      </div>
-
-      <!-- 로딩 -->
-      <div v-if="loading" class="loading">
-        <div class="spinner"></div>
-      </div>
-
-      <!-- 선택 모드 정보 표시 -->
-      <div v-if="selectionMode && filteredIngredients.length > 0" class="selection-info">
-        <span>선택된 항목: <strong>{{ selectedCount }}</strong>개</span>
-        <div class="selection-actions">
-          <button @click="selectAll" class="btn-select-all">
-            {{ isAllSelected ? '전체 해제' : '전체 선택' }}
-          </button>
+    <main class="container">
+      <!-- 상단 컨트롤 도구함 -->
+      <section class="toolbar-box">
+        <div class="category-scroll">
           <button 
-            @click="handleBatchDelete" 
-            class="btn-batch-delete"
-            :disabled="selectedCount === 0"
+            v-for="cat in categories" :key="cat"
+            :class="['chip', { active: selectedCategory === cat }]"
+            @click="selectedCategory = cat"
           >
-            🗑️ 선택 삭제 ({{ selectedCount }})
+            {{ cat }}
           </button>
         </div>
-      </div>
 
-      <!-- 식재료 목록 -->
-      <div v-else-if="filteredIngredients.length > 0" class="ingredients-list">
+        <div class="action-row">
+          <div class="left-actions">
+            <button @click="toggleSelectionMode" :class="['btn-select-mode', { active: selectionMode }]">
+               <span class="icon">{{ selectionMode ? '✓' : '◯' }}</span> {{ selectionMode ? '취소' : '다중선택' }}
+            </button>
+            <button v-if="expiredCount > 0" @click="handleClearExpired" class="btn-clean-expired">
+              🗑️ 만료 {{ expiredCount }}개 비우기
+            </button>
+          </div>
+          <select v-model="localSortBy" class="select-minimal">
+            <option value="expiry_date">유통기한순</option>
+            <option value="name">이름순</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- 식재료 그리드 (바둑판 배치) -->
+      <section class="ingredients-grid auto-grid mt-lg">
         <div
           v-for="ingredient in filteredIngredients"
           :key="ingredient.id"
-          :class="['ingredient-card', { 
-            expired: ingredient.is_expired, 
-            expiring: ingredient.is_expiring_soon,
-            'selection-mode': selectionMode,
+          class="card ingredient-card"
+          :class="{ 
+            'expired-border': ingredient.is_expired,
             'selected': selectedIds.has(ingredient.id)
-          }]"
-          @click="selectionMode ? toggleSelect(ingredient.id) : handleIngredientClick(ingredient)"
+          }"
+          @click="handleCardClick(ingredient)"
         >
-          <!-- 체크박스 (선택 모드일 때만) -->
-          <div v-if="selectionMode" class="checkbox-wrapper" @click.stop="toggleSelect(ingredient.id)">
-            <input 
-              type="checkbox" 
-              :id="`ingredient-${ingredient.id}`"
-              :checked="selectedIds.has(ingredient.id)"
-              class="ingredient-checkbox"
-            />
-            <label :for="`ingredient-${ingredient.id}`" class="checkbox-label"></label>
-          </div>
-          
-          <div class="ingredient-icon">
-            {{ getIngredientEmoji(ingredient.name) }}
-          </div>
-          
-          <div class="ingredient-info">
-            <h3>{{ ingredient.name }}</h3>
-            <p class="quantity">{{ ingredient.quantity }}{{ ingredient.unit }}</p>
-            <p class="expiry">
-              {{ formatDate(ingredient.expiry_date) }}
-              <span v-if="ingredient.is_expired" class="badge badge-danger">만료</span>
-              <span v-else-if="ingredient.is_expiring_soon" class="badge badge-warning">임박</span>
-            </p>
+          <!-- 선택 모드일 때만 보이는 체크 표시 -->
+          <div v-if="selectionMode" class="selection-overlay">
+            <div class="check-box" :class="{ checked: selectedIds.has(ingredient.id) }"></div>
           </div>
 
-          <div v-if="!selectionMode" class="ingredient-actions">
-            <button @click.stop="handleDelete(ingredient.id)" class="btn-delete">
-              🗑️
-            </button>
+          <div class="item-visual">
+            <span class="emoji">{{ getIngredientEmoji(ingredient.name) }}</span>
+            <span v-if="ingredient.is_expired" class="badge-expired">만료</span>
+            <span v-else-if="ingredient.is_expiring_soon" class="badge-warning">임박</span>
+          </div>
+
+          <div class="item-info">
+            <div class="name-cate-row">
+              <h3 class="name text-truncate">{{ ingredient.name }}</h3>
+              <span class="category">{{ ingredient.category }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="qty">{{ ingredient.quantity }}{{ ingredient.unit || '개' }}</span>
+              <span class="exp" :class="{ 'red': ingredient.is_expired }">{{ formatDate(ingredient.expiry_date) }}</span>
+            </div>
+          </div>
+
+          <button v-if="!selectionMode" @click.stop="handleDelete(ingredient.id)" class="btn-item-delete">×</button>
+        </div>
+
+        <!-- 데이터 없을 때 -->
+        <div v-if="filteredIngredients.length === 0" class="empty-msg">
+          <p>등록된 식재료가 없습니다. 🧊</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- 하단 일괄 삭제 바 -->
+    <transition name="up">
+      <footer v-if="selectionMode" class="floating-selection-bar">
+        <div class="container bar-content">
+          <span><strong>{{ selectedCount }}</strong>개 선택 중</span>
+          <div class="btns">
+            <button @click="selectAll" class="btn-sub">{{ isAllSelected ? '해제' : '전체' }}</button>
+            <button @click="handleBatchDelete" class="btn-danger-sm" :disabled="selectedCount === 0">삭제</button>
           </div>
         </div>
-      </div>
+      </footer>
+    </transition>
 
-      <!-- 빈 상태 -->
-      <div v-else class="empty-state">
-        <div class="empty-icon">📦</div>
-        <p>보관 중인 식재료가 없습니다</p>
-        <button @click="$router.push({ name: 'IngredientInput' })" class="btn btn-primary">
-          식재료 추가하기
-        </button>
-      </div>
-    </div>
-
-    <!-- 레시피 추천 버튼 (플로팅) -->
-    <button v-if="ingredients.length > 0" @click="recommendRecipes" class="btn-recommend">
-      👨‍🍳 이 재료로 요리하기
+    <button v-if="ingredients.length > 0 && !selectionMode" @click="recommendRecipes" class="fab-cook">
+      🍳 요리하기
     </button>
   </div>
 </template>
@@ -141,485 +113,151 @@ const refrigeratorStore = useRefrigeratorStore()
 
 const categories = ['전체', '육류', '수산물', '채소', '과일', '유제품', '곡류', '가공식품', '기타']
 const selectedCategory = ref('전체')
-
-// 선택 모드 관련
+const localSortBy = ref('expiry_date')
 const selectionMode = ref(false)
 const selectedIds = ref(new Set())
 
-const sortOptions = [
-  { label: '유통기한순', value: 'expiry_date' },
-  { label: '이름순', value: 'name' },
-  { label: '보관방법', value: 'storage_method' },
-]
-
-const loading = computed(() => refrigeratorStore.loading)
 const ingredients = computed(() => refrigeratorStore.ingredients)
-const sortedIngredients = computed(() => refrigeratorStore.sortedIngredients)
-const expiringIngredients = computed(() => refrigeratorStore.expiringIngredients)
-const sortBy = computed(() => refrigeratorStore.sortBy)
+const expiredCount = computed(() => ingredients.value.filter(i => i.is_expired).length)
 
 const filteredIngredients = computed(() => {
-  let items = sortedIngredients.value
-  
+  let items = [...ingredients.value]
   if (selectedCategory.value !== '전체') {
-    items = items.filter(item => item.category === selectedCategory.value)
+    items = items.filter(i => i.category?.includes(selectedCategory.value))
   }
-  
+  if (localSortBy.value === 'expiry_date') items.sort((a,b) => new Date(a.expiry_date) - new Date(b.expiry_date))
+  else items.sort((a,b) => a.name.localeCompare(b.name, 'ko'))
   return items
 })
 
-// 선택 관련 computed
 const selectedCount = computed(() => selectedIds.value.size)
-const isAllSelected = computed(() => {
-  return filteredIngredients.value.length > 0 && 
-         filteredIngredients.value.every(item => selectedIds.value.has(item.id))
-})
+const isAllSelected = computed(() => filteredIngredients.value.length > 0 && filteredIngredients.value.every(i => selectedIds.value.has(i.id)))
 
-onMounted(async () => {
-  await refrigeratorStore.fetchIngredients()
-})
+onMounted(() => refrigeratorStore.fetchIngredients())
 
-const handleSort = (sort) => {
-  refrigeratorStore.setSortBy(sort)
-}
+const goBack = () => router.push({ name: 'Main' })
 
-// 선택 모드 토글
 const toggleSelectionMode = () => {
   selectionMode.value = !selectionMode.value
-  if (!selectionMode.value) {
-    selectedIds.value.clear()
-  }
+  selectedIds.value.clear()
 }
 
-// 개별 아이템 선택/해제
-const toggleSelect = (id) => {
-  if (selectedIds.value.has(id)) {
-    selectedIds.value.delete(id)
-  } else {
-    selectedIds.value.add(id)
-  }
-  // Set을 다시 생성하여 reactivity 유지
+const handleCardClick = (i) => {
+  if (!selectionMode.value) return
+  if (selectedIds.value.has(i.id)) selectedIds.value.delete(i.id)
+  else selectedIds.value.add(i.id)
   selectedIds.value = new Set(selectedIds.value)
 }
 
-// 전체 선택/해제
 const selectAll = () => {
-  if (isAllSelected.value) {
-    selectedIds.value.clear()
-  } else {
-    filteredIngredients.value.forEach(item => {
-      selectedIds.value.add(item.id)
-    })
-  }
+  if (isAllSelected.value) selectedIds.value.clear()
+  else filteredIngredients.value.forEach(i => selectedIds.value.add(i.id))
   selectedIds.value = new Set(selectedIds.value)
 }
 
-// 일괄 삭제
 const handleBatchDelete = async () => {
-  if (selectedCount.value === 0) {
-    alert('삭제할 항목을 선택해주세요.')
-    return
-  }
-  
-  if (!confirm(`선택한 ${selectedCount.value}개 항목을 삭제하시겠습니까?`)) {
-    return
-  }
-  
-  try {
-    const idsToDelete = Array.from(selectedIds.value)
-    
-    // 병렬로 삭제 요청
-    await Promise.all(idsToDelete.map(id => refrigeratorStore.deleteIngredient(id)))
-    
-    alert(`${selectedCount.value}개 항목이 삭제되었습니다.`)
-    selectedIds.value.clear()
-    selectionMode.value = false
-  } catch (error) {
-    console.error('일괄 삭제 실패:', error)
-    alert('일부 항목 삭제에 실패했습니다.')
+  if (confirm('삭제할까요?')) {
+    await refrigeratorStore.bulkDeleteIngredients(Array.from(selectedIds.value))
+    selectionMode.value = false; selectedIds.value.clear()
   }
 }
 
-const handleIngredientClick = (ingredient) => {
-  // 상세 보기나 수정 모달 표시 (향후 구현)
-  console.log('Clicked:', ingredient)
+const handleClearExpired = async () => {
+  if (confirm('만료 재료를 모두 비울까요?')) await refrigeratorStore.clearExpiredIngredients()
 }
 
 const handleDelete = async (id) => {
-  if (!confirm('정말 삭제하시겠습니까?')) return
-  
-  try {
-    await refrigeratorStore.deleteIngredient(id)
-    alert('삭제되었습니다.')
-  } catch (error) {
-    alert('삭제에 실패했습니다.')
-  }
+  if (confirm('삭제하시겠습니까?')) await refrigeratorStore.deleteIngredient(id)
 }
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  const today = new Date()
-  const diff = Math.ceil((date - today) / (1000 * 60 * 60 * 24))
-  
-  if (diff < 0) return `${Math.abs(diff)}일 지남`
-  if (diff === 0) return '오늘'
-  if (diff === 1) return '내일'
-  return `${diff}일 남음`
+  const d = new Date(dateString); const today = new Date(); today.setHours(0,0,0,0)
+  const diff = Math.ceil((d - today) / (1000 * 60 * 60 * 24))
+  return diff < 0 ? `${Math.abs(diff)}일 지남` : (diff === 0 ? '오늘까지' : `${diff}일 남음`)
 }
 
 const getIngredientEmoji = (name) => {
-  // 간단한 이모지 매핑
   if (name.includes('사과')) return '🍎'
-  if (name.includes('고기') || name.includes('삼겹살')) return '🥩'
-  if (name.includes('계란')) return '🥚'
+  if (name.includes('고기')) return '🥩'
   if (name.includes('우유')) return '🥛'
-  if (name.includes('양파')) return '🧅'
-  if (name.includes('당근')) return '🥕'
+  if (name.includes('계란')) return '🥚'
+  if (name.includes('대파') || name.includes('채소')) return '🥬'
+  if (name.includes('라면')) return '🍜'
   return '🥘'
 }
 
-const recommendRecipes = () => {
-  // 레시피 목록 페이지로 이동하며 추천 모드 활성화
-  router.push({ 
-    name: 'RecipeList', 
-    query: { mode: 'recommend' } 
-  })
-}
+const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
 </script>
 
 <style scoped>
-.pantry-view {
-  min-height: 100vh;
-  background: #f8f9fa;
-  padding-bottom: 80px; /* 플로팅 버튼 공간 확보 */
+.pantry-view { min-height: 100vh; background: #FDFDFD; padding-bottom: 120px; }
+
+/* Header */
+.header-premium { background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
+.header-inner { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.btn-back { background: none; border: none; cursor: pointer; color: #333; }
+.view-title { font-size: 1.2rem; font-weight: 800; }
+.btn-primary-round { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
+
+/* Toolbar */
+.toolbar-box { background: white; padding: 15px 0; border-bottom: 1px solid #f1f3f5; }
+.category-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 15px; }
+.category-scroll::-webkit-scrollbar { display: none; }
+.chip { padding: 6px 14px; border-radius: 20px; border: 1px solid #eee; background: white; font-size: 0.85rem; white-space: nowrap; cursor: pointer; }
+.chip.active { background: #333; color: white; border-color: #333; }
+
+.action-row { display: flex; justify-content: space-between; align-items: center; }
+.left-actions { display: flex; gap: 8px; }
+.btn-select-mode { background: #F8F9FA; border: 1px solid #eee; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.btn-select-mode.active { background: #E7F5FF; border-color: #4dabf7; color: #1971c2; }
+.btn-clean-expired { background: #FFF5F5; border: 1px solid #ffc9c9; color: #e03131; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.select-minimal { border: none; font-weight: 700; color: #666; font-size: 0.85rem; cursor: pointer; }
+
+/* Grid Cards (바둑판) */
+.ingredients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+@media (min-width: 768px) {
+  .ingredients-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
 }
 
-.btn-recommend {
-  position: fixed;
-  bottom: 80px; /* 네비게이션 바 위 */
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.2s;
+.ingredient-card { 
+  background: white; border: 1px solid #f1f3f5; border-radius: var(--radius-md); padding: 16px; position: relative;
+  display: flex; flex-direction: column; gap: 12px; transition: 0.3s;
 }
+.ingredient-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-premium); }
+.ingredient-card.expired-border { border-color: #FFA8A8; background: #FFF9F9; }
+.ingredient-card.selected { background: #E7F5FF; border-color: #4dabf7; }
 
-.btn-recommend:hover {
-  transform: translateX(-50%) scale(1.05);
-  background: #2c3e50;
-}
+.selection-overlay { position: absolute; top: 10px; left: 10px; }
+.check-box { width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 50%; background: white; }
+.check-box.checked { background: var(--primary); border-color: var(--primary); }
+.check-box.checked::after { content: '✓'; color: white; display: block; text-align: center; font-weight: 900; }
 
-.header {
-  background: white;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+.item-visual { display: flex; justify-content: space-between; align-items: flex-start; }
+.emoji { font-size: 2.5rem; }
+.badge-expired { background: #FF6B6B; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+.badge-warning { background: #FFD43B; color: #856404; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
 
-.btn-icon {
-  background: var(--primary);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
+.item-info { display: flex; flex-direction: column; gap: 6px; }
+.name-cate-row { display: flex; flex-direction: column; }
+.name { font-size: 1.05rem; font-weight: 700; color: #222; }
+.category { font-size: 0.7rem; color: #adb5bd; font-weight: 600; }
 
-.btn-icon-text {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: 0.2s;
-}
+.meta-row { display: flex; flex-direction: column; gap: 2px; }
+.qty { font-size: 0.85rem; font-weight: 800; color: var(--primary); }
+.exp { font-size: 0.8rem; color: #868e96; font-weight: 600; }
+.exp.red { color: #fa5252; }
 
-.btn-icon-text.cancel {
-  background: #6c757d;
-}
+.btn-item-delete { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.2rem; color: #ddd; cursor: pointer; }
+.empty-msg { grid-column: 1/-1; text-align: center; padding: 100px 0; color: #adb5bd; font-weight: 700; }
 
-.btn-icon-text:hover {
-  opacity: 0.9;
-}
+/* FAB & Floating Bar */
+.fab-cook { position: fixed; bottom: 30px; right: 30px; background: #333; color: white; padding: 16px 28px; border-radius: 50px; font-weight: 800; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; }
+.floating-selection-bar { position: fixed; bottom: 20px; left: 0; right: 0; z-index: 2000; }
+.bar-content { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); color: white; padding: 16px 24px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; }
+.btns { display: flex; gap: 10px; }
+.btn-sub { background: none; border: 1px solid white; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
+.btn-danger-sm { background: #FF6B6B; border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-back {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0;
-  color: #333;
-  margin-right: 10px;
-}
-
-/* 선택 모드 스타일 */
-.selection-info {
-  background: #e7f5ff;
-  padding: 15px 20px;
-  border-bottom: 2px solid #4dabf7;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.selection-info strong {
-  color: #1971c2;
-  font-size: 1.2rem;
-}
-
-.selection-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-select-all {
-  padding: 8px 16px;
-  background: white;
-  color: #495057;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: 0.2s;
-}
-
-.btn-select-all:hover {
-  background: #f8f9fa;
-}
-
-.btn-batch-delete {
-  padding: 8px 16px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.btn-batch-delete:hover:not(:disabled) {
-  background: #c82333;
-}
-
-.btn-batch-delete:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 체크박스 스타일 */
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.ingredient-checkbox {
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  accent-color: #4dabf7;
-}
-
-.ingredient-card.selection-mode {
-  padding-left: 10px;
-}
-
-.ingredient-card.selected {
-  background: #e7f5ff;
-  border-color: #4dabf7;
-  box-shadow: 0 2px 8px rgba(77, 171, 247, 0.2);
-}
-
-.category-bar {
-  display: flex;
-  gap: 10px;
-  padding: 15px 20px;
-  background: white;
-  overflow-x: auto;
-  white-space: nowrap;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  border-bottom: 1px solid #f1f3f5;
-}
-
-.category-bar::-webkit-scrollbar {
-  display: none;
-}
-
-.category-chip {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  background: white;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: 0.2s;
-  flex-shrink: 0;
-}
-
-.category-chip.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  font-weight: 600;
-}
-
-.sort-bar {
-  display: flex;
-  gap: 10px;
-  padding: 15px 20px;
-  background: white;
-  border-bottom: 1px solid #eee;
-}
-
-.sort-btn {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  background: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.sort-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.ingredients-list {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.ingredient-card {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.ingredient-card:hover {
-  border-color: var(--primary);
-  transform: translateX(5px);
-}
-
-.ingredient-card.expired {
-  background: #fff5f5;
-  border-color: var(--danger);
-}
-
-.ingredient-card.expiring {
-  background: #fff9db;
-  border-color: var(--warning);
-}
-
-.ingredient-icon {
-  font-size: 2rem;
-  width: 50px;
-  height: 50px;
-  background: #f1f3f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-}
-
-.ingredient-info {
-  flex: 1;
-}
-
-.ingredient-info h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.ingredient-info p {
-  margin: 5px 0 0;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.quantity {
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  margin-left: 5px;
-}
-
-.badge-danger {
-  background: var(--danger);
-  color: white;
-}
-
-.badge-warning {
-  background: var(--warning);
-  color: #333;
-}
-
-.btn-delete {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-}
-
-.empty-state p {
-  color: #666;
-  margin-bottom: 20px;
-}
+.up-enter-active, .up-leave-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.up-enter-from, .up-leave-to { transform: translateY(100px); opacity: 0; }
 </style>

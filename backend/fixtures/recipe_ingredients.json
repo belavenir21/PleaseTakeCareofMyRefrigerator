@@ -1,0 +1,8408 @@
+[
+{
+  "model": "recipes.recipeingredient",
+  "pk": 59,
+  "fields": {
+    "recipe": 1,
+    "name": "밥",
+    "quantity": "1공기"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 60,
+  "fields": {
+    "recipe": 1,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 61,
+  "fields": {
+    "recipe": 1,
+    "name": "진간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 62,
+  "fields": {
+    "recipe": 1,
+    "name": "참기름",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 63,
+  "fields": {
+    "recipe": 1,
+    "name": "참깨드레싱",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 64,
+  "fields": {
+    "recipe": 1,
+    "name": "대파",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 65,
+  "fields": {
+    "recipe": 2,
+    "name": "밥",
+    "quantity": "1공기"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 66,
+  "fields": {
+    "recipe": 2,
+    "name": "김치",
+    "quantity": "1컵"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 67,
+  "fields": {
+    "recipe": 2,
+    "name": "대파",
+    "quantity": "1/2대"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 68,
+  "fields": {
+    "recipe": 2,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 69,
+  "fields": {
+    "recipe": 2,
+    "name": "진간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 70,
+  "fields": {
+    "recipe": 2,
+    "name": "설탕",
+    "quantity": "0.5큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 71,
+  "fields": {
+    "recipe": 2,
+    "name": "참기름",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 72,
+  "fields": {
+    "recipe": 3,
+    "name": "밥",
+    "quantity": "1공기"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 73,
+  "fields": {
+    "recipe": 3,
+    "name": "참치",
+    "quantity": "1캔"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 74,
+  "fields": {
+    "recipe": 3,
+    "name": "계란",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 75,
+  "fields": {
+    "recipe": 3,
+    "name": "마요네즈",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 76,
+  "fields": {
+    "recipe": 3,
+    "name": "김",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 77,
+  "fields": {
+    "recipe": 3,
+    "name": "간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 78,
+  "fields": {
+    "recipe": 3,
+    "name": "설탕",
+    "quantity": "0.5큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 79,
+  "fields": {
+    "recipe": 4,
+    "name": "밥",
+    "quantity": "1공기"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 80,
+  "fields": {
+    "recipe": 4,
+    "name": "스팸",
+    "quantity": "1/4캔"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 81,
+  "fields": {
+    "recipe": 4,
+    "name": "계란",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 82,
+  "fields": {
+    "recipe": 4,
+    "name": "대파",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 83,
+  "fields": {
+    "recipe": 4,
+    "name": "진간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 84,
+  "fields": {
+    "recipe": 4,
+    "name": "참기름",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 85,
+  "fields": {
+    "recipe": 5,
+    "name": "밥",
+    "quantity": "1공기"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 86,
+  "fields": {
+    "recipe": 5,
+    "name": "팽이버섯",
+    "quantity": "1봉"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 87,
+  "fields": {
+    "recipe": 5,
+    "name": "양파",
+    "quantity": "1/2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 88,
+  "fields": {
+    "recipe": 5,
+    "name": "마늘",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 89,
+  "fields": {
+    "recipe": 5,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 90,
+  "fields": {
+    "recipe": 5,
+    "name": "간장",
+    "quantity": "2큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 91,
+  "fields": {
+    "recipe": 5,
+    "name": "설탕",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 92,
+  "fields": {
+    "recipe": 6,
+    "name": "토마토",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 93,
+  "fields": {
+    "recipe": 6,
+    "name": "계란",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 94,
+  "fields": {
+    "recipe": 6,
+    "name": "소금",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 95,
+  "fields": {
+    "recipe": 6,
+    "name": "후추",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 96,
+  "fields": {
+    "recipe": 6,
+    "name": "굴소스",
+    "quantity": "0.5큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 97,
+  "fields": {
+    "recipe": 7,
+    "name": "우동면",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 98,
+  "fields": {
+    "recipe": 7,
+    "name": "간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 99,
+  "fields": {
+    "recipe": 7,
+    "name": "버터",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 100,
+  "fields": {
+    "recipe": 7,
+    "name": "대파",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 101,
+  "fields": {
+    "recipe": 7,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 102,
+  "fields": {
+    "recipe": 8,
+    "name": "소시지",
+    "quantity": "10개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 103,
+  "fields": {
+    "recipe": 8,
+    "name": "양파",
+    "quantity": "1/2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 104,
+  "fields": {
+    "recipe": 8,
+    "name": "당근",
+    "quantity": "1/4개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 105,
+  "fields": {
+    "recipe": 8,
+    "name": "케첩",
+    "quantity": "3큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 106,
+  "fields": {
+    "recipe": 8,
+    "name": "설탕",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 107,
+  "fields": {
+    "recipe": 8,
+    "name": "간장",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 108,
+  "fields": {
+    "recipe": 9,
+    "name": "식빵",
+    "quantity": "2장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 109,
+  "fields": {
+    "recipe": 9,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 110,
+  "fields": {
+    "recipe": 9,
+    "name": "우유",
+    "quantity": "2큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 111,
+  "fields": {
+    "recipe": 9,
+    "name": "설탕",
+    "quantity": "1큰술"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 112,
+  "fields": {
+    "recipe": 9,
+    "name": "버터",
+    "quantity": "1조각"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 113,
+  "fields": {
+    "recipe": 10,
+    "name": "라면",
+    "quantity": "1봉"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 114,
+  "fields": {
+    "recipe": 10,
+    "name": "계란",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 115,
+  "fields": {
+    "recipe": 10,
+    "name": "대파",
+    "quantity": "약간"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 116,
+  "fields": {
+    "recipe": 10,
+    "name": "고다치즈",
+    "quantity": "1장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 117,
+  "fields": {
+    "recipe": 1010,
+    "name": "단호박",
+    "quantity": "125g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 118,
+  "fields": {
+    "recipe": 1010,
+    "name": "잔새우살것",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 119,
+  "fields": {
+    "recipe": 1010,
+    "name": "두부",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 120,
+  "fields": {
+    "recipe": 1010,
+    "name": "건표고버섯",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 121,
+  "fields": {
+    "recipe": 1010,
+    "name": "청피망것",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 122,
+  "fields": {
+    "recipe": 1010,
+    "name": "홍피망것",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 123,
+  "fields": {
+    "recipe": 1010,
+    "name": "실파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 124,
+  "fields": {
+    "recipe": 1010,
+    "name": "밀가루",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 125,
+  "fields": {
+    "recipe": 1010,
+    "name": "마늘",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 126,
+  "fields": {
+    "recipe": 1010,
+    "name": "깨소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 127,
+  "fields": {
+    "recipe": 1010,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 128,
+  "fields": {
+    "recipe": 1010,
+    "name": "소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 129,
+  "fields": {
+    "recipe": 1010,
+    "name": "흰후춧가루",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 130,
+  "fields": {
+    "recipe": 1009,
+    "name": "잡곡밥흑미",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 131,
+  "fields": {
+    "recipe": 1009,
+    "name": "피자치즈",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 132,
+  "fields": {
+    "recipe": 1009,
+    "name": "양파",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 133,
+  "fields": {
+    "recipe": 1009,
+    "name": "레몬청",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 134,
+  "fields": {
+    "recipe": 1009,
+    "name": "홍차",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 135,
+  "fields": {
+    "recipe": 1009,
+    "name": "양송이",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 136,
+  "fields": {
+    "recipe": 1009,
+    "name": "햄",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 137,
+  "fields": {
+    "recipe": 1009,
+    "name": "캔옥수수",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 138,
+  "fields": {
+    "recipe": 1009,
+    "name": "실파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 139,
+  "fields": {
+    "recipe": 1009,
+    "name": "양파것",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 140,
+  "fields": {
+    "recipe": 1009,
+    "name": "쇠고기것",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 141,
+  "fields": {
+    "recipe": 1009,
+    "name": "토마토케첩",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 142,
+  "fields": {
+    "recipe": 1009,
+    "name": "설탕",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 143,
+  "fields": {
+    "recipe": 1009,
+    "name": "간장",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 144,
+  "fields": {
+    "recipe": 1009,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 145,
+  "fields": {
+    "recipe": 1009,
+    "name": "후춧가루",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 146,
+  "fields": {
+    "recipe": 1008,
+    "name": "메밀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 147,
+  "fields": {
+    "recipe": 1008,
+    "name": "찹쌀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 148,
+  "fields": {
+    "recipe": 1008,
+    "name": "밀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 149,
+  "fields": {
+    "recipe": 1008,
+    "name": "콩나물",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 150,
+  "fields": {
+    "recipe": 1008,
+    "name": "소금",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 151,
+  "fields": {
+    "recipe": 1008,
+    "name": "오징어",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 152,
+  "fields": {
+    "recipe": 1008,
+    "name": "깨소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 153,
+  "fields": {
+    "recipe": 1008,
+    "name": "파것",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 154,
+  "fields": {
+    "recipe": 1008,
+    "name": "마늘것",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 155,
+  "fields": {
+    "recipe": 1008,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 156,
+  "fields": {
+    "recipe": 1007,
+    "name": "사과",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 157,
+  "fields": {
+    "recipe": 1007,
+    "name": "포도주스",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 158,
+  "fields": {
+    "recipe": 1007,
+    "name": "계피가루",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 159,
+  "fields": {
+    "recipe": 1007,
+    "name": "아이스크림",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 160,
+  "fields": {
+    "recipe": 1006,
+    "name": "오미자",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 161,
+  "fields": {
+    "recipe": 1006,
+    "name": "천도복숭아",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 162,
+  "fields": {
+    "recipe": 1006,
+    "name": "배",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 163,
+  "fields": {
+    "recipe": 1006,
+    "name": "설탕",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 164,
+  "fields": {
+    "recipe": 1006,
+    "name": "콩나물",
+    "quantity": "45g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 165,
+  "fields": {
+    "recipe": 1006,
+    "name": "잣",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 166,
+  "fields": {
+    "recipe": 1005,
+    "name": "밥",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 167,
+  "fields": {
+    "recipe": 1005,
+    "name": "잔멸치",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 168,
+  "fields": {
+    "recipe": 1005,
+    "name": "통깨",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 169,
+  "fields": {
+    "recipe": 1005,
+    "name": "설탕",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 170,
+  "fields": {
+    "recipe": 1004,
+    "name": "치자",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 171,
+  "fields": {
+    "recipe": 1004,
+    "name": "백련초가루",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 172,
+  "fields": {
+    "recipe": 1004,
+    "name": "두부",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 173,
+  "fields": {
+    "recipe": 1004,
+    "name": "한천",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 174,
+  "fields": {
+    "recipe": 1004,
+    "name": "설탕",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 175,
+  "fields": {
+    "recipe": 1004,
+    "name": "콩나물",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 176,
+  "fields": {
+    "recipe": 1003,
+    "name": "두부",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 177,
+  "fields": {
+    "recipe": 1003,
+    "name": "깻잎",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 178,
+  "fields": {
+    "recipe": 1003,
+    "name": "밀가루박력분",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 179,
+  "fields": {
+    "recipe": 1003,
+    "name": "베이킹파우더",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 180,
+  "fields": {
+    "recipe": 1003,
+    "name": "설탕",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 181,
+  "fields": {
+    "recipe": 1003,
+    "name": "달걀",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 182,
+  "fields": {
+    "recipe": 1003,
+    "name": "검은깨",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 183,
+  "fields": {
+    "recipe": 1003,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 184,
+  "fields": {
+    "recipe": 1002,
+    "name": "바지락",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 185,
+  "fields": {
+    "recipe": 1002,
+    "name": "팽이버섯",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 186,
+  "fields": {
+    "recipe": 1002,
+    "name": "홍고추",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 187,
+  "fields": {
+    "recipe": 1002,
+    "name": "쑥갓",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 188,
+  "fields": {
+    "recipe": 1002,
+    "name": "청양고추",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 189,
+  "fields": {
+    "recipe": 1002,
+    "name": "무",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 190,
+  "fields": {
+    "recipe": 1002,
+    "name": "대파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 191,
+  "fields": {
+    "recipe": 1002,
+    "name": "다시마",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 192,
+  "fields": {
+    "recipe": 1001,
+    "name": "필수",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 193,
+  "fields": {
+    "recipe": 1001,
+    "name": "파프리카",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 194,
+  "fields": {
+    "recipe": 1001,
+    "name": "적양배추",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 195,
+  "fields": {
+    "recipe": 1001,
+    "name": "피클물",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 196,
+  "fields": {
+    "recipe": 1001,
+    "name": "식초",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 197,
+  "fields": {
+    "recipe": 1001,
+    "name": "피클링스파이스",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 198,
+  "fields": {
+    "recipe": 1001,
+    "name": "콩나물",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 199,
+  "fields": {
+    "recipe": 1000,
+    "name": "소고기",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 200,
+  "fields": {
+    "recipe": 1000,
+    "name": "양송이버섯",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 201,
+  "fields": {
+    "recipe": 1000,
+    "name": "양파",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 202,
+  "fields": {
+    "recipe": 1000,
+    "name": "빵가루",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 203,
+  "fields": {
+    "recipe": 1000,
+    "name": "마늘",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 204,
+  "fields": {
+    "recipe": 1000,
+    "name": "카레가루",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 205,
+  "fields": {
+    "recipe": 1000,
+    "name": "토마토",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 206,
+  "fields": {
+    "recipe": 1000,
+    "name": "당근",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 207,
+  "fields": {
+    "recipe": 1000,
+    "name": "감자",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 208,
+  "fields": {
+    "recipe": 1000,
+    "name": "계란노른자",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 209,
+  "fields": {
+    "recipe": 999,
+    "name": "필수",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 210,
+  "fields": {
+    "recipe": 999,
+    "name": "고구마",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 211,
+  "fields": {
+    "recipe": 999,
+    "name": "아몬드",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 212,
+  "fields": {
+    "recipe": 999,
+    "name": "호두",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 213,
+  "fields": {
+    "recipe": 999,
+    "name": "건블루베리",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 214,
+  "fields": {
+    "recipe": 999,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 215,
+  "fields": {
+    "recipe": 999,
+    "name": "우유",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 216,
+  "fields": {
+    "recipe": 999,
+    "name": "양념",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 217,
+  "fields": {
+    "recipe": 998,
+    "name": "바지락",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 218,
+  "fields": {
+    "recipe": 998,
+    "name": "미역",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 219,
+  "fields": {
+    "recipe": 998,
+    "name": "저염간장",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 220,
+  "fields": {
+    "recipe": 998,
+    "name": "마늘",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 221,
+  "fields": {
+    "recipe": 998,
+    "name": "참기름",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 222,
+  "fields": {
+    "recipe": 998,
+    "name": "홍고추",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 223,
+  "fields": {
+    "recipe": 998,
+    "name": "무",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 224,
+  "fields": {
+    "recipe": 998,
+    "name": "건새우",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 225,
+  "fields": {
+    "recipe": 998,
+    "name": "대파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 226,
+  "fields": {
+    "recipe": 998,
+    "name": "함초가루",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 227,
+  "fields": {
+    "recipe": 997,
+    "name": "고구마",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 228,
+  "fields": {
+    "recipe": 997,
+    "name": "우유",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 229,
+  "fields": {
+    "recipe": 997,
+    "name": "고구마칩",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 230,
+  "fields": {
+    "recipe": 996,
+    "name": "렌틸콩",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 231,
+  "fields": {
+    "recipe": 996,
+    "name": "7",
+    "quantity": "0g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 232,
+  "fields": {
+    "recipe": 996,
+    "name": "우유",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 233,
+  "fields": {
+    "recipe": 996,
+    "name": "레몬청",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 234,
+  "fields": {
+    "recipe": 996,
+    "name": "딸기",
+    "quantity": "130g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 235,
+  "fields": {
+    "recipe": 996,
+    "name": "꿀",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 236,
+  "fields": {
+    "recipe": 996,
+    "name": "판젤라틴",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 237,
+  "fields": {
+    "recipe": 996,
+    "name": "설탕",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 238,
+  "fields": {
+    "recipe": 995,
+    "name": "비트",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 239,
+  "fields": {
+    "recipe": 995,
+    "name": "무첨가두유",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 240,
+  "fields": {
+    "recipe": 995,
+    "name": "타가토스",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 241,
+  "fields": {
+    "recipe": 994,
+    "name": "자두",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 242,
+  "fields": {
+    "recipe": 994,
+    "name": "오렌지",
+    "quantity": "170g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 243,
+  "fields": {
+    "recipe": 994,
+    "name": "탄산수",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 244,
+  "fields": {
+    "recipe": 994,
+    "name": "민트잎",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 245,
+  "fields": {
+    "recipe": 994,
+    "name": "얼음",
+    "quantity": "145g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 246,
+  "fields": {
+    "recipe": 993,
+    "name": "우유",
+    "quantity": "65g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 247,
+  "fields": {
+    "recipe": 993,
+    "name": "배",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 248,
+  "fields": {
+    "recipe": 993,
+    "name": "고구마",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 249,
+  "fields": {
+    "recipe": 993,
+    "name": "요거트",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 250,
+  "fields": {
+    "recipe": 993,
+    "name": "쌀가루",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 251,
+  "fields": {
+    "recipe": 993,
+    "name": "메주콩",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 252,
+  "fields": {
+    "recipe": 992,
+    "name": "유자차",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 253,
+  "fields": {
+    "recipe": 992,
+    "name": "밤",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 254,
+  "fields": {
+    "recipe": 992,
+    "name": "대추차",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 255,
+  "fields": {
+    "recipe": 992,
+    "name": "배",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 256,
+  "fields": {
+    "recipe": 992,
+    "name": "석류",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 257,
+  "fields": {
+    "recipe": 992,
+    "name": "꿀",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 258,
+  "fields": {
+    "recipe": 992,
+    "name": "소금",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 259,
+  "fields": {
+    "recipe": 992,
+    "name": "콩나물",
+    "quantity": "300g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 260,
+  "fields": {
+    "recipe": 991,
+    "name": "배",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 261,
+  "fields": {
+    "recipe": 991,
+    "name": "사과",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 262,
+  "fields": {
+    "recipe": 991,
+    "name": "레드와인",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 263,
+  "fields": {
+    "recipe": 991,
+    "name": "계피",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 264,
+  "fields": {
+    "recipe": 991,
+    "name": "통후추",
+    "quantity": "6"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 265,
+  "fields": {
+    "recipe": 990,
+    "name": "자두",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 266,
+  "fields": {
+    "recipe": 990,
+    "name": "우유",
+    "quantity": "250g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 267,
+  "fields": {
+    "recipe": 990,
+    "name": "꿀",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 268,
+  "fields": {
+    "recipe": 990,
+    "name": "콩나물",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 269,
+  "fields": {
+    "recipe": 989,
+    "name": "밤",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 270,
+  "fields": {
+    "recipe": 989,
+    "name": "우유",
+    "quantity": "180g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 271,
+  "fields": {
+    "recipe": 989,
+    "name": "두유",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 272,
+  "fields": {
+    "recipe": 989,
+    "name": "아몬드",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 273,
+  "fields": {
+    "recipe": 988,
+    "name": "사과",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 274,
+  "fields": {
+    "recipe": 988,
+    "name": "비트",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 275,
+  "fields": {
+    "recipe": 988,
+    "name": "레몬즙",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 276,
+  "fields": {
+    "recipe": 988,
+    "name": "탄산수",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 277,
+  "fields": {
+    "recipe": 987,
+    "name": "말린오미자",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 278,
+  "fields": {
+    "recipe": 987,
+    "name": "배",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 279,
+  "fields": {
+    "recipe": 987,
+    "name": "꿀",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 280,
+  "fields": {
+    "recipe": 987,
+    "name": "잣",
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 281,
+  "fields": {
+    "recipe": 987,
+    "name": "생수",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 282,
+  "fields": {
+    "recipe": 987,
+    "name": "각얼음",
+    "quantity": "3개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 283,
+  "fields": {
+    "recipe": 986,
+    "name": "오미자",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 284,
+  "fields": {
+    "recipe": 986,
+    "name": "사과",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 285,
+  "fields": {
+    "recipe": 986,
+    "name": "오렌지",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 286,
+  "fields": {
+    "recipe": 986,
+    "name": "딸기",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 287,
+  "fields": {
+    "recipe": 986,
+    "name": "포도",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 288,
+  "fields": {
+    "recipe": 986,
+    "name": "배",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 289,
+  "fields": {
+    "recipe": 985,
+    "name": "고구마",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 290,
+  "fields": {
+    "recipe": 985,
+    "name": "카스텔라",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 291,
+  "fields": {
+    "recipe": 985,
+    "name": "우유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 292,
+  "fields": {
+    "recipe": 985,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 293,
+  "fields": {
+    "recipe": 985,
+    "name": "꿀",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 294,
+  "fields": {
+    "recipe": 985,
+    "name": "건포도",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 295,
+  "fields": {
+    "recipe": 985,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 296,
+  "fields": {
+    "recipe": 984,
+    "name": "홍시",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 297,
+  "fields": {
+    "recipe": 984,
+    "name": "바나나",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 298,
+  "fields": {
+    "recipe": 984,
+    "name": "생밤",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 299,
+  "fields": {
+    "recipe": 984,
+    "name": "대추차",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 300,
+  "fields": {
+    "recipe": 984,
+    "name": "호두",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 301,
+  "fields": {
+    "recipe": 983,
+    "name": "돼지목살것",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 302,
+  "fields": {
+    "recipe": 983,
+    "name": "청경채",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 303,
+  "fields": {
+    "recipe": 983,
+    "name": "케첩",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 304,
+  "fields": {
+    "recipe": 983,
+    "name": "파것",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 305,
+  "fields": {
+    "recipe": 983,
+    "name": "생강것",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 306,
+  "fields": {
+    "recipe": 983,
+    "name": "전분",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 307,
+  "fields": {
+    "recipe": 983,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 308,
+  "fields": {
+    "recipe": 982,
+    "name": "주재료",
+    "quantity": "90g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 309,
+  "fields": {
+    "recipe": 982,
+    "name": "무염버터",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 310,
+  "fields": {
+    "recipe": 982,
+    "name": "코코넛우유",
+    "quantity": "50ml"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 311,
+  "fields": {
+    "recipe": 982,
+    "name": "달걀노른자",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 312,
+  "fields": {
+    "recipe": 982,
+    "name": "박력",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 313,
+  "fields": {
+    "recipe": 982,
+    "name": "옥수수전분",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 314,
+  "fields": {
+    "recipe": 982,
+    "name": "머",
+    "quantity": "130g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 315,
+  "fields": {
+    "recipe": 982,
+    "name": "레몬즙",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 316,
+  "fields": {
+    "recipe": 982,
+    "name": "알룰로스",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 317,
+  "fields": {
+    "recipe": 981,
+    "name": "[",
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 318,
+  "fields": {
+    "recipe": 981,
+    "name": "사과",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 319,
+  "fields": {
+    "recipe": 981,
+    "name": "토르티야",
+    "quantity": "4장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 320,
+  "fields": {
+    "recipe": 981,
+    "name": "슈레드",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 321,
+  "fields": {
+    "recipe": 981,
+    "name": "양파",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 322,
+  "fields": {
+    "recipe": 981,
+    "name": "파프리카",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 323,
+  "fields": {
+    "recipe": 981,
+    "name": "토마토",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 324,
+  "fields": {
+    "recipe": 981,
+    "name": "할라피뇨",
+    "quantity": "4개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 325,
+  "fields": {
+    "recipe": 981,
+    "name": "스리라차",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 326,
+  "fields": {
+    "recipe": 981,
+    "name": "스테비아",
+    "quantity": "0.5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 327,
+  "fields": {
+    "recipe": 981,
+    "name": "아보카도",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 328,
+  "fields": {
+    "recipe": 981,
+    "name": "살사소스",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 329,
+  "fields": {
+    "recipe": 981,
+    "name": "라임즙",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 330,
+  "fields": {
+    "recipe": 981,
+    "name": "무가당",
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 331,
+  "fields": {
+    "recipe": 981,
+    "name": "마요네즈",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 332,
+  "fields": {
+    "recipe": 981,
+    "name": "마늘",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 333,
+  "fields": {
+    "recipe": 981,
+    "name": "파슬리가루",
+    "quantity": "0.5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 334,
+  "fields": {
+    "recipe": 981,
+    "name": "라임즙",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 335,
+  "fields": {
+    "recipe": 981,
+    "name": "후춧가루",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 336,
+  "fields": {
+    "recipe": 980,
+    "name": "[",
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 337,
+  "fields": {
+    "recipe": 980,
+    "name": "양파",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 338,
+  "fields": {
+    "recipe": 980,
+    "name": "대파",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 339,
+  "fields": {
+    "recipe": 980,
+    "name": "미나리",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 340,
+  "fields": {
+    "recipe": 980,
+    "name": "새송이버섯",
+    "quantity": "3개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 341,
+  "fields": {
+    "recipe": 980,
+    "name": "팽이버섯",
+    "quantity": "1봉"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 342,
+  "fields": {
+    "recipe": 980,
+    "name": "마늘",
+    "quantity": "6"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 343,
+  "fields": {
+    "recipe": 980,
+    "name": "양송이버섯",
+    "quantity": "4개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 344,
+  "fields": {
+    "recipe": 980,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 345,
+  "fields": {
+    "recipe": 980,
+    "name": "전분",
+    "quantity": "0.7"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 346,
+  "fields": {
+    "recipe": 980,
+    "name": "간장",
+    "quantity": "0.5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 347,
+  "fields": {
+    "recipe": 980,
+    "name": "소금",
+    "quantity": "0.3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 348,
+  "fields": {
+    "recipe": 980,
+    "name": "후춧가루",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 349,
+  "fields": {
+    "recipe": 979,
+    "name": "건취나물",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 350,
+  "fields": {
+    "recipe": 979,
+    "name": "건표고버섯",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 351,
+  "fields": {
+    "recipe": 979,
+    "name": "쌀",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 352,
+  "fields": {
+    "recipe": 979,
+    "name": "곤약쌀",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 353,
+  "fields": {
+    "recipe": 979,
+    "name": "돼지고기",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 354,
+  "fields": {
+    "recipe": 979,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 355,
+  "fields": {
+    "recipe": 979,
+    "name": "참나물",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 356,
+  "fields": {
+    "recipe": 979,
+    "name": "간장",
+    "quantity": "7g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 357,
+  "fields": {
+    "recipe": 979,
+    "name": "참기름",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 358,
+  "fields": {
+    "recipe": 979,
+    "name": "소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 359,
+  "fields": {
+    "recipe": 979,
+    "name": "식유",
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 360,
+  "fields": {
+    "recipe": 978,
+    "name": "오이",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 361,
+  "fields": {
+    "recipe": 978,
+    "name": "배",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 362,
+  "fields": {
+    "recipe": 978,
+    "name": "홍피망",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 363,
+  "fields": {
+    "recipe": 978,
+    "name": "청피망",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 364,
+  "fields": {
+    "recipe": 978,
+    "name": "노랑파프리카",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 365,
+  "fields": {
+    "recipe": 978,
+    "name": "식초",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 366,
+  "fields": {
+    "recipe": 978,
+    "name": "설탕",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 367,
+  "fields": {
+    "recipe": 978,
+    "name": "콩나물",
+    "quantity": "100ml"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 368,
+  "fields": {
+    "recipe": 978,
+    "name": "피클링스파이스",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 369,
+  "fields": {
+    "recipe": 977,
+    "name": "앞다리살",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 370,
+  "fields": {
+    "recipe": 977,
+    "name": "양파",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 371,
+  "fields": {
+    "recipe": 977,
+    "name": "대파",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 372,
+  "fields": {
+    "recipe": 977,
+    "name": "저염된장",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 373,
+  "fields": {
+    "recipe": 977,
+    "name": "통후추",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 374,
+  "fields": {
+    "recipe": 977,
+    "name": "월계수잎",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 375,
+  "fields": {
+    "recipe": 977,
+    "name": "생강가루",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 376,
+  "fields": {
+    "recipe": 977,
+    "name": "마늘",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 377,
+  "fields": {
+    "recipe": 976,
+    "name": "우엉",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 378,
+  "fields": {
+    "recipe": 976,
+    "name": "유부",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 379,
+  "fields": {
+    "recipe": 976,
+    "name": "양파",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 380,
+  "fields": {
+    "recipe": 976,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 381,
+  "fields": {
+    "recipe": 976,
+    "name": "올리브유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 382,
+  "fields": {
+    "recipe": 976,
+    "name": "올리고당",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 383,
+  "fields": {
+    "recipe": 976,
+    "name": "간장",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 384,
+  "fields": {
+    "recipe": 976,
+    "name": "설탕",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 385,
+  "fields": {
+    "recipe": 976,
+    "name": "참깨드레싱",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 386,
+  "fields": {
+    "recipe": 976,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 387,
+  "fields": {
+    "recipe": 975,
+    "name": "찰어묵",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 388,
+  "fields": {
+    "recipe": 975,
+    "name": "새우살",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 389,
+  "fields": {
+    "recipe": 975,
+    "name": "전분",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 390,
+  "fields": {
+    "recipe": 975,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 391,
+  "fields": {
+    "recipe": 975,
+    "name": "깨소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 392,
+  "fields": {
+    "recipe": 975,
+    "name": "청주",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 393,
+  "fields": {
+    "recipe": 975,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 394,
+  "fields": {
+    "recipe": 975,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 395,
+  "fields": {
+    "recipe": 974,
+    "name": "유부",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 396,
+  "fields": {
+    "recipe": 974,
+    "name": "달걀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 397,
+  "fields": {
+    "recipe": 974,
+    "name": "당근",
+    "quantity": "7g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 398,
+  "fields": {
+    "recipe": 974,
+    "name": "멸치",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 399,
+  "fields": {
+    "recipe": 974,
+    "name": "간장",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 400,
+  "fields": {
+    "recipe": 974,
+    "name": "설탕",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 401,
+  "fields": {
+    "recipe": 974,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 402,
+  "fields": {
+    "recipe": 973,
+    "name": "죽순",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 403,
+  "fields": {
+    "recipe": 973,
+    "name": "밤",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 404,
+  "fields": {
+    "recipe": 973,
+    "name": "찐",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 405,
+  "fields": {
+    "recipe": 973,
+    "name": "건표고버섯",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 406,
+  "fields": {
+    "recipe": 973,
+    "name": "은행",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 407,
+  "fields": {
+    "recipe": 973,
+    "name": "새우",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 408,
+  "fields": {
+    "recipe": 973,
+    "name": "잣",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 409,
+  "fields": {
+    "recipe": 973,
+    "name": "달걀",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 410,
+  "fields": {
+    "recipe": 973,
+    "name": "쑥갓",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 411,
+  "fields": {
+    "recipe": 973,
+    "name": "멸치",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 412,
+  "fields": {
+    "recipe": 973,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 413,
+  "fields": {
+    "recipe": 972,
+    "name": "밀가루",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 414,
+  "fields": {
+    "recipe": 972,
+    "name": "베이킹파우더",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 415,
+  "fields": {
+    "recipe": 972,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 416,
+  "fields": {
+    "recipe": 972,
+    "name": "달걀",
+    "quantity": "12g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 417,
+  "fields": {
+    "recipe": 972,
+    "name": "설탕",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 418,
+  "fields": {
+    "recipe": 972,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 419,
+  "fields": {
+    "recipe": 972,
+    "name": "양파",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 420,
+  "fields": {
+    "recipe": 972,
+    "name": "캔옥수수",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 421,
+  "fields": {
+    "recipe": 972,
+    "name": "완두콩",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 422,
+  "fields": {
+    "recipe": 972,
+    "name": "우유",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 423,
+  "fields": {
+    "recipe": 972,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 424,
+  "fields": {
+    "recipe": 971,
+    "name": "쌀가루",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 425,
+  "fields": {
+    "recipe": 971,
+    "name": "찹쌀가루",
+    "quantity": "13g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 426,
+  "fields": {
+    "recipe": 971,
+    "name": "크랜베리",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 427,
+  "fields": {
+    "recipe": 971,
+    "name": "건포도",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 428,
+  "fields": {
+    "recipe": 971,
+    "name": "견과류",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 429,
+  "fields": {
+    "recipe": 970,
+    "name": "멥쌀가루",
+    "quantity": "112g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 430,
+  "fields": {
+    "recipe": 970,
+    "name": "대추차",
+    "quantity": "5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 431,
+  "fields": {
+    "recipe": 970,
+    "name": "백년초가루",
+    "quantity": "3.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 432,
+  "fields": {
+    "recipe": 970,
+    "name": "단호박가루",
+    "quantity": "3.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 433,
+  "fields": {
+    "recipe": 970,
+    "name": "시금치가루",
+    "quantity": "3.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 434,
+  "fields": {
+    "recipe": 970,
+    "name": "설탕",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 435,
+  "fields": {
+    "recipe": 970,
+    "name": "백앙금",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 436,
+  "fields": {
+    "recipe": 970,
+    "name": "우유",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 437,
+  "fields": {
+    "recipe": 970,
+    "name": "호박씨",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 438,
+  "fields": {
+    "recipe": 969,
+    "name": "자색고구마",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 439,
+  "fields": {
+    "recipe": 969,
+    "name": "우유",
+    "quantity": "120g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 440,
+  "fields": {
+    "recipe": 969,
+    "name": "찹쌀가루",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 441,
+  "fields": {
+    "recipe": 969,
+    "name": "소금",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 442,
+  "fields": {
+    "recipe": 968,
+    "name": "녹차가루",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 443,
+  "fields": {
+    "recipe": 968,
+    "name": "판젤라틴",
+    "quantity": "5.3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 444,
+  "fields": {
+    "recipe": 968,
+    "name": "설탕",
+    "quantity": "32g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 445,
+  "fields": {
+    "recipe": 968,
+    "name": "콩나물",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 446,
+  "fields": {
+    "recipe": 968,
+    "name": "생크림",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 447,
+  "fields": {
+    "recipe": 968,
+    "name": "우유",
+    "quantity": "55.7g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 448,
+  "fields": {
+    "recipe": 968,
+    "name": "바닐라에센스",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 449,
+  "fields": {
+    "recipe": 968,
+    "name": "통조림단팥장식",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 450,
+  "fields": {
+    "recipe": 968,
+    "name": "민트장식",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 451,
+  "fields": {
+    "recipe": 967,
+    "name": "두부",
+    "quantity": "67g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 452,
+  "fields": {
+    "recipe": 967,
+    "name": "애호박",
+    "quantity": "17g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 453,
+  "fields": {
+    "recipe": 967,
+    "name": "양송이",
+    "quantity": "33g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 454,
+  "fields": {
+    "recipe": 967,
+    "name": "가지",
+    "quantity": "17g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 455,
+  "fields": {
+    "recipe": 967,
+    "name": "파프리카",
+    "quantity": "17g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 456,
+  "fields": {
+    "recipe": 967,
+    "name": "사과",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 457,
+  "fields": {
+    "recipe": 967,
+    "name": "감자",
+    "quantity": "33g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 458,
+  "fields": {
+    "recipe": 967,
+    "name": "카레가루",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 459,
+  "fields": {
+    "recipe": 967,
+    "name": "식유",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 460,
+  "fields": {
+    "recipe": 967,
+    "name": "녹말가루",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 461,
+  "fields": {
+    "recipe": 967,
+    "name": "콩나물",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 462,
+  "fields": {
+    "recipe": 966,
+    "name": "대두",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 463,
+  "fields": {
+    "recipe": 966,
+    "name": "시레기",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 464,
+  "fields": {
+    "recipe": 966,
+    "name": "청고추",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 465,
+  "fields": {
+    "recipe": 966,
+    "name": "홍고추",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 466,
+  "fields": {
+    "recipe": 966,
+    "name": "새우살",
+    "quantity": "13g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 467,
+  "fields": {
+    "recipe": 966,
+    "name": "밀가루",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 468,
+  "fields": {
+    "recipe": 966,
+    "name": "도토리가루",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 469,
+  "fields": {
+    "recipe": 966,
+    "name": "달걀",
+    "quantity": "6.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 470,
+  "fields": {
+    "recipe": 966,
+    "name": "식유",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 471,
+  "fields": {
+    "recipe": 965,
+    "name": "어묵",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 472,
+  "fields": {
+    "recipe": 965,
+    "name": "양파",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 473,
+  "fields": {
+    "recipe": 965,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 474,
+  "fields": {
+    "recipe": 965,
+    "name": "양배추",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 475,
+  "fields": {
+    "recipe": 965,
+    "name": "푸룬",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 476,
+  "fields": {
+    "recipe": 965,
+    "name": "아몬드",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 477,
+  "fields": {
+    "recipe": 965,
+    "name": "요거트",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 478,
+  "fields": {
+    "recipe": 965,
+    "name": "마요네즈",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 479,
+  "fields": {
+    "recipe": 965,
+    "name": "달걀",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 480,
+  "fields": {
+    "recipe": 965,
+    "name": "빵가루",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 481,
+  "fields": {
+    "recipe": 965,
+    "name": "밀가루",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 482,
+  "fields": {
+    "recipe": 965,
+    "name": "식유",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 483,
+  "fields": {
+    "recipe": 965,
+    "name": "콩나물",
+    "quantity": "180g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 484,
+  "fields": {
+    "recipe": 964,
+    "name": "호박고구마",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 485,
+  "fields": {
+    "recipe": 964,
+    "name": "새우살",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 486,
+  "fields": {
+    "recipe": 964,
+    "name": "삼색파프리카",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 487,
+  "fields": {
+    "recipe": 964,
+    "name": "양파",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 488,
+  "fields": {
+    "recipe": 964,
+    "name": "모짜렐라치즈",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 489,
+  "fields": {
+    "recipe": 964,
+    "name": "밀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 490,
+  "fields": {
+    "recipe": 964,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 491,
+  "fields": {
+    "recipe": 964,
+    "name": "빵가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 492,
+  "fields": {
+    "recipe": 964,
+    "name": "생크림",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 493,
+  "fields": {
+    "recipe": 964,
+    "name": "버터",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 494,
+  "fields": {
+    "recipe": 964,
+    "name": "꿀",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 495,
+  "fields": {
+    "recipe": 964,
+    "name": "식유",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 496,
+  "fields": {
+    "recipe": 963,
+    "name": "렌틸콩",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 497,
+  "fields": {
+    "recipe": 963,
+    "name": "2",
+    "quantity": "0g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 498,
+  "fields": {
+    "recipe": 963,
+    "name": "완두콩",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 499,
+  "fields": {
+    "recipe": 963,
+    "name": "생크림",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 500,
+  "fields": {
+    "recipe": 963,
+    "name": "설탕",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 501,
+  "fields": {
+    "recipe": 963,
+    "name": "판젤라틴",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 502,
+  "fields": {
+    "recipe": 962,
+    "name": "렌틸콩",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 503,
+  "fields": {
+    "recipe": 962,
+    "name": "2",
+    "quantity": "0g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 504,
+  "fields": {
+    "recipe": 962,
+    "name": "중력분",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 505,
+  "fields": {
+    "recipe": 962,
+    "name": "달걀",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 506,
+  "fields": {
+    "recipe": 962,
+    "name": "우유",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 507,
+  "fields": {
+    "recipe": 962,
+    "name": "생크림",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 508,
+  "fields": {
+    "recipe": 962,
+    "name": "설탕",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 509,
+  "fields": {
+    "recipe": 962,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 510,
+  "fields": {
+    "recipe": 962,
+    "name": "크림치즈",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 511,
+  "fields": {
+    "recipe": 962,
+    "name": "귤",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 512,
+  "fields": {
+    "recipe": 962,
+    "name": "키위",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 513,
+  "fields": {
+    "recipe": 962,
+    "name": "블루베리",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 514,
+  "fields": {
+    "recipe": 961,
+    "name": "단호박",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 515,
+  "fields": {
+    "recipe": 961,
+    "name": "아몬드가루",
+    "quantity": "45g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 516,
+  "fields": {
+    "recipe": 961,
+    "name": "박력분",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 517,
+  "fields": {
+    "recipe": 961,
+    "name": "스테비아",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 518,
+  "fields": {
+    "recipe": 961,
+    "name": "달걀",
+    "quantity": "2.5개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 519,
+  "fields": {
+    "recipe": 961,
+    "name": "올리고당",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 520,
+  "fields": {
+    "recipe": 961,
+    "name": "가루녹차",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 521,
+  "fields": {
+    "recipe": 961,
+    "name": "생크림",
+    "quantity": "210g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 522,
+  "fields": {
+    "recipe": 961,
+    "name": "판젤라틴",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 523,
+  "fields": {
+    "recipe": 961,
+    "name": "마스카르포네치즈",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 524,
+  "fields": {
+    "recipe": 961,
+    "name": "설탕",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 525,
+  "fields": {
+    "recipe": 960,
+    "name": "바나나",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 526,
+  "fields": {
+    "recipe": 960,
+    "name": "생강가루",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 527,
+  "fields": {
+    "recipe": 960,
+    "name": "휘핑크림",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 528,
+  "fields": {
+    "recipe": 960,
+    "name": "코코넛밀크",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 529,
+  "fields": {
+    "recipe": 960,
+    "name": "미숫가루",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 530,
+  "fields": {
+    "recipe": 960,
+    "name": "박력분",
+    "quantity": "45g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 531,
+  "fields": {
+    "recipe": 960,
+    "name": "버터",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 532,
+  "fields": {
+    "recipe": 960,
+    "name": "코코넛설탕",
+    "quantity": "12g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 533,
+  "fields": {
+    "recipe": 960,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 534,
+  "fields": {
+    "recipe": 960,
+    "name": "소금",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 535,
+  "fields": {
+    "recipe": 960,
+    "name": "콩나물",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 536,
+  "fields": {
+    "recipe": 959,
+    "name": "연두부",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 537,
+  "fields": {
+    "recipe": 959,
+    "name": "요거트",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 538,
+  "fields": {
+    "recipe": 959,
+    "name": "중력분",
+    "quantity": "22g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 539,
+  "fields": {
+    "recipe": 959,
+    "name": "버터",
+    "quantity": "22g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 540,
+  "fields": {
+    "recipe": 959,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 541,
+  "fields": {
+    "recipe": 959,
+    "name": "소금",
+    "quantity": "0.2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 542,
+  "fields": {
+    "recipe": 959,
+    "name": "딸기",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 543,
+  "fields": {
+    "recipe": 959,
+    "name": "호두",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 544,
+  "fields": {
+    "recipe": 959,
+    "name": "콩나물",
+    "quantity": "27g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 545,
+  "fields": {
+    "recipe": 958,
+    "name": "두부",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 546,
+  "fields": {
+    "recipe": 958,
+    "name": "고구마",
+    "quantity": "120g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 547,
+  "fields": {
+    "recipe": 958,
+    "name": "마스카포네치즈",
+    "quantity": "12g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 548,
+  "fields": {
+    "recipe": 958,
+    "name": "크랜베리",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 549,
+  "fields": {
+    "recipe": 958,
+    "name": "두유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 550,
+  "fields": {
+    "recipe": 958,
+    "name": "호두",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 551,
+  "fields": {
+    "recipe": 958,
+    "name": "아몬드",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 552,
+  "fields": {
+    "recipe": 958,
+    "name": "박력분",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 553,
+  "fields": {
+    "recipe": 958,
+    "name": "아몬드가루",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 554,
+  "fields": {
+    "recipe": 958,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 555,
+  "fields": {
+    "recipe": 957,
+    "name": "완두콩",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 556,
+  "fields": {
+    "recipe": 957,
+    "name": "식빵",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 557,
+  "fields": {
+    "recipe": 957,
+    "name": "찹쌀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 558,
+  "fields": {
+    "recipe": 957,
+    "name": "우유",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 559,
+  "fields": {
+    "recipe": 957,
+    "name": "올리고당",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 560,
+  "fields": {
+    "recipe": 956,
+    "name": "고구마",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 561,
+  "fields": {
+    "recipe": 956,
+    "name": "단호박",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 562,
+  "fields": {
+    "recipe": 956,
+    "name": "생크림",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 563,
+  "fields": {
+    "recipe": 956,
+    "name": "달걀",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 564,
+  "fields": {
+    "recipe": 956,
+    "name": "박력분",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 565,
+  "fields": {
+    "recipe": 956,
+    "name": "우유",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 566,
+  "fields": {
+    "recipe": 956,
+    "name": "설탕",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 567,
+  "fields": {
+    "recipe": 956,
+    "name": "버터",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 568,
+  "fields": {
+    "recipe": 956,
+    "name": "레몬즙",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 569,
+  "fields": {
+    "recipe": 956,
+    "name": "크랜베리",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 570,
+  "fields": {
+    "recipe": 955,
+    "name": "감자",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 571,
+  "fields": {
+    "recipe": 955,
+    "name": "양송이버섯",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 572,
+  "fields": {
+    "recipe": 955,
+    "name": "당근",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 573,
+  "fields": {
+    "recipe": 955,
+    "name": "건목이버섯",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 574,
+  "fields": {
+    "recipe": 955,
+    "name": "산마",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 575,
+  "fields": {
+    "recipe": 955,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 576,
+  "fields": {
+    "recipe": 955,
+    "name": "물전분",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 577,
+  "fields": {
+    "recipe": 955,
+    "name": "육수",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 578,
+  "fields": {
+    "recipe": 955,
+    "name": "식유",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 579,
+  "fields": {
+    "recipe": 955,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 580,
+  "fields": {
+    "recipe": 954,
+    "name": "양파",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 581,
+  "fields": {
+    "recipe": 954,
+    "name": "샐러리",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 582,
+  "fields": {
+    "recipe": 954,
+    "name": "당근",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 583,
+  "fields": {
+    "recipe": 954,
+    "name": "마늘것",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 584,
+  "fields": {
+    "recipe": 954,
+    "name": "식유",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 585,
+  "fields": {
+    "recipe": 954,
+    "name": "닭육수",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 586,
+  "fields": {
+    "recipe": 954,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 587,
+  "fields": {
+    "recipe": 954,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 588,
+  "fields": {
+    "recipe": 954,
+    "name": "월계수잎",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 589,
+  "fields": {
+    "recipe": 954,
+    "name": "알파벳파스타",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 590,
+  "fields": {
+    "recipe": 953,
+    "name": "고구마",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 591,
+  "fields": {
+    "recipe": 953,
+    "name": "생강차",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 592,
+  "fields": {
+    "recipe": 953,
+    "name": "생크림",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 593,
+  "fields": {
+    "recipe": 953,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 594,
+  "fields": {
+    "recipe": 953,
+    "name": "꿀",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 595,
+  "fields": {
+    "recipe": 953,
+    "name": "밀가루",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 596,
+  "fields": {
+    "recipe": 953,
+    "name": "달걀물",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 597,
+  "fields": {
+    "recipe": 953,
+    "name": "빵가루",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 598,
+  "fields": {
+    "recipe": 953,
+    "name": "튀김기름",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 599,
+  "fields": {
+    "recipe": 953,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 600,
+  "fields": {
+    "recipe": 953,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 601,
+  "fields": {
+    "recipe": 952,
+    "name": "버터",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 602,
+  "fields": {
+    "recipe": 952,
+    "name": "마늘",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 603,
+  "fields": {
+    "recipe": 952,
+    "name": "양파",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 604,
+  "fields": {
+    "recipe": 952,
+    "name": "샐러리",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 605,
+  "fields": {
+    "recipe": 952,
+    "name": "생강차",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 606,
+  "fields": {
+    "recipe": 952,
+    "name": "닭육수",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 607,
+  "fields": {
+    "recipe": 952,
+    "name": "단호박",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 608,
+  "fields": {
+    "recipe": 952,
+    "name": "고구마",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 609,
+  "fields": {
+    "recipe": 952,
+    "name": "우유",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 610,
+  "fields": {
+    "recipe": 952,
+    "name": "라임주스",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 611,
+  "fields": {
+    "recipe": 952,
+    "name": "생크림",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 612,
+  "fields": {
+    "recipe": 952,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 613,
+  "fields": {
+    "recipe": 952,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 614,
+  "fields": {
+    "recipe": 951,
+    "name": "쌀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 615,
+  "fields": {
+    "recipe": 951,
+    "name": "두부",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 616,
+  "fields": {
+    "recipe": 951,
+    "name": "검은",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 617,
+  "fields": {
+    "recipe": 951,
+    "name": "콩나물",
+    "quantity": "90g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 618,
+  "fields": {
+    "recipe": 951,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 619,
+  "fields": {
+    "recipe": 950,
+    "name": "감자",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 620,
+  "fields": {
+    "recipe": 950,
+    "name": "오이",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 621,
+  "fields": {
+    "recipe": 950,
+    "name": "목이버섯",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 622,
+  "fields": {
+    "recipe": 950,
+    "name": "닭고기",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 623,
+  "fields": {
+    "recipe": 950,
+    "name": "닭고기",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 624,
+  "fields": {
+    "recipe": 950,
+    "name": "밥",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 625,
+  "fields": {
+    "recipe": 950,
+    "name": "대파",
+    "quantity": "9g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 626,
+  "fields": {
+    "recipe": 950,
+    "name": "식물성기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 627,
+  "fields": {
+    "recipe": 950,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 628,
+  "fields": {
+    "recipe": 949,
+    "name": "달걀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 629,
+  "fields": {
+    "recipe": 949,
+    "name": "새우",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 630,
+  "fields": {
+    "recipe": 949,
+    "name": "바지락",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 631,
+  "fields": {
+    "recipe": 949,
+    "name": "도미살",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 632,
+  "fields": {
+    "recipe": 949,
+    "name": "슬라이스치즈",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 633,
+  "fields": {
+    "recipe": 949,
+    "name": "실파",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 634,
+  "fields": {
+    "recipe": 949,
+    "name": "토마토",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 635,
+  "fields": {
+    "recipe": 949,
+    "name": "애호박",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 636,
+  "fields": {
+    "recipe": 949,
+    "name": "캔",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 637,
+  "fields": {
+    "recipe": 949,
+    "name": "슬라이스치즈",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 638,
+  "fields": {
+    "recipe": 949,
+    "name": "홍고추",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 639,
+  "fields": {
+    "recipe": 949,
+    "name": "바질",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 640,
+  "fields": {
+    "recipe": 949,
+    "name": "올리브오일",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 641,
+  "fields": {
+    "recipe": 949,
+    "name": "마늘것",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 642,
+  "fields": {
+    "recipe": 949,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 643,
+  "fields": {
+    "recipe": 949,
+    "name": "후춧가루",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 644,
+  "fields": {
+    "recipe": 948,
+    "name": "펜넬파스타",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 645,
+  "fields": {
+    "recipe": 948,
+    "name": "청피망",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 646,
+  "fields": {
+    "recipe": 948,
+    "name": "홍피망",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 647,
+  "fields": {
+    "recipe": 948,
+    "name": "양파",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 648,
+  "fields": {
+    "recipe": 948,
+    "name": "완두콩",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 649,
+  "fields": {
+    "recipe": 948,
+    "name": "블랙올리브",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 650,
+  "fields": {
+    "recipe": 948,
+    "name": "아스파라거스",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 651,
+  "fields": {
+    "recipe": 948,
+    "name": "토마토콩카세",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 652,
+  "fields": {
+    "recipe": 948,
+    "name": "파마산치즈",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 653,
+  "fields": {
+    "recipe": 948,
+    "name": "소금",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 654,
+  "fields": {
+    "recipe": 948,
+    "name": "올리브오일",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 655,
+  "fields": {
+    "recipe": 948,
+    "name": "바질",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 656,
+  "fields": {
+    "recipe": 948,
+    "name": "믹서에",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 657,
+  "fields": {
+    "recipe": 947,
+    "name": "양파것",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 658,
+  "fields": {
+    "recipe": 947,
+    "name": "샐러리것",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 659,
+  "fields": {
+    "recipe": 947,
+    "name": "베이컨",
+    "quantity": "13g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 660,
+  "fields": {
+    "recipe": 947,
+    "name": "완두콩",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 661,
+  "fields": {
+    "recipe": 947,
+    "name": "육수",
+    "quantity": "120g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 662,
+  "fields": {
+    "recipe": 947,
+    "name": "생크림",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 663,
+  "fields": {
+    "recipe": 947,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 664,
+  "fields": {
+    "recipe": 947,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 665,
+  "fields": {
+    "recipe": 946,
+    "name": "아몬드슬라이스",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 666,
+  "fields": {
+    "recipe": 946,
+    "name": "코코넛슬라이스",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 667,
+  "fields": {
+    "recipe": 946,
+    "name": "설탕",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 668,
+  "fields": {
+    "recipe": 946,
+    "name": "달걀",
+    "quantity": "1개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 669,
+  "fields": {
+    "recipe": 945,
+    "name": "콩가루",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 670,
+  "fields": {
+    "recipe": 945,
+    "name": "고구마",
+    "quantity": "175g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 671,
+  "fields": {
+    "recipe": 945,
+    "name": "박력분",
+    "quantity": "65g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 672,
+  "fields": {
+    "recipe": 945,
+    "name": "버터",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 673,
+  "fields": {
+    "recipe": 945,
+    "name": "우유",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 674,
+  "fields": {
+    "recipe": 945,
+    "name": "달걀",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 675,
+  "fields": {
+    "recipe": 945,
+    "name": "생크림",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 676,
+  "fields": {
+    "recipe": 945,
+    "name": "꿀",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 677,
+  "fields": {
+    "recipe": 945,
+    "name": "소금",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 678,
+  "fields": {
+    "recipe": 944,
+    "name": "딸기",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 679,
+  "fields": {
+    "recipe": 944,
+    "name": "고구마",
+    "quantity": "180g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 680,
+  "fields": {
+    "recipe": 944,
+    "name": "요거트",
+    "quantity": "85g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 681,
+  "fields": {
+    "recipe": 944,
+    "name": "만두피",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 682,
+  "fields": {
+    "recipe": 944,
+    "name": "우유",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 683,
+  "fields": {
+    "recipe": 944,
+    "name": "식유",
+    "quantity": "700g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 684,
+  "fields": {
+    "recipe": 943,
+    "name": "두부",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 685,
+  "fields": {
+    "recipe": 943,
+    "name": "녹말가루",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 686,
+  "fields": {
+    "recipe": 943,
+    "name": "식유",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 687,
+  "fields": {
+    "recipe": 943,
+    "name": "청피망",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 688,
+  "fields": {
+    "recipe": 943,
+    "name": "홍피망",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 689,
+  "fields": {
+    "recipe": 943,
+    "name": "노랑파프리카",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 690,
+  "fields": {
+    "recipe": 943,
+    "name": "간장",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 691,
+  "fields": {
+    "recipe": 943,
+    "name": "물엿",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 692,
+  "fields": {
+    "recipe": 943,
+    "name": "고추장",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 693,
+  "fields": {
+    "recipe": 943,
+    "name": "참기름",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 694,
+  "fields": {
+    "recipe": 943,
+    "name": "통깨",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 695,
+  "fields": {
+    "recipe": 942,
+    "name": "두부",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 696,
+  "fields": {
+    "recipe": 942,
+    "name": "표고버섯마른것",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 697,
+  "fields": {
+    "recipe": 942,
+    "name": "쇠고기",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 698,
+  "fields": {
+    "recipe": 942,
+    "name": "애호박",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 699,
+  "fields": {
+    "recipe": 942,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 700,
+  "fields": {
+    "recipe": 942,
+    "name": "콩나물",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 701,
+  "fields": {
+    "recipe": 942,
+    "name": "식초",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 702,
+  "fields": {
+    "recipe": 942,
+    "name": "설탕",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 703,
+  "fields": {
+    "recipe": 942,
+    "name": "연겨자",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 704,
+  "fields": {
+    "recipe": 941,
+    "name": "곤약",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 705,
+  "fields": {
+    "recipe": 941,
+    "name": "서리태",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 706,
+  "fields": {
+    "recipe": 941,
+    "name": "마늘",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 707,
+  "fields": {
+    "recipe": 941,
+    "name": "마늘쫑",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 708,
+  "fields": {
+    "recipe": 941,
+    "name": "파프리카",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 709,
+  "fields": {
+    "recipe": 941,
+    "name": "설탕",
+    "quantity": "2.2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 710,
+  "fields": {
+    "recipe": 941,
+    "name": "콩나물",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 711,
+  "fields": {
+    "recipe": 941,
+    "name": "청주",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 712,
+  "fields": {
+    "recipe": 941,
+    "name": "소금",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 713,
+  "fields": {
+    "recipe": 939,
+    "name": "콩나물",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 714,
+  "fields": {
+    "recipe": 939,
+    "name": "닭육수",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 715,
+  "fields": {
+    "recipe": 939,
+    "name": "토마토",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 716,
+  "fields": {
+    "recipe": 939,
+    "name": "큐민파우더",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 717,
+  "fields": {
+    "recipe": 939,
+    "name": "파슬리말린것",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 718,
+  "fields": {
+    "recipe": 939,
+    "name": "카엔패퍼",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 719,
+  "fields": {
+    "recipe": 939,
+    "name": "사워크림",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 720,
+  "fields": {
+    "recipe": 939,
+    "name": "두유",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 721,
+  "fields": {
+    "recipe": 939,
+    "name": "식유",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 722,
+  "fields": {
+    "recipe": 939,
+    "name": "양파것",
+    "quantity": "7g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 723,
+  "fields": {
+    "recipe": 939,
+    "name": "샐러리",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 724,
+  "fields": {
+    "recipe": 939,
+    "name": "마늘",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 725,
+  "fields": {
+    "recipe": 938,
+    "name": "고구마",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 726,
+  "fields": {
+    "recipe": 938,
+    "name": "설탕",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 727,
+  "fields": {
+    "recipe": 938,
+    "name": "콩나물",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 728,
+  "fields": {
+    "recipe": 938,
+    "name": "검은깨",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 729,
+  "fields": {
+    "recipe": 938,
+    "name": "식유",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 730,
+  "fields": {
+    "recipe": 937,
+    "name": "달걀",
+    "quantity": "110g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 731,
+  "fields": {
+    "recipe": 937,
+    "name": "돼지호박",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 732,
+  "fields": {
+    "recipe": 937,
+    "name": "실파",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 733,
+  "fields": {
+    "recipe": 937,
+    "name": "마늘것",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 734,
+  "fields": {
+    "recipe": 937,
+    "name": "후춧가루",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 735,
+  "fields": {
+    "recipe": 937,
+    "name": "모짜렐라치즈",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 736,
+  "fields": {
+    "recipe": 937,
+    "name": "파마산치즈",
+    "quantity": "7g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 737,
+  "fields": {
+    "recipe": 937,
+    "name": "캔",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 738,
+  "fields": {
+    "recipe": 937,
+    "name": "타임",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 739,
+  "fields": {
+    "recipe": 937,
+    "name": "바질",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 740,
+  "fields": {
+    "recipe": 937,
+    "name": "로즈마리",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 741,
+  "fields": {
+    "recipe": 937,
+    "name": "오레가노",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 742,
+  "fields": {
+    "recipe": 937,
+    "name": "식유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 743,
+  "fields": {
+    "recipe": 936,
+    "name": "상추",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 744,
+  "fields": {
+    "recipe": 936,
+    "name": "오이",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 745,
+  "fields": {
+    "recipe": 936,
+    "name": "당근",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 746,
+  "fields": {
+    "recipe": 936,
+    "name": "비타민",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 747,
+  "fields": {
+    "recipe": 936,
+    "name": "방울토마토",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 748,
+  "fields": {
+    "recipe": 936,
+    "name": "쑥갓",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 749,
+  "fields": {
+    "recipe": 936,
+    "name": "견과류",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 750,
+  "fields": {
+    "recipe": 936,
+    "name": "호두",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 751,
+  "fields": {
+    "recipe": 936,
+    "name": "마늘",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 752,
+  "fields": {
+    "recipe": 936,
+    "name": "레몬즙",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 753,
+  "fields": {
+    "recipe": 936,
+    "name": "식초",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 754,
+  "fields": {
+    "recipe": 936,
+    "name": "참기름",
+    "quantity": "4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 755,
+  "fields": {
+    "recipe": 936,
+    "name": "고운고춧가루",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 756,
+  "fields": {
+    "recipe": 936,
+    "name": "통깨",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 757,
+  "fields": {
+    "recipe": 936,
+    "name": "설탕",
+    "quantity": "2.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 758,
+  "fields": {
+    "recipe": 935,
+    "name": "주재료",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 759,
+  "fields": {
+    "recipe": 935,
+    "name": "양파",
+    "quantity": "24g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 760,
+  "fields": {
+    "recipe": 935,
+    "name": "양송이버섯",
+    "quantity": "24g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 761,
+  "fields": {
+    "recipe": 935,
+    "name": "감자",
+    "quantity": "24g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 762,
+  "fields": {
+    "recipe": 935,
+    "name": "검은콩두유",
+    "quantity": "24g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 763,
+  "fields": {
+    "recipe": 935,
+    "name": "달걀",
+    "quantity": "48g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 764,
+  "fields": {
+    "recipe": 935,
+    "name": "후추",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 765,
+  "fields": {
+    "recipe": 935,
+    "name": "마늘",
+    "quantity": "12g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 766,
+  "fields": {
+    "recipe": 935,
+    "name": "아몬드가루",
+    "quantity": "36g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 767,
+  "fields": {
+    "recipe": 935,
+    "name": "베이킹파우더",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 768,
+  "fields": {
+    "recipe": 935,
+    "name": "강황가루",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 769,
+  "fields": {
+    "recipe": 935,
+    "name": "감자",
+    "quantity": "36g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 770,
+  "fields": {
+    "recipe": 935,
+    "name": "바질",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 771,
+  "fields": {
+    "recipe": 934,
+    "name": "[",
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 772,
+  "fields": {
+    "recipe": 934,
+    "name": "파채",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 773,
+  "fields": {
+    "recipe": 934,
+    "name": "월계수잎",
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 774,
+  "fields": {
+    "recipe": 934,
+    "name": "맛술",
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 775,
+  "fields": {
+    "recipe": 934,
+    "name": "설탕",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 776,
+  "fields": {
+    "recipe": 934,
+    "name": "고춧가루",
+    "quantity": "1.5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 777,
+  "fields": {
+    "recipe": 934,
+    "name": "간장",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 778,
+  "fields": {
+    "recipe": 934,
+    "name": "고추장",
+    "quantity": "3"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 779,
+  "fields": {
+    "recipe": 934,
+    "name": "마늘",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 780,
+  "fields": {
+    "recipe": 934,
+    "name": "레몬즙",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 781,
+  "fields": {
+    "recipe": 934,
+    "name": "골뱅이",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 782,
+  "fields": {
+    "recipe": 933,
+    "name": "삼계탕",
+    "quantity": "250g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 783,
+  "fields": {
+    "recipe": 933,
+    "name": "우유",
+    "quantity": "500"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 784,
+  "fields": {
+    "recipe": 933,
+    "name": "삼계탕",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 785,
+  "fields": {
+    "recipe": 933,
+    "name": "메밀면",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 786,
+  "fields": {
+    "recipe": 933,
+    "name": "깻잎",
+    "quantity": "5장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 787,
+  "fields": {
+    "recipe": 933,
+    "name": "바질",
+    "quantity": "5장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 788,
+  "fields": {
+    "recipe": 933,
+    "name": "삼계탕",
+    "quantity": "100"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 789,
+  "fields": {
+    "recipe": 933,
+    "name": "사과식초",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 790,
+  "fields": {
+    "recipe": 933,
+    "name": "홍고추",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 791,
+  "fields": {
+    "recipe": 933,
+    "name": "사과",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 792,
+  "fields": {
+    "recipe": 933,
+    "name": "삼계탕",
+    "quantity": "30"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 793,
+  "fields": {
+    "recipe": 933,
+    "name": "들깻가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 794,
+  "fields": {
+    "recipe": 933,
+    "name": "소금",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 795,
+  "fields": {
+    "recipe": 932,
+    "name": "단감",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 796,
+  "fields": {
+    "recipe": 932,
+    "name": "식초",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 797,
+  "fields": {
+    "recipe": 932,
+    "name": "설탕",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 798,
+  "fields": {
+    "recipe": 932,
+    "name": "콩나물",
+    "quantity": "15ml"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 799,
+  "fields": {
+    "recipe": 931,
+    "name": "우육",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 800,
+  "fields": {
+    "recipe": 931,
+    "name": "돈육",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 801,
+  "fields": {
+    "recipe": 931,
+    "name": "두부",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 802,
+  "fields": {
+    "recipe": 931,
+    "name": "양파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 803,
+  "fields": {
+    "recipe": 931,
+    "name": "대파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 804,
+  "fields": {
+    "recipe": 931,
+    "name": "상추",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 805,
+  "fields": {
+    "recipe": 931,
+    "name": "깻잎",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 806,
+  "fields": {
+    "recipe": 931,
+    "name": "해바라기씨",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 807,
+  "fields": {
+    "recipe": 931,
+    "name": "간장",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 808,
+  "fields": {
+    "recipe": 931,
+    "name": "설탕",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 809,
+  "fields": {
+    "recipe": 931,
+    "name": "쌈장",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 810,
+  "fields": {
+    "recipe": 930,
+    "name": "고구마",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 811,
+  "fields": {
+    "recipe": 930,
+    "name": "미나리",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 812,
+  "fields": {
+    "recipe": 930,
+    "name": "홍고추",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 813,
+  "fields": {
+    "recipe": 930,
+    "name": "고춧가루",
+    "quantity": "0.8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 814,
+  "fields": {
+    "recipe": 930,
+    "name": "올리고당",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 815,
+  "fields": {
+    "recipe": 930,
+    "name": "마늘",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 816,
+  "fields": {
+    "recipe": 930,
+    "name": "젓갈",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 817,
+  "fields": {
+    "recipe": 930,
+    "name": "참깨드레싱",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 818,
+  "fields": {
+    "recipe": 929,
+    "name": "두부",
+    "quantity": "100g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 819,
+  "fields": {
+    "recipe": 929,
+    "name": "느타리버섯",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 820,
+  "fields": {
+    "recipe": 929,
+    "name": "발사믹크림",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 821,
+  "fields": {
+    "recipe": 929,
+    "name": "올리브유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 822,
+  "fields": {
+    "recipe": 929,
+    "name": "올리고당",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 823,
+  "fields": {
+    "recipe": 929,
+    "name": "쪽파",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 824,
+  "fields": {
+    "recipe": 929,
+    "name": "간장",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 825,
+  "fields": {
+    "recipe": 928,
+    "name": "에멘탈",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 826,
+  "fields": {
+    "recipe": 928,
+    "name": "마늘",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 827,
+  "fields": {
+    "recipe": 928,
+    "name": "넉맥",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 828,
+  "fields": {
+    "recipe": 928,
+    "name": "닭육수",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 829,
+  "fields": {
+    "recipe": 928,
+    "name": "물전분",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 830,
+  "fields": {
+    "recipe": 928,
+    "name": "바케트빵",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 831,
+  "fields": {
+    "recipe": 928,
+    "name": "방울토마토",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 832,
+  "fields": {
+    "recipe": 928,
+    "name": "키위",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 833,
+  "fields": {
+    "recipe": 928,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 834,
+  "fields": {
+    "recipe": 928,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 835,
+  "fields": {
+    "recipe": 927,
+    "name": "밥",
+    "quantity": "120g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 836,
+  "fields": {
+    "recipe": 927,
+    "name": "달걀",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 837,
+  "fields": {
+    "recipe": 927,
+    "name": "슬라이스햄",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 838,
+  "fields": {
+    "recipe": 927,
+    "name": "슬라이스치즈",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 839,
+  "fields": {
+    "recipe": 927,
+    "name": "양파",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 840,
+  "fields": {
+    "recipe": 927,
+    "name": "샐러리",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 841,
+  "fields": {
+    "recipe": 927,
+    "name": "캔참치",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 842,
+  "fields": {
+    "recipe": 927,
+    "name": "칵테일새우",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 843,
+  "fields": {
+    "recipe": 927,
+    "name": "날치알",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 844,
+  "fields": {
+    "recipe": 927,
+    "name": "마요네즈",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 845,
+  "fields": {
+    "recipe": 927,
+    "name": "설탕",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 846,
+  "fields": {
+    "recipe": 927,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 847,
+  "fields": {
+    "recipe": 926,
+    "name": "쌀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 848,
+  "fields": {
+    "recipe": 926,
+    "name": "콩나물",
+    "quantity": "90g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 849,
+  "fields": {
+    "recipe": 926,
+    "name": "배",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 850,
+  "fields": {
+    "recipe": 926,
+    "name": "시금치",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 851,
+  "fields": {
+    "recipe": 926,
+    "name": "꿀",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 852,
+  "fields": {
+    "recipe": 925,
+    "name": "쌀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 853,
+  "fields": {
+    "recipe": 925,
+    "name": "양송이버섯",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 854,
+  "fields": {
+    "recipe": 925,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 855,
+  "fields": {
+    "recipe": 925,
+    "name": "양파",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 856,
+  "fields": {
+    "recipe": 925,
+    "name": "마른미역",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 857,
+  "fields": {
+    "recipe": 925,
+    "name": "참기름",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 858,
+  "fields": {
+    "recipe": 925,
+    "name": "콩나물",
+    "quantity": "90g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 859,
+  "fields": {
+    "recipe": 924,
+    "name": "쌀",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 860,
+  "fields": {
+    "recipe": 924,
+    "name": "콩나물",
+    "quantity": "92g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 861,
+  "fields": {
+    "recipe": 924,
+    "name": "참치살",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 862,
+  "fields": {
+    "recipe": 924,
+    "name": "표고버섯",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 863,
+  "fields": {
+    "recipe": 924,
+    "name": "무",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 864,
+  "fields": {
+    "recipe": 924,
+    "name": "양파",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 865,
+  "fields": {
+    "recipe": 924,
+    "name": "참기름",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 866,
+  "fields": {
+    "recipe": 924,
+    "name": "통깨",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 867,
+  "fields": {
+    "recipe": 924,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 868,
+  "fields": {
+    "recipe": 923,
+    "name": "쌀",
+    "quantity": "70g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 869,
+  "fields": {
+    "recipe": 923,
+    "name": "양송이버섯",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 870,
+  "fields": {
+    "recipe": 923,
+    "name": "마늘것",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 871,
+  "fields": {
+    "recipe": 923,
+    "name": "닭육수",
+    "quantity": "180g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 872,
+  "fields": {
+    "recipe": 923,
+    "name": "파슬리것",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 873,
+  "fields": {
+    "recipe": 923,
+    "name": "타임것",
+    "quantity": "0.5"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 874,
+  "fields": {
+    "recipe": 923,
+    "name": "올리브오일",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 875,
+  "fields": {
+    "recipe": 923,
+    "name": "파마산치즈",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 876,
+  "fields": {
+    "recipe": 923,
+    "name": "버터",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 877,
+  "fields": {
+    "recipe": 923,
+    "name": "소금",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 878,
+  "fields": {
+    "recipe": 923,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 879,
+  "fields": {
+    "recipe": 922,
+    "name": "시금치",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 880,
+  "fields": {
+    "recipe": 922,
+    "name": "바질",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 881,
+  "fields": {
+    "recipe": 922,
+    "name": "고구마",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 882,
+  "fields": {
+    "recipe": 922,
+    "name": "옥수수가루플렌타가루",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 883,
+  "fields": {
+    "recipe": 922,
+    "name": "파마산치즈",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 884,
+  "fields": {
+    "recipe": 922,
+    "name": "모짜렐라치즈",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 885,
+  "fields": {
+    "recipe": 921,
+    "name": "양파것",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 886,
+  "fields": {
+    "recipe": 921,
+    "name": "브로컬리것",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 887,
+  "fields": {
+    "recipe": 921,
+    "name": "당근것",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 888,
+  "fields": {
+    "recipe": 921,
+    "name": "바질것",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 889,
+  "fields": {
+    "recipe": 921,
+    "name": "달걀",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 890,
+  "fields": {
+    "recipe": 921,
+    "name": "쇠고기것",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 891,
+  "fields": {
+    "recipe": 921,
+    "name": "돼지고기갈은것",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 892,
+  "fields": {
+    "recipe": 921,
+    "name": "빵가루",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 893,
+  "fields": {
+    "recipe": 921,
+    "name": "마요네즈",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 894,
+  "fields": {
+    "recipe": 921,
+    "name": "토마토케첩",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 895,
+  "fields": {
+    "recipe": 921,
+    "name": "미니",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 896,
+  "fields": {
+    "recipe": 921,
+    "name": "버거빵",
+    "quantity": "12g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 897,
+  "fields": {
+    "recipe": 921,
+    "name": "양상추",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 898,
+  "fields": {
+    "recipe": 921,
+    "name": "토마토",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 899,
+  "fields": {
+    "recipe": 921,
+    "name": "후추",
+    "quantity": "적당량"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 900,
+  "fields": {
+    "recipe": 920,
+    "name": "얼갈이",
+    "quantity": "60g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 901,
+  "fields": {
+    "recipe": 920,
+    "name": "홍고추",
+    "quantity": "0.6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 902,
+  "fields": {
+    "recipe": 920,
+    "name": "된장",
+    "quantity": "3.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 903,
+  "fields": {
+    "recipe": 920,
+    "name": "마늘",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 904,
+  "fields": {
+    "recipe": 920,
+    "name": "참깨드레싱",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 905,
+  "fields": {
+    "recipe": 920,
+    "name": "참기름",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 906,
+  "fields": {
+    "recipe": 920,
+    "name": "사과",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 907,
+  "fields": {
+    "recipe": 920,
+    "name": "홍고추",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 908,
+  "fields": {
+    "recipe": 920,
+    "name": "콩나물",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 909,
+  "fields": {
+    "recipe": 919,
+    "name": "양배추",
+    "quantity": "16g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 910,
+  "fields": {
+    "recipe": 919,
+    "name": "깻잎",
+    "quantity": "6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 911,
+  "fields": {
+    "recipe": 919,
+    "name": "설탕",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 912,
+  "fields": {
+    "recipe": 919,
+    "name": "청고추",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 913,
+  "fields": {
+    "recipe": 919,
+    "name": "홍고추",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 914,
+  "fields": {
+    "recipe": 919,
+    "name": "식초",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 915,
+  "fields": {
+    "recipe": 919,
+    "name": "통후추",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 916,
+  "fields": {
+    "recipe": 918,
+    "name": "수삼",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 917,
+  "fields": {
+    "recipe": 918,
+    "name": "배",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 918,
+  "fields": {
+    "recipe": 918,
+    "name": "오이",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 919,
+  "fields": {
+    "recipe": 918,
+    "name": "샐러리",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 920,
+  "fields": {
+    "recipe": 918,
+    "name": "유자청",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 921,
+  "fields": {
+    "recipe": 918,
+    "name": "소금",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 922,
+  "fields": {
+    "recipe": 918,
+    "name": "식초",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 923,
+  "fields": {
+    "recipe": 918,
+    "name": "꿀",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 924,
+  "fields": {
+    "recipe": 917,
+    "name": "당근",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 925,
+  "fields": {
+    "recipe": 917,
+    "name": "시금치",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 926,
+  "fields": {
+    "recipe": 917,
+    "name": "사과",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 927,
+  "fields": {
+    "recipe": 917,
+    "name": "호두",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 928,
+  "fields": {
+    "recipe": 917,
+    "name": "크랜베리",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 929,
+  "fields": {
+    "recipe": 917,
+    "name": "박력분",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 930,
+  "fields": {
+    "recipe": 917,
+    "name": "꿀",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 931,
+  "fields": {
+    "recipe": 917,
+    "name": "버터",
+    "quantity": "90g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 932,
+  "fields": {
+    "recipe": 917,
+    "name": "달걀",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 933,
+  "fields": {
+    "recipe": 917,
+    "name": "소금",
+    "quantity": "1.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 934,
+  "fields": {
+    "recipe": 917,
+    "name": "베이킹소다",
+    "quantity": "0.6g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 935,
+  "fields": {
+    "recipe": 917,
+    "name": "베이킹파우더",
+    "quantity": "2.4g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 936,
+  "fields": {
+    "recipe": 917,
+    "name": "콩나물",
+    "quantity": "50g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 937,
+  "fields": {
+    "recipe": 916,
+    "name": "대추고",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 938,
+  "fields": {
+    "recipe": 916,
+    "name": "대추차",
+    "quantity": "2"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 939,
+  "fields": {
+    "recipe": 916,
+    "name": "당근퓨레",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 940,
+  "fields": {
+    "recipe": 916,
+    "name": "녹차가루",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 941,
+  "fields": {
+    "recipe": 916,
+    "name": "팥앙금",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 942,
+  "fields": {
+    "recipe": 916,
+    "name": "박력분",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 943,
+  "fields": {
+    "recipe": 916,
+    "name": "꿀",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 944,
+  "fields": {
+    "recipe": 916,
+    "name": "버터",
+    "quantity": "150g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 945,
+  "fields": {
+    "recipe": 916,
+    "name": "달걀",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 946,
+  "fields": {
+    "recipe": 916,
+    "name": "베이킹파우더",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 947,
+  "fields": {
+    "recipe": 916,
+    "name": "소금",
+    "quantity": "0.8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 948,
+  "fields": {
+    "recipe": 915,
+    "name": "크랜베리",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 949,
+  "fields": {
+    "recipe": 915,
+    "name": "슈가파우더",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 950,
+  "fields": {
+    "recipe": 915,
+    "name": "박력분",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 951,
+  "fields": {
+    "recipe": 915,
+    "name": "아몬드가루",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 952,
+  "fields": {
+    "recipe": 915,
+    "name": "백년초가루",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 953,
+  "fields": {
+    "recipe": 915,
+    "name": "우유",
+    "quantity": "3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 954,
+  "fields": {
+    "recipe": 915,
+    "name": "버터",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 955,
+  "fields": {
+    "recipe": 914,
+    "name": "단호박",
+    "quantity": "200g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 956,
+  "fields": {
+    "recipe": 914,
+    "name": "새우살",
+    "quantity": "120g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 957,
+  "fields": {
+    "recipe": 914,
+    "name": "삼색파프리카",
+    "quantity": "80g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 958,
+  "fields": {
+    "recipe": 914,
+    "name": "양파",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 959,
+  "fields": {
+    "recipe": 914,
+    "name": "옥수수차",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 960,
+  "fields": {
+    "recipe": 914,
+    "name": "모짜렐라치즈",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 961,
+  "fields": {
+    "recipe": 914,
+    "name": "춘권피",
+    "quantity": "10장"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 962,
+  "fields": {
+    "recipe": 914,
+    "name": "생크림",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 963,
+  "fields": {
+    "recipe": 914,
+    "name": "식유",
+    "quantity": "40g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 964,
+  "fields": {
+    "recipe": 913,
+    "name": "땅콩호박",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 965,
+  "fields": {
+    "recipe": 913,
+    "name": "아몬드가루",
+    "quantity": "13g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 966,
+  "fields": {
+    "recipe": 913,
+    "name": "버터",
+    "quantity": "15g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 967,
+  "fields": {
+    "recipe": 913,
+    "name": "박력분",
+    "quantity": "35g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 968,
+  "fields": {
+    "recipe": 913,
+    "name": "요거트",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 969,
+  "fields": {
+    "recipe": 913,
+    "name": "달걀",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 970,
+  "fields": {
+    "recipe": 913,
+    "name": "사과",
+    "quantity": "1"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 971,
+  "fields": {
+    "recipe": 913,
+    "name": "전분",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 972,
+  "fields": {
+    "recipe": 913,
+    "name": "소금",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 973,
+  "fields": {
+    "recipe": 913,
+    "name": "호두",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 974,
+  "fields": {
+    "recipe": 912,
+    "name": "두부",
+    "quantity": "25g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 975,
+  "fields": {
+    "recipe": 912,
+    "name": "포도",
+    "quantity": "10g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 976,
+  "fields": {
+    "recipe": 912,
+    "name": "호두",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 977,
+  "fields": {
+    "recipe": 912,
+    "name": "검은깨",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 978,
+  "fields": {
+    "recipe": 912,
+    "name": "식빵",
+    "quantity": "7.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 979,
+  "fields": {
+    "recipe": 912,
+    "name": "밀가루",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 980,
+  "fields": {
+    "recipe": 912,
+    "name": "계피가루",
+    "quantity": "1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 981,
+  "fields": {
+    "recipe": 912,
+    "name": "소금",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 982,
+  "fields": {
+    "recipe": 912,
+    "name": "꿀",
+    "quantity": "2g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 983,
+  "fields": {
+    "recipe": 912,
+    "name": "식유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 984,
+  "fields": {
+    "recipe": 912,
+    "name": "콩나물",
+    "quantity": "8g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 985,
+  "fields": {
+    "recipe": 911,
+    "name": "달걀",
+    "quantity": "2개"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 986,
+  "fields": {
+    "recipe": 911,
+    "name": "바나나",
+    "quantity": "30g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 987,
+  "fields": {
+    "recipe": 911,
+    "name": "밀가루",
+    "quantity": "20g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 988,
+  "fields": {
+    "recipe": 911,
+    "name": "우유",
+    "quantity": "5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 989,
+  "fields": {
+    "recipe": 911,
+    "name": "베이킹파우더",
+    "quantity": "0.3g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 990,
+  "fields": {
+    "recipe": 911,
+    "name": "버터",
+    "quantity": "0.5g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 991,
+  "fields": {
+    "recipe": 911,
+    "name": "소금",
+    "quantity": "0.1g"
+  }
+},
+{
+  "model": "recipes.recipeingredient",
+  "pk": 992,
+  "fields": {
+    "recipe": 911,
+    "name": "콩나물",
+    "quantity": "8g"
+  }
+}
+]

@@ -1,130 +1,83 @@
 <template>
   <div class="recipe-list-view">
-    <header class="header">
-      <button @click="$router.back()" class="btn-back">⬅</button>
-      <h2>레시피</h2>
-      <button @click="showMyRecipes" class="btn-my-recipes">
-        🍳 내 재료로
-      </button>
+    <header class="header-premium">
+      <div class="container header-inner">
+        <button @click="$router.push({ name: 'Pantry' })" class="btn-back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 class="view-title">{{ showRecommendations ? '냉장고 추천 요리' : '레시피 검색' }}</h2>
+        <button @click="toggleMode" class="btn-mode-pill">
+          {{ showRecommendations ? '🔍 검색모드' : '🍳 추천모드' }}
+        </button>
+      </div>
     </header>
 
-    <div class="container">
-      <!-- 내 식재료 기반 추천 레시피 섹션 -->
-      <section v-if="showRecommendations && recommendations.length > 0" class="recommendations-section">
-        <div class="section-header">
-          <h3>🎯 내 냉장고 재료로 만들 수 있는 레시피</h3>
-          <p class="ingredient-count">보유 재료: {{ userIngredientCount }}개</p>
+    <main class="container">
+      <!-- 추천 상태 배너 -->
+      <section v-if="showRecommendations" class="rec-hero animate-up">
+        <div class="hero-content">
+          <span class="hero-tag">Best Matching</span>
+          <h1>내 재료 <strong>{{ totalIngredientCount }}개</strong>로<br/>만드는 맞춤 레시피</h1>
+          <p v-if="displayRecipes.length > 0">지금 바로 요리 가능한 레시피를 찾았어요!</p>
         </div>
-        <div class="recipe-grid">
-          <div
-            v-for="recipe in recommendations"
-            :key="'rec-' + recipe.id"
-            class="recipe-card"
-            :class="getMatchClass(recipe.match_status)"
-            @click="goToRecipe(recipe.id)"
-          >
-            <div class="recipe-image">
-              <img 
-                v-if="recipe.image_url && !imageErrors[recipe.id]" 
-                :src="recipe.image_url" 
-                alt="레시피 이미지"
-                @error="handleImageError(recipe.id)"
-              />
-              <div v-else class="recipe-placeholder">🍽️</div>
-              
-              <!-- 재료 매칭 상태 뱃지 -->
-              <div class="match-badge-icon" :class="recipe.match_status">
-                <span v-if="recipe.match_status === 'full'" class="icon-full">●</span>
-                <span v-else-if="recipe.match_status === 'high'" class="icon-high">◐</span>
-                <span v-else class="icon-partial">▲</span>
-              </div>
+      </section>
+
+      <section v-else class="search-hero animate-up">
+        <div class="search-bar-solid">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input v-model="searchQuery" type="text" placeholder="어떤 요리가 궁금하신가요?" />
+        </div>
+      </section>
+
+      <!-- 로딩 -->
+      <div v-if="loading" class="loading-wrap">
+        <div class="spinner"></div>
+        <p>최적의 레시피를 매칭하고 있어요...</p>
+      </div>
+
+      <!-- 리스트 (그리드) -->
+      <section v-else class="recipe-grid-matrix mt-lg">
+        <div
+          v-for="recipe in displayRecipes"
+          :key="recipe.id"
+          class="card-recipe-premium"
+          @click="goToRecipe(recipe.id)"
+        >
+          <div class="thumb-box">
+            <img v-if="recipe.image_url && !imageErrors[recipe.id]" :src="recipe.image_url" @error="handleImageError(recipe.id)" />
+            <div v-else class="thumb-empty">🍲</div>
+            
+            <!-- 일치율 플로팅 배지 -->
+            <div v-if="showRecommendations" class="badge-ratio">
+              <span class="num">{{ Math.round(recipe.match_ratio) }}%</span>
+              <span class="txt">매칭</span>
             </div>
-            <div class="recipe-info">
-              <h4>{{ recipe.title }}</h4>
-              <div class="recipe-meta">
-                <span>⏱️ {{ recipe.cooking_time_minutes }}분</span>
-                <span>📊 {{ recipe.difficulty }}</span>
+          </div>
+
+          <div class="body-box">
+            <h4 class="title">{{ recipe.title }}</h4>
+            <div class="meta-info">
+              <span class="time">⏱ {{ recipe.cooking_time_minutes }}분</span>
+              <span class="level">⭐ {{ recipe.difficulty }}</span>
+            </div>
+            
+            <div v-if="showRecommendations" class="matching-status">
+              <div v-if="recipe.missing_ingredients?.length" class="missing-parts">
+                <span class="label">필요:</span>
+                <span class="tags">{{ recipe.missing_ingredients.join(', ') }}</span>
               </div>
-              <div class="match-info">
-                <div class="match-bar">
-                  <div 
-                    class="match-fill" 
-                    :style="{ width: recipe.match_ratio + '%' }"
-                    :class="recipe.match_status"
-                  ></div>
-                </div>
-                <span class="match-text">
-                  {{ recipe.match_count }}/{{ recipe.total_ingredients }}개 재료 보유
-                  ({{ recipe.match_ratio }}%)
-                </span>
-              </div>
+              <div v-else class="all-set">✨ 모든 재료 보유 중</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 검색 및 필터 -->
-      <div class="search-section">
-        <div class="search-bar">
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="search-input"
-            placeholder="레시피 이름이나 재료를 검색하세요..."
-            @input="handleRealTimeSearch"
-          />
-          <span v-if="searchQuery" class="search-clear" @click="clearSearch">✕</span>
-        </div>
-        <p v-if="searchQuery && displayRecipes.length > 0" class="search-result-count">
-          {{ displayRecipes.length }}개의 레시피를 찾았습니다
-        </p>
+      <!-- 결과가 없는 경우 더미 데이터 기반 검색 유도 -->
+      <div v-if="!loading && displayRecipes.length === 0" class="empty-state">
+        <p>찾으시는 요리가 없네요. 🧊</p>
+        <button @click="clearSearch" class="btn-sub">전체 보기</button>
       </div>
-
-      <!-- 로딩 -->
-      <div v-if="loading" class="loading">
-        <div class="spinner"></div>
-        <p>레시피를 불러오는 중...</p>
-      </div>
-
-      <!-- 레시피 목록 -->
-      <div v-else-if="displayRecipes.length > 0" class="recipe-grid">
-        <div
-          v-for="recipe in displayRecipes"
-          :key="'search-' + recipe.id"
-          class="recipe-card"
-          @click="goToRecipe(recipe.id)"
-        >
-          <div class="recipe-image">
-            <img 
-              v-if="recipe.image_url && !imageErrors[recipe.id]" 
-              :src="recipe.image_url" 
-              alt="레시피 이미지"
-              @error="handleImageError(recipe.id)"
-            />
-            <div v-else class="recipe-placeholder">🍽️</div>
-          </div>
-          <div class="recipe-info">
-            <h4 v-html="highlightMatch(recipe.title)"></h4>
-            <div class="recipe-meta">
-              <span>⏱️ {{ recipe.cooking_time_minutes }}분</span>
-              <span>📊 {{ recipe.difficulty }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 빈 상태 -->
-      <div v-else-if="!loading && searchQuery" class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <p>"{{ searchQuery }}" 검색 결과가 없습니다</p>
-        <button @click="clearSearch" class="btn-clear">검색 초기화</button>
-      </div>
-
-      <div v-else-if="!loading && allRecipes.length === 0" class="empty-state">
-        <div class="empty-icon">🍳</div>
-        <p>레시피를 불러오는 중입니다...</p>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -132,376 +85,127 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/store/recipe'
+import { useRefrigeratorStore } from '@/store/refrigerator'
 
 const router = useRouter()
 const recipeStore = useRecipeStore()
+const refrigeratorStore = useRefrigeratorStore()
 
 const searchQuery = ref('')
 const imageErrors = ref({})
 const showRecommendations = ref(false)
 
+const dummyRecipes = [
+  { id: 9991, title: '시원한 김치찌개', cooking_time_minutes: 30, difficulty: '보통', match_ratio: 95, missing_ingredients: ['두부'], image_url: '' },
+  { id: 9992, title: '간편 계란볶음밥', cooking_time_minutes: 15, difficulty: '쉬움', match_ratio: 100, missing_ingredients: [], image_url: '' },
+  { id: 9993, title: '소고기 미역국', cooking_time_minutes: 45, difficulty: '보통', match_ratio: 80, missing_ingredients: ['소고기'], image_url: '' },
+  { id: 9994, title: '상큼한 사과 샐러드', cooking_time_minutes: 10, difficulty: '쉬움', match_ratio: 100, missing_ingredients: [], image_url: '' },
+]
+
 const loading = computed(() => recipeStore.loading)
 const allRecipes = computed(() => recipeStore.recipes)
-const recommendations = computed(() => recipeStore.recommendations)
-const userIngredientCount = computed(() => recipeStore.userIngredientCount || 0)
+const serverRecs = computed(() => recipeStore.recommendations)
 
-// 표시할 레시피 목록 (검색 필터링 적용)
+// 카운트: 백엔드 응답값이 0이면 프론트엔드 데이터라도 가져옴 (보관함 데이터 신뢰)
+const totalIngredientCount = computed(() => {
+  return recipeStore.userIngredientCount || refrigeratorStore.ingredients.length || 0
+})
+
 const displayRecipes = computed(() => {
-  if (!searchQuery.value.trim()) {
-    // 검색어가 없으면 전체 레시피 표시 (최대 50개)
-    return allRecipes.value.slice(0, 50)
+  let list = []
+  if (showRecommendations.value) {
+    list = serverRecs.value.length > 0 ? [...serverRecs.value] : dummyRecipes
+    // 일치율 높은 순 -> 일치율 같으면 필요 재료 많은 요리 순
+    return list.sort((a,b) => (b.match_ratio - a.match_ratio))
+  } else {
+    list = allRecipes.value.length > 0 ? allRecipes.value : dummyRecipes
+    if (searchQuery.value.trim()) {
+      return list.filter(r => r.title.includes(searchQuery.value))
+    }
+    return list.slice(0, 48)
   }
-  
-  const query = searchQuery.value.toLowerCase()
-  return allRecipes.value.filter(recipe => 
-    recipe.title.toLowerCase().includes(query) ||
-    (recipe.description && recipe.description.toLowerCase().includes(query))
-  )
 })
 
 onMounted(async () => {
-  // 초기 로드 시 전체 레시피 목록 가져오기
-  console.log('📥 Fetching all recipes...')
-  await recipeStore.fetchRecipes()
-  console.log(`✅ Loaded ${allRecipes.value.length} recipes`)
+  // 보관함 재료 미리 불러오기 (카운트 보정용)
+  if (refrigeratorStore.ingredients.length === 0) {
+    refrigeratorStore.fetchIngredients()
+  }
+
+  const mode = router.currentRoute.value.query.mode
+  if (mode === 'recommend') {
+    showRecommendations.value = true
+    await recipeStore.fetchRecommendations()
+  } else {
+    await recipeStore.fetchRecipes()
+  }
 })
 
-// 내 재료로 만들 수 있는 레시피 표시
-const showMyRecipes = async () => {
-  showRecommendations.value = true
+const toggleMode = async () => {
+  showRecommendations.value = !showRecommendations.value
   searchQuery.value = ''
-  await recipeStore.fetchRecommendations()
+  if (showRecommendations.value) await recipeStore.fetchRecommendations()
+  else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
 
-// 실시간 검색
-const handleRealTimeSearch = () => {
-  // 검색 중에는 추천 섹션 숨기기
-  if (searchQuery.value.trim()) {
-    showRecommendations.value = false
-  }
-}
-
-// 검색 초기화
-const clearSearch = () => {
-  searchQuery.value = ''
-  showRecommendations.value = false
-}
-
-// 검색어 하이라이트
-const highlightMatch = (text) => {
-  if (!searchQuery.value) return text
-  const regex = new RegExp(`(${searchQuery.value})`, 'gi')
-  return text.replace(regex, '<mark>$1</mark>')
-}
-
-// 매칭 상태에 따른 CSS 클래스
-const getMatchClass = (status) => {
-  return {
-    'match-full': status === 'full',
-    'match-high': status === 'high',
-    'match-partial': status === 'partial'
-  }
-}
-
-const goToRecipe = (id) => {
-  router.push({ name: 'RecipeDetail', params: { id } })
-}
-
-const handleImageError = (id) => {
-  imageErrors.value[id] = true
-}
+const clearSearch = () => { searchQuery.value = ''; showRecommendations.value = false; }
+const goToRecipe = (id) => router.push({ name: 'RecipeDetail', params: { id } })
+const handleImageError = (id) => { imageErrors.value[id] = true }
 </script>
 
 <style scoped>
-.recipe-list-view {
-  min-height: 100vh;
-  background: #f8f9fa;
+.recipe-list-view { min-height: 100vh; background: #FCFCFC; padding-bottom: 100px; }
+
+/* Header Premium */
+.header-premium { background: white; border-bottom: 1px solid #f1f3f5; position: sticky; top: 0; z-index: 1000; }
+.header-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+.view-title { font-size: 1.25rem; font-weight: 800; color: #333; }
+.btn-back { background: none; border: none; cursor: pointer; color: #333; padding: 8px; }
+.btn-mode-pill { background: #333; color: white; border: none; padding: 10px 18px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+
+/* Hero sections */
+.rec-hero { background: linear-gradient(135deg, #FF6B6B 0%, #FF922B 100%); padding: 40px 24px; border-radius: 24px; margin-top: 20px; color: white; box-shadow: 0 10px 30px rgba(255,107,107,0.25); }
+.hero-tag { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.hero-content h1 { font-size: 2rem; margin-top: 15px; line-height: 1.3; }
+.hero-content h1 strong { font-size: 2.8rem; vertical-align: middle; }
+.hero-content p { margin-top: 10px; opacity: 0.9; font-weight: 500; }
+
+.search-hero { margin-top: 20px; }
+.search-bar-solid { display: flex; align-items: center; background: white; border: 2px solid #EEE; padding: 16px 24px; border-radius: 16px; gap: 15px; box-shadow: var(--shadow-premium); }
+.search-bar-solid input { border: none; font-size: 1.1rem; width: 100%; outline: none; font-weight: 600; }
+
+/* Matrix Grid */
+.recipe-grid-matrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 15px; }
+@media (min-width: 768px) {
+  .recipe-grid-matrix { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
 }
 
-.header {
-  background: white;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.card-recipe-premium { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #F1F3F5; transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column; cursor: pointer; }
+.card-recipe-premium:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
 
-.btn-back {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0;
-  color: #333;
-}
+.thumb-box { height: 140px; position: relative; background: #F8F9FA; }
+@media (min-width: 768px) { .thumb-box { height: 220px; } }
+.thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-empty { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
 
-.btn-my-recipes {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
+.badge-ratio { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); color: white; padding: 12px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.badge-ratio .num { font-size: 1.3rem; font-weight: 900; color: #FF6B6B; line-height: 1; }
+.badge-ratio .txt { font-size: 0.65rem; font-weight: 800; margin-top: 4px; opacity: 0.8; }
 
-.btn-my-recipes:hover {
-  transform: scale(1.05);
-}
+.body-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.title { font-size: 1.2rem; font-weight: 800; color: #222; margin: 0; line-height: 1.3; }
+.meta-info { display: flex; gap: 15px; font-size: 0.85rem; color: #868E96; font-weight: 700; }
 
-.recommendations-section {
-  padding: 20px;
-  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-  margin-bottom: 10px;
-}
+.matching-status { margin-top: auto; border-top: 1px dashed #EEE; padding-top: 12px; }
+.missing-parts { display: flex; gap: 8px; align-items: baseline; }
+.missing-parts .label { font-size: 0.75rem; font-weight: 800; color: #FF6B6B; white-space: nowrap; }
+.missing-parts .tags { font-size: 0.8rem; color: #495057; font-weight: 600; }
+.all-set { color: #2B8A3E; font-size: 0.85rem; font-weight: 800; }
 
-.section-header {
-  margin-bottom: 15px;
-}
+.loading-wrap { text-align: center; padding: 100px 0; }
+.spinner { width: 48px; height: 48px; border: 5px solid #F1F3F5; border-top-color: #333; border-radius: 50%; animation: spin 0.8s ease-in-out infinite; margin: 0 auto 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.section-header h3 {
-  margin: 0 0 5px;
-  color: #4a0e4e;
-  font-size: 1.3rem;
-}
-
-.ingredient-count {
-  margin: 0;
-  color: #6b2d5c;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.search-section {
-  background: white;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.search-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 40px 12px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.search-clear {
-  position: absolute;
-  right: 12px;
-  font-size: 1.2rem;
-  color: #999;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.search-result-count {
-  margin: 10px 0 0;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-mark {
-  background: #fff59d;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-weight: 600;
-}
-
-.recipe-grid {
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.recipe-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid #eee;
-  cursor: pointer;
-  transition: 0.2s;
-  position: relative;
-}
-
-.recipe-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.recipe-card.match-full {
-  border: 2px solid #51cf66;
-  box-shadow: 0 4px 12px rgba(81, 207, 102, 0.2);
-}
-
-.recipe-card.match-high {
-  border: 2px solid #74c0fc;
-  box-shadow: 0 4px 12px rgba(116, 192, 252, 0.2);
-}
-
-.recipe-card.match-partial {
-  border: 2px solid #ffd43b;
-  box-shadow: 0 4px 12px rgba(255, 212, 59, 0.2);
-}
-
-.recipe-image {
-  height: 180px;
-  background: #f1f3f5;
-  overflow: hidden;
-  position: relative;
-}
-
-.recipe-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.recipe-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-}
-
-.match-badge-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.icon-full {
-  color: #51cf66;
-}
-
-.icon-high {
-  color: #74c0fc;
-}
-
-.icon-partial {
-  color: #ffd43b;
-}
-
-.recipe-info {
-  padding: 15px;
-}
-
-.recipe-info h4 {
-  margin: 0 0 10px;
-  font-size: 1.1rem;
-}
-
-.recipe-meta {
-  display: flex;
-  gap: 15px;
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-}
-
-.match-info {
-  margin-top: 10px;
-}
-
-.match-bar {
-  width: 100%;
-  height: 8px;
-  background: #e9ecef;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 5px;
-}
-
-.match-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.match-fill.full {
-  background: linear-gradient(90deg, #51cf66, #40c057);
-}
-
-.match-fill.high {
-  background: linear-gradient(90deg, #74c0fc, #4dabf7);
-}
-
-.match-fill.partial {
-  background: linear-gradient(90deg, #ffd43b, #fcc419);
-}
-
-.match-text {
-  font-size: 0.85rem;
-  color: #666;
-  font-weight: 500;
-}
-
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto 20px;
-  border: 4px solid #f1f3f5;
-  border-top: 4px solid #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-}
-
-.btn-clear {
-  margin-top: 20px;
-  padding: 10px 24px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-}
+.animate-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 </style>

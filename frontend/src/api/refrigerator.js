@@ -61,6 +61,16 @@ export const refrigeratorAPI = {
     return api.post(`/refrigerator/ingredients/${id}/consume/`, { quantity })
   },
 
+  // 여러 식재료 일괄 삭제 (NEW!)
+  bulkDeleteIngredients(ids) {
+    return api.post('/refrigerator/ingredients/bulk_delete/', { ids })
+  },
+
+  // 유통기한 경과 식재료 일괄 삭제 (NEW!)
+  clearExpiredIngredients() {
+    return api.post('/refrigerator/ingredients/clear_expired/')
+  },
+
   // 식재료 마스터 검색
   searchMasterIngredients(query) {
     return api.get('/master/ingredients/', { params: { search: query } })

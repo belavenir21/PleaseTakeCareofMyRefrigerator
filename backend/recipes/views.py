@@ -18,9 +18,12 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipe
         fields = ['difficulty']
 
+from config.authentication import CsrfExemptSessionAuthentication
+
 class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
     """레시피 ViewSet"""
     queryset = Recipe.objects.all()
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
     filterset_class = RecipeFilter
     filter_backends = [django_filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -49,47 +52,76 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
     
     @action(detail=False, methods=['get'])
     def recommendations(self, request):
-        """맞춤 레시피 추천 (부분 매칭 포함)"""
+        """맞춤 레시피 추천 (취향 및 냉장고 재료 반영)"""
         user = request.user
+        profile = getattr(user, 'profile', None)
+        diet_goals = profile.diet_goals if profile else ""
         
-        # 사용자의 보관 중인 식재료 가져오기
+        # 1. 사용자의 보관 중인 식재료 가져오기
         user_ingredients = UserIngredient.objects.filter(user=user).values_list('name', flat=True)
-        user_ingredients_set = set(user_ingredients)
+        # 검색 효율을 위해 정규화 (공백 제거 등)
+        user_ingredients_list = [name.replace(" ", "") for name in user_ingredients]
+        user_ingredients_count = len(user_ingredients_list)
         
-        # 레시피 중 사용자가 가진 재료로 만들 수 있는 것 찾기
-        all_recipes = Recipe.objects.all()
+        # 2. 레시피 필터링 (취향 반영)
+        all_recipes = Recipe.objects.all().prefetch_related('ingredients')
+        
+        # 채식주의자 필터링 예시
+        is_vegetarian = '#채식' in diet_goals
+        is_diet = '#다이어트' in diet_goals
+        
+        meat_keywords = ['소고기', '돼지고기', '닭고기', '베이컨', '햄', '소시지', '육류', '오리고기', '계란']
+        
         recommended_recipes = []
         
         for recipe in all_recipes:
-            recipe_ingredients = set(recipe.ingredients.values_list('name', flat=True))
-            
-            # 보유 재료와 매칭 비율 계산
-            if recipe_ingredients:
-                match_count = len(recipe_ingredients & user_ingredients_set)
-                match_ratio = match_count / len(recipe_ingredients)
-                missing_count = len(recipe_ingredients) - match_count
+            recipe_ingredients_objs = recipe.ingredients.all()
+            if not recipe_ingredients_objs:
+                continue
                 
-                # 30% 이상 매칭되면 추천 (부분 매칭 허용)
-                if match_ratio >= 0.3:
-                    # 매칭 상태 판별
-                    if match_ratio >= 0.95:
-                        match_status = 'full'  # 완전 매칭 (95% 이상)
-                    elif match_ratio >= 0.7:
-                        match_status = 'high'  # 높은 매칭 (70% 이상)
-                    else:
-                        match_status = 'partial'  # 부분 매칭 (30~70%)
-                    
-                    recommended_recipes.append({
-                        'recipe': recipe,
-                        'match_ratio': match_ratio,
-                        'match_count': match_count,
-                        'missing_count': missing_count,
-                        'total_ingredients': len(recipe_ingredients),
-                        'match_status': match_status
-                    })
+            match_count = 0
+            matched_list = []
+            recipe_ingredients_names = []
+            
+            for ring in recipe_ingredients_objs:
+                recipe_ingredients_names.append(ring.name)
+                # 유연한 매칭 로직: 레시피 재료명이 사용자 재료명에 포함되거나 그 반대인 경우
+                clean_ring_name = ring.name.replace(" ", "")
+                found = False
+                for uing in user_ingredients_list:
+                    if uing in clean_ring_name or clean_ring_name in uing:
+                        match_count += 1
+                        matched_list.append(ring.name)
+                        found = True
+                        break
+            
+            total_count = len(recipe_ingredients_names)
+            match_ratio = match_count / total_count if total_count > 0 else 0
+            missing_ingredients = [name for name in recipe_ingredients_names if name not in matched_list]
+            
+            # 취향 필터링: 채식인데 고기가 들어가면 탈락
+            if is_vegetarian:
+                if any(meat in name for name in recipe_ingredients_names for meat in meat_keywords):
+                    continue
+            
+            # 10% 이상 매칭되거나, 모든 재료가 다 있거나, 특정 카테고리인 경우 포함
+            if match_count > 0 or (is_diet and '샐러드' in recipe.category):
+                match_status = 'partial'
+                if match_ratio >= 0.8: match_status = 'full'
+                elif match_ratio >= 0.4: match_status = 'high'
+                
+                recommended_recipes.append({
+                    'recipe': recipe,
+                    'match_ratio': match_ratio,
+                    'match_count': match_count,
+                    'matched_ingredients': matched_list,
+                    'missing_ingredients': missing_ingredients[:5],
+                    'total_ingredients': total_count,
+                    'match_status': match_status
+                })
         
         # 매칭 비율 순으로 정렬
-        recommended_recipes.sort(key=lambda x: x['match_ratio'], reverse=True)
+        recommended_recipes.sort(key=lambda x: (x['match_ratio'], x['total_ingredients']), reverse=True)
         
         # 최대 20개까지 추천 (더 많은 옵션 제공)
         recommended_recipes = recommended_recipes[:20]
@@ -100,13 +132,19 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             recipe_data = RecipeListSerializer(item['recipe']).data
             recipe_data['match_ratio'] = round(item['match_ratio'] * 100, 1)
             recipe_data['match_count'] = item['match_count']
-            recipe_data['missing_count'] = item['missing_count']
+            recipe_data['missing_ingredients'] = item['missing_ingredients']
             recipe_data['total_ingredients'] = item['total_ingredients']
             recipe_data['match_status'] = item['match_status']
             recipes_data.append(recipe_data)
         
+        print(f"[REC-DEBUG] Recommended: {len(recipes_data)} recipes for user {user.username} (Has {user_ingredients_count} ingredients)")
+        
         return Response({
             'count': len(recipes_data),
             'recipes': recipes_data,
-            'user_ingredient_count': len(user_ingredients_set)
+            'user_ingredient_count': user_ingredients_count,
+            'applied_filters': {
+                'vegetarian': is_vegetarian,
+                'diet': is_diet
+            }
         })

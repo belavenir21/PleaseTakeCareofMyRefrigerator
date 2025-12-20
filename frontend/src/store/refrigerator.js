@@ -171,6 +171,27 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     }
   }
 
+  // 여러 식재료 일괄 삭제
+  const bulkDeleteIngredients = async (ids) => {
+    try {
+      await refrigeratorAPI.bulkDeleteIngredients(ids)
+      ingredients.value = ingredients.value.filter(item => !ids.includes(item.id))
+    } catch (error) {
+      throw error
+    }
+  }
+
+  // 유통기한 지난 재료 일괄 삭제
+  const clearExpiredIngredients = async () => {
+    try {
+      await refrigeratorAPI.clearExpiredIngredients()
+      const today = new Date().toISOString().split('T')[0]
+      ingredients.value = ingredients.value.filter(item => item.expiry_date >= today)
+    } catch (error) {
+      throw error
+    }
+  }
+
   return {
     ingredients,
     loading,
@@ -184,8 +205,10 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     deleteIngredient,
     consumeIngredient,
     scanIngredient,
-    visionRecognize,  // NEW!
+    visionRecognize,
     batchCreateIngredients,
+    bulkDeleteIngredients,
+    clearExpiredIngredients,
     setSortBy,
     searchMasterIngredients,
   }
