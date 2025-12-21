@@ -20,6 +20,19 @@ export const recipeAPI = {
   getRecipeSteps(id) {
     return api.get(`/recipes/${id}/steps/`)
   },
+
+  // 재료명으로 레시피 검색
+  searchByIngredient(ingredientName) {
+    return api.get('/recipes/', { params: { search: ingredientName } })
+  },
+
+  // AI 챗봇 메시지 전송
+  sendChatMessage(message, includeIngredients = false) {
+    return api.post('/recipes/chatbot/', {
+      message,
+      include_ingredients: includeIngredients
+    })
+  },
 }
 
 export const masterAPI = {

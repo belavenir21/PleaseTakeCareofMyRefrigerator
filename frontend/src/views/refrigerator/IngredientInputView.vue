@@ -29,6 +29,7 @@
               <p>종이 영수증을 촬영하면<br/>품목을 자동으로 인식합니다.</p>
             </div>
             <span class="action-label">자동 스캔 →</span>
+            <div class="method-tip">💡 쿠팡, 이마트 구매내역 캡처도 OK!</div>
           </div>
 
           <div class="card method-card camera" @click="handleCamera">
@@ -38,6 +39,7 @@
               <p>식재료 자체를 촬영하여<br/>사물을 분석합니다.</p>
             </div>
             <span class="action-label">AI 분석 →</span>
+            <div class="method-tip">💡 여러 장 찍으면 정확도 UP!</div>
           </div>
 
           <div class="card method-card manual" @click="startManualMode">
@@ -205,11 +207,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 
 const router = useRouter()
+const route = useRoute()
 const refrigeratorStore = useRefrigeratorStore()
 
 const isManualMode = ref(false)
@@ -233,6 +236,27 @@ const getTodayPlusDays = (days) => {
   const d = new Date(); d.setDate(d.getDate() + days)
   return d.toISOString().split('T')[0]
 }
+
+// 페이지 로드 시 prefill 쿼리 파라미터 처리 (요리 후 미보유 재료 추가용)
+onMounted(() => {
+  const prefillNames = route.query.prefill
+  if (prefillNames) {
+    const names = prefillNames.split(',').filter(n => n.trim())
+    if (names.length > 0) {
+      isManualMode.value = true
+      manualItems.value = names.map(name => ({
+        name: name.trim(),
+        quantity: 1,
+        unit: '개',
+        storage_method: '냉장',
+        expiry_date: getTodayPlusDays(7),
+        showAutocomplete: false,
+        autocompleteResults: [],
+        isComposing: false
+      }))
+    }
+  }
+})
 
 const startManualMode = () => {
   isManualMode.value = true
@@ -304,7 +328,7 @@ const handleCameraCapture = async (event) => {
   loadingMessage.value = '이미지를 분석하는 중입니다...'
   try {
     const result = await refrigeratorStore.visionRecognize(file)
-    detectedList.value = (result.detected_ingredients || []).map((item, idx) => ({ ...item, selected: true }))
+    detectedList.value = (result.items || []).map((item, idx) => ({ ...item, selected: true }))
     showDetectedList.value = true
   } catch (err) { alert('분석 실패') } finally { loading.value = false }
 }
@@ -362,6 +386,15 @@ const submitAll = async () => {
 .method-info h3 { font-size: 1.4rem; margin-bottom: 8px; }
 .method-info p { font-size: 0.95rem; color: var(--text-light); margin-bottom: 24px; }
 .action-label { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
+.method-tip { 
+  margin-top: 16px; 
+  padding: 8px 14px; 
+  background: #fff5e6; 
+  border-radius: 8px; 
+  font-size: 0.8rem; 
+  color: #e67700; 
+  font-weight: 600; 
+}
 
 /* Form Elements */
 .section-header { margin-bottom: 32px; }

@@ -13,9 +13,17 @@
       
       <div class="nav-menu">
         <router-link 
+          to="/" 
+          class="nav-link"
+          :class="{ active: $route.path === '/' }"
+        >
+          🏠 홈
+        </router-link>
+        
+        <router-link 
           to="/pantry" 
           class="nav-link"
-          :class="{ active: $route.path === '/pantry' }"
+          :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
         >
           🗄️ 내 보관함
         </router-link>
@@ -53,13 +61,22 @@ const isAuthPage = computed(() => {
   return route.path === '/login' || route.path === '/register'
 })
 
+// 요리 모드 여부 (전체화면 모드라 네비바 숨김)
+const isCookingMode = computed(() => {
+  return route.name === 'CookingMode'
+})
+
 // 네비게이션 바 표시 여부
 const shouldShowNavbar = computed(() => {
   // 인증되지 않았거나 Auth 페이지면 숨김
   if (!authStore.isAuthenticated || isAuthPage.value) {
     return false
   }
-  // 홈 페이지면 항상 표시 (스크롤 상태에 따라 CSS로 숨김/표시)
+  // 요리모드면 숨김
+  if (isCookingMode.value) {
+    return false
+  }
+  // 그 외에는 항상 표시
   return true
 })
 
@@ -76,14 +93,13 @@ const handleLogout = async () => {
     router.push({ name: 'Login' })
   } catch (error) {
     console.error('Logout failed:', error)
-    // 에러가 발생해도 로그인 페이지로 이동
     router.push({ name: 'Login' })
   }
 }
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
-  handleScroll() // 초기 스크롤 상태 확인
+  handleScroll()
 })
 
 onUnmounted(() => {

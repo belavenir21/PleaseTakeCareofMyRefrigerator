@@ -8,6 +8,7 @@ class Recipe(models.Model):
     difficulty = models.CharField(max_length=20, verbose_name='난이도')
     image_url = models.URLField(blank=True, null=True, verbose_name='이미지 URL')
     tags = models.JSONField(default=list, blank=True, verbose_name='태그')
+    category = models.CharField(max_length=50, default='기타', verbose_name='카테고리')
     
     # 외부 API 데이터
     api_source = models.CharField(max_length=50, blank=True, null=True, verbose_name='데이터 출처')

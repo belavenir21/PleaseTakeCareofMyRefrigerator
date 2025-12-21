@@ -149,27 +149,51 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                 # 마스터 데이터 로드 (매칭 효율을 위해)
                 masters = list(IngredientMaster.objects.all())
                 
+                def normalize_name(name):
+                    """이름 정규화: 공백 제거, 소문자화, 괄호 내용 제거"""
+                    if not name: return ""
+                    # 괄호와 그 안의 내용 제거 (예: "달걀(10구)" -> "달걀")
+                    name = re.sub(r'\(.*\)', '', name)
+                    return name.replace(" ", "").lower()
+
                 def find_best_match(text, masters_list):
-                    if not text or len(text) < 2: return None
+                    if not text or len(text) < 1: return None
                     
-                    # 1. Exact match
+                    target = normalize_name(text)
+                    
+                    # 동의어 맵
+                    synonyms = {
+                        '계란': '달걀', '쇠고기': '소고기', '쇠고기': '소고기',
+                        '닭': '닭고기', '돼지': '돼지고기', '오리': '오리고기',
+                        '무우': '무', '공기밥': '밥'
+                    }
+                    for k, v in synonyms.items():
+                        if k in target: target = target.replace(k, v)
+
+                    # 1. Exact match (Normalized)
                     for m in masters_list:
-                        if m.name == text: return m
+                        if normalize_name(m.name) == target: return m
                         
-                    # 2. DB name is in text (e.g., "대추방울토마토" -> "토마토")
-                    potential_matches = [m for m in masters_list if m.name in text and len(m.name) >= 2]
+                    # 2. Synonym direct match
+                    if target in synonyms:
+                        target = synonyms[target]
+                        for m in masters_list:
+                            if normalize_name(m.name) == target: return m
+
+                    # 3. DB name is in text (e.g., "대추방울토마토" -> "토마토")
+                    potential_matches = [m for m in masters_list if normalize_name(m.name) in target and len(normalize_name(m.name)) >= 2]
                     if potential_matches:
                         return max(potential_matches, key=lambda x: len(x.name))
                         
-                    # 3. text is in DB name (e.g., "방울토" -> "방울토마토")
-                    potential_matches = [m for m in masters_list if text in m.name and len(text) >= 2]
+                    # 4. text is in DB name (e.g., "방울토" -> "방울토마토")
+                    potential_matches = [m for m in masters_list if target in normalize_name(m.name) and len(target) >= 2]
                     if potential_matches:
                         return max(potential_matches, key=lambda x: len(x.name))
                         
-                    # 4. Fuzzy match (SequenceMatcher)
+                    # 5. Fuzzy match (SequenceMatcher)
                     best_score, best_match = 0, None
                     for m in masters_list:
-                        score = SequenceMatcher(None, text, m.name).ratio()
+                        score = SequenceMatcher(None, target, normalize_name(m.name)).ratio()
                         if score > best_score and score >= 0.7:
                             best_score, best_match = score, m
                     return best_match
@@ -271,6 +295,44 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     })
                     print(f'[OCR-DEBUG] 📝 Added to Response: "{final_name}"')
                 
+                # [FALLBACK] 번호 패턴이 없는 경우 - 모든 라인을 마스터와 직접 매칭 시도
+                if len(all_items) == 0 and len(all_lines) > 0:
+                    print(f'[OCR-DEBUG] ⚠️ 번호 패턴 없음 - Fallback 매칭 진입 ({len(all_lines)}라인)')
+                    seen_names = set()
+                    for line in all_lines:
+                        # 기본 정제
+                        clean_line = re.sub(r'[\d,\.\*\#\(\)\[\]]', '', line).strip()
+                        if len(clean_line) < 2:
+                            continue
+                            
+                        matched_master = find_best_match(clean_line, masters)
+                        if matched_master and matched_master.name not in seen_names:
+                            seen_names.add(matched_master.name)
+                            category = matched_master.category
+                            unit = matched_master.default_unit or '개'
+                            icon = matched_master.icon or '📦'
+                            storage_settings = {
+                                '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
+                                '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
+                                '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
+                            }
+                            storage_method, days = storage_settings.get(category, ('냉장', 14))
+                            base_date = datetime.strptime(purchase_date, '%Y-%m-%d') if purchase_date else datetime.now()
+                            expiry_date = (base_date + timedelta(days=days)).strftime('%Y-%m-%d')
+                            
+                            all_items.append({
+                                'original_text': line,
+                                'name': matched_master.name,
+                                'category': category,
+                                'quantity': 1,
+                                'unit': unit,
+                                'icon': icon,
+                                'storage_method': storage_method,
+                                'expiry_date': expiry_date,
+                                'purchase_date': purchase_date,
+                            })
+                            print(f'[OCR-DEBUG] 📝 Fallback Added: "{matched_master.name}" from "{line}"')
+                
                 return Response({
                     'message': f'인식 완료 ({len(all_items)}개)',
                     'items': all_items,
@@ -280,6 +342,132 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=False, 
+        methods=['post'],
+        permission_classes=[IsAuthenticated]
+    )
+    def identify_ingredients_ai(self, request):
+        """Gemini 2.0 Flash를 사용하여 사진 제로 식재료 및 수량 분석"""
+        serializer = IngredientScanSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        gms_key = getattr(settings, 'GMS_KEY', None)
+        if not gms_key:
+            return Response({'error': 'GMS API Key가 설정되지 않았습니다.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        image = serializer.validated_data['image']
+        import base64
+        import json
+        from master.models import IngredientMaster
+        
+        try:
+            # 이미지 base64 인코딩
+            image_data = base64.b64encode(image.read()).decode('utf-8')
+            
+            url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gms_key}"
+            
+            prompt = """
+            이 사진 속에서 식별되는 모든 식재료를 찾아서 JSON 배열 형식으로만 응답해주세요.
+            다른 설명은 절대 하지 마세요.
+            JSON 필드:
+            - name: 식재료명 (예: 사과, 우유, 고기)
+            - quantity: 식별되는 대략적인 수량 (숫자만, 모르면 1)
+            - unit: 단위 (개, 봉, 팩 등 가장 적절한 것)
+            
+            형식 예시:
+            [{"name": "사과", "quantity": 3, "unit": "개"}, {"name": "우유", "quantity": 1, "unit": "개"}]
+            """
+            
+            payload = {
+                "contents": [{
+                    "parts": [
+                        {"text": prompt},
+                        {
+                            "inline_data": {
+                                "mime_type": "image/jpeg",
+                                "data": image_data
+                            }
+                        }
+                    ]
+                }]
+            }
+            
+            response = requests.post(url, json=payload, timeout=15)
+            if response.status_code != 200:
+                return Response({'error': f'AI 연동 실패: {response.text}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+            result = response.json()
+            raw_text = result['candidates'][0]['content']['parts'][0]['text'].strip()
+            
+            # Markdown code block 제거
+            clean_json = re.sub(r'```json\s*|\s*```', '', raw_text)
+            items_data = json.loads(clean_json)
+            
+            # 마스터 데이터와 매칭하여 상세 정보 보강
+            masters = list(IngredientMaster.objects.all())
+            final_items = []
+            
+            def normalize_name(name):
+                if not name: return ""
+                name = re.sub(r'\(.*\)', '', name)
+                return name.replace(" ", "").lower()
+
+            def find_best_match(text, masters_list):
+                if not text: return None
+                target = normalize_name(text)
+                
+                synonyms = {'계란': '달걀', '쇠고기': '소고기', '닭': '닭고기', '돼지': '돼지고기'}
+                for k, v in synonyms.items():
+                    if k in target: target = target.replace(k, v)
+
+                for m in masters_list:
+                    if normalize_name(m.name) == target: return m
+                for m in masters_list:
+                    m_norm = normalize_name(m.name)
+                    if m_norm in target or target in m_norm: return m
+                return None
+
+            for item in items_data:
+                name = item.get('name')
+                matched_master = find_best_match(name, masters)
+                
+                category, storage_method, days, unit, icon = '가공식품', '냉장', 14, item.get('unit', '개'), '🍴'
+                
+                if matched_master:
+                    name = matched_master.name
+                    category = matched_master.category
+                    unit = matched_master.default_unit or unit
+                    icon = matched_master.icon or '📦'
+                    storage_settings = {
+                        '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
+                        '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
+                        '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
+                    }
+                    storage_method, days = storage_settings.get(category, ('냉장', 14))
+                
+                expiry_date = (date.today() + timedelta(days=days)).strftime('%Y-%m-%d')
+                
+                final_items.append({
+                    'name': name,
+                    'category': category,
+                    'quantity': item.get('quantity', 1),
+                    'unit': unit,
+                    'icon': icon,
+                    'storage_method': storage_method,
+                    'expiry_date': expiry_date,
+                    'is_ai_identified': True
+                })
+                
+            return Response({
+                'message': f'AI 분석 완료 ({len(final_items)}개 식별)',
+                'items': final_items
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({'error': f'분석 중 오류 발생: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['post'])
     def batch_create(self, request):

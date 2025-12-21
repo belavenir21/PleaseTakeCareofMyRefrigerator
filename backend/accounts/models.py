@@ -6,6 +6,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     nickname = models.CharField(max_length=50, blank=True, null=True)
     diet_goals = models.CharField(max_length=255, blank=True, null=True, help_text="식단 목표 (해시태그)")
+    allergies = models.ManyToManyField('master.AllergyMaster', blank=True, related_name='profiles')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -2,16 +2,27 @@
   <div class="pantry-view">
     <header class="header-premium">
       <div class="container header-inner">
-        <!-- 뒤로가기 버튼 확실히 작동하도록 수정 -->
         <button @click="goBack" class="btn-back">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">보관함</h2>
         <button @click="$router.push({ name: 'IngredientInput' })" class="btn-primary-round">+</button>
       </div>
+      <!-- 뷰 모드 탭 -->
+      <div class="view-tabs">
+        <button :class="['tab-btn', { active: viewMode === 'list' }]" @click="viewMode = 'list'">
+          📋 목록
+        </button>
+        <button :class="['tab-btn', { active: viewMode === 'calendar' }]" @click="viewMode = 'calendar'">
+          📅 달력
+        </button>
+        <button :class="['tab-btn', { active: viewMode === 'challenge' }]" @click="viewMode = 'challenge'">
+          🏆 챌린지
+        </button>
+      </div>
     </header>
 
-    <main class="container">
+    <main class="container" v-if="viewMode === 'list'">
       <!-- 상단 컨트롤 도구함 -->
       <section class="toolbar-box">
         <div class="category-scroll">
@@ -58,7 +69,7 @@
           </div>
 
           <div class="item-visual">
-            <span class="emoji">{{ getIngredientEmoji(ingredient.name) }}</span>
+            <span class="emoji">{{ ingredient.icon || getIngredientEmoji(ingredient.name) }}</span>
             <span v-if="ingredient.is_expired" class="badge-expired">만료</span>
             <span v-else-if="ingredient.is_expiring_soon" class="badge-warning">임박</span>
           </div>
@@ -84,9 +95,15 @@
       </section>
     </main>
 
+    <!-- 달력 뷰 -->
+    <CalendarView v-if="viewMode === 'calendar'" />
+
+    <!-- 챌린지 뷰 -->
+    <WeeklyChallenge v-if="viewMode === 'challenge'" />
+
     <!-- 하단 일괄 삭제 바 -->
     <transition name="up">
-      <footer v-if="selectionMode" class="floating-selection-bar">
+      <footer v-if="selectionMode && viewMode === 'list'" class="floating-selection-bar">
         <div class="container bar-content">
           <span><strong>{{ selectedCount }}</strong>개 선택 중</span>
           <div class="btns">
@@ -97,7 +114,7 @@
       </footer>
     </transition>
 
-    <button v-if="ingredients.length > 0 && !selectionMode" @click="recommendRecipes" class="fab-cook">
+    <button v-if="ingredients.length > 0 && !selectionMode && viewMode === 'list'" @click="recommendRecipes" class="fab-cook">
       🍳 요리하기
     </button>
   </div>
@@ -107,15 +124,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import CalendarView from '@/components/CalendarView.vue'
+import WeeklyChallenge from '@/components/WeeklyChallenge.vue'
 
 const router = useRouter()
 const refrigeratorStore = useRefrigeratorStore()
 
+const viewMode = ref('list') // 'list' or 'calendar'
 const categories = ['전체', '육류', '수산물', '채소', '과일', '유제품', '곡류', '가공식품', '기타']
 const selectedCategory = ref('전체')
 const localSortBy = ref('expiry_date')
 const selectionMode = ref(false)
 const selectedIds = ref(new Set())
+
 
 const ingredients = computed(() => refrigeratorStore.ingredients)
 const expiredCount = computed(() => ingredients.value.filter(i => i.is_expired).length)
@@ -190,14 +211,41 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 </script>
 
 <style scoped>
-.pantry-view { min-height: 100vh; background: #FDFDFD; padding-bottom: 120px; }
+.pantry-view { min-height: 100vh; background: #FDFDFD; padding-bottom: 120px; padding-top: 70px; }
 
 /* Header */
-.header-premium { background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
+.header-premium { background: white; border-bottom: 1px solid #eee; position: sticky; top: 70px; z-index: 999; }
 .header-inner { height: 64px; display: flex; align-items: center; justify-content: space-between; }
 .btn-back { background: none; border: none; cursor: pointer; color: #333; }
 .view-title { font-size: 1.2rem; font-weight: 800; }
 .btn-primary-round { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
+
+/* View Tabs */
+.view-tabs {
+  display: flex;
+  gap: 0;
+  background: #f1f3f5;
+  border-radius: 12px;
+  padding: 4px;
+  margin: 0 20px 15px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+}
+.tab-btn.active {
+  background: white;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
 /* Toolbar */
 .toolbar-box { background: white; padding: 15px 0; border-bottom: 1px solid #f1f3f5; }

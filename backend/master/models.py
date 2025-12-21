@@ -15,6 +15,9 @@ class IngredientMaster(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    # 알레르기 유발 성분 연결
+    allergies = models.ManyToManyField('AllergyMaster', blank=True, related_name='ingredients')
+    
     class Meta:
         db_table = 'ingredient_master'
         verbose_name = '식재료 마스터'

@@ -1,0 +1,488 @@
+<template>
+  <div class="recipe-chatbot">
+    <!-- 플로팅 버튼 -->
+    <button v-if="!isOpen" @click="toggleChat" class="fab-chat">
+      <span class="fab-icon">🤖</span>
+      <span class="fab-label">AI 셰프</span>
+    </button>
+
+    <!-- 채팅창 -->
+    <transition name="chat-slide">
+      <div v-if="isOpen" class="chat-window">
+        <div class="chat-header">
+          <div class="header-info">
+            <span class="chef-icon">👨‍🍳</span>
+            <div>
+              <h3>AI 레시피 셰프</h3>
+              <p class="subtitle">무엇이든 물어보세요!</p>
+            </div>
+          </div>
+          <button @click="toggleChat" class="btn-close">×</button>
+        </div>
+
+        <div class="chat-body" ref="chatBody">
+          <!-- 웰컴 메시지 (메시지 없을 때만) -->
+          <div v-if="messages.length === 0" class="welcome-section">
+            <div class="welcome-icon">🍳</div>
+            <h4>안녕하세요! AI 셰프입니다</h4>
+            <p>레시피, 요리 팁, 재료 활용법 등<br/>무엇이든 물어보세요!</p>
+          </div>
+
+          <!-- 메시지 목록 -->
+          <div v-for="(msg, idx) in messages" :key="idx" 
+               :class="['message', msg.role]">
+            <div class="message-content" v-html="formatMessage(msg.content)"></div>
+            <span class="message-time">{{ msg.time }}</span>
+          </div>
+
+          <!-- 로딩 -->
+          <div v-if="loading" class="message assistant loading">
+            <div class="typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <!-- 빠른 질문 버튼 (항상 표시, 사용한 것 제외) -->
+          <div v-if="!loading && availableQuickActions.length > 0" class="quick-actions-inline">
+            <p class="quick-label">빠른 질문:</p>
+            <div class="quick-btns-row">
+              <button 
+                v-for="action in availableQuickActions" 
+                :key="action.id"
+                @click="sendQuickMessage(action.message, action.includeIngredients, action.id)" 
+                class="quick-btn-sm"
+              >
+                {{ action.icon }} {{ action.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-footer">
+          <div class="input-row">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="useMyIngredients" />
+              <span>내 재료 포함</span>
+            </label>
+            <div class="input-wrap">
+              <input 
+                v-model="userInput"
+                @keyup.enter="sendMessage"
+                type="text"
+                placeholder="레시피에 대해 물어보세요..."
+                :disabled="loading"
+              />
+              <button @click="sendMessage" :disabled="loading || !userInput.trim()" class="btn-send">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
+</template>
+
+<script setup>
+import { ref, nextTick, computed } from 'vue'
+import { recipeAPI } from '@/api/recipe'
+
+const isOpen = ref(false)
+const messages = ref([])
+const userInput = ref('')
+const loading = ref(false)
+const useMyIngredients = ref(true)
+const chatBody = ref(null)
+const usedQuickActionIds = ref(new Set())
+
+// 빠른 질문 목록
+const quickActions = [
+  { id: 'ingredients', icon: '🧊', label: '내 재료로 추천', message: '내 냉장고 재료로 만들 수 있는 요리 추천해줘', includeIngredients: true },
+  { id: 'simple', icon: '⚡', label: '간단 레시피', message: '간단하고 빠른 한끼 레시피 알려줘', includeIngredients: false },
+  { id: 'diet', icon: '🥗', label: '다이어트', message: '다이어트에 좋은 저칼로리 레시피 추천해줘', includeIngredients: false },
+  { id: 'leftover', icon: '♻️', label: '재료 활용', message: '남은 재료 활용하는 방법 알려줘', includeIngredients: true },
+  { id: 'korean', icon: '🍚', label: '한식', message: '맛있는 한식 레시피 추천해줘', includeIngredients: false },
+  { id: 'dessert', icon: '🍰', label: '디저트', message: '집에서 만들 수 있는 간단한 디저트 레시피 알려줘', includeIngredients: false },
+]
+
+// 사용하지 않은 빠른 질문만 표시
+const availableQuickActions = computed(() => {
+  return quickActions.filter(a => !usedQuickActionIds.value.has(a.id))
+})
+
+const toggleChat = () => {
+  isOpen.value = !isOpen.value
+}
+
+const formatMessage = (text) => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br/>')
+}
+
+const getCurrentTime = () => {
+  const now = new Date()
+  return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+}
+
+const scrollToBottom = async () => {
+  await nextTick()
+  if (chatBody.value) {
+    chatBody.value.scrollTop = chatBody.value.scrollHeight
+  }
+}
+
+const sendQuickMessage = (message, includeIngredients, actionId = null) => {
+  if (actionId) {
+    usedQuickActionIds.value.add(actionId)
+  }
+  useMyIngredients.value = includeIngredients
+  userInput.value = message
+  sendMessage()
+}
+
+const sendMessage = async () => {
+  const message = userInput.value.trim()
+  if (!message || loading.value) return
+
+  // 사용자 메시지 추가
+  messages.value.push({
+    role: 'user',
+    content: message,
+    time: getCurrentTime()
+  })
+  
+  userInput.value = ''
+  loading.value = true
+  scrollToBottom()
+
+  try {
+    const response = await recipeAPI.sendChatMessage(message, useMyIngredients.value)
+    
+    messages.value.push({
+      role: 'assistant',
+      content: response.message,
+      time: getCurrentTime()
+    })
+  } catch (error) {
+    messages.value.push({
+      role: 'assistant',
+      content: '죄송합니다, 오류가 발생했습니다. 다시 시도해주세요. 😅',
+      time: getCurrentTime()
+    })
+  } finally {
+    loading.value = false
+    scrollToBottom()
+  }
+}
+</script>
+
+<style scoped>
+.recipe-chatbot {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 9999;
+}
+
+/* 플로팅 버튼 */
+.fab-chat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+.fab-chat:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+}
+.fab-icon {
+  font-size: 1.4rem;
+}
+
+/* 채팅창 */
+.chat-window {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 48px);
+  height: 550px;
+  max-height: calc(100vh - 150px);
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.chef-icon {
+  font-size: 2rem;
+}
+.chat-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.subtitle {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+.btn-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 채팅 본문 */
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.welcome-section {
+  text-align: center;
+  padding: 30px 20px;
+}
+.welcome-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+.welcome-section h4 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+.welcome-section p {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 25px;
+}
+.quick-btn {
+  background: white;
+  border: 1px solid #e9ecef;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+.quick-btn:hover {
+  border-color: #667eea;
+  background: #f8f9ff;
+  transform: translateX(5px);
+}
+
+/* 메시지 */
+.message {
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user .message-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-left: 40px;
+  border-radius: 18px 18px 4px 18px;
+}
+.message.assistant .message-content {
+  background: white;
+  color: #333;
+  margin-right: 40px;
+  border-radius: 18px 18px 18px 4px;
+  border: 1px solid #e9ecef;
+}
+.message-content {
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.message-time {
+  display: block;
+  font-size: 0.7rem;
+  color: #adb5bd;
+  margin-top: 6px;
+  text-align: right;
+}
+.message.assistant .message-time {
+  text-align: left;
+}
+
+/* 타이핑 인디케이터 */
+.typing-indicator {
+  display: flex;
+  gap: 5px;
+  padding: 14px 18px;
+  background: white;
+  border-radius: 18px;
+  width: fit-content;
+  border: 1px solid #e9ecef;
+}
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: #adb5bd;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* 입력 영역 */
+.chat-footer {
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e9ecef;
+}
+.input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+}
+.checkbox-label input {
+  accent-color: #667eea;
+}
+.input-wrap {
+  display: flex;
+  gap: 10px;
+}
+.input-wrap input {
+  flex: 1;
+  border: 1px solid #e9ecef;
+  padding: 14px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-wrap input:focus {
+  border-color: #667eea;
+}
+.btn-send {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.btn-send:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+.btn-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 애니메이션 */
+.chat-slide-enter-active,
+.chat-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chat-slide-enter-from,
+.chat-slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+
+/* 인라인 빠른 버튼 */
+.quick-actions-inline {
+  margin-top: 16px;
+  padding: 12px;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+}
+.quick-label {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  color: #868e96;
+  font-weight: 600;
+}
+.quick-btns-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.quick-btn-sm {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.quick-btn-sm:hover {
+  background: #e7f5ff;
+  border-color: #74c0fc;
+  transform: scale(1.02);
+}
+</style>

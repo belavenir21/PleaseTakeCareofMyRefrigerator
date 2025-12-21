@@ -72,37 +72,60 @@
         </div>
       </section>
 
-      <!-- 결과가 없는 경우 더미 데이터 기반 검색 유도 -->
+      <!-- 결과가 없거나 적을 때 AI 도움 제안 -->
+      <div v-if="!loading && displayRecipes.length < 5 && showRecommendations" class="ai-suggest-section">
+        <div class="ai-suggest-card">
+          <div class="ai-icon">🤖</div>
+          <div class="ai-text">
+            <h4>AI 셰프에게 물어보기</h4>
+            <p>보관함 재료로 만들 수 있는 요리를 AI가 직접 추천해드려요!</p>
+          </div>
+          <button @click="openAIChat" class="btn-ai-chat">
+            💬 물어보기
+          </button>
+        </div>
+      </div>
+
+      <!-- 결과가 없는 경우 -->
       <div v-if="!loading && displayRecipes.length === 0" class="empty-state">
-        <p>찾으시는 요리가 없네요. 🧊</p>
-        <button @click="clearSearch" class="btn-sub">전체 보기</button>
+        <p>보관함 재료로 만들 수 있는 요리가 없어요. 🧊</p>
+        <p class="sub-text">AI 셰프에게 레시피를 물어보거나, 검색 모드로 전환해보세요!</p>
+        <div class="empty-actions">
+          <button @click="openAIChat" class="btn-primary">🤖 AI에게 물어보기</button>
+          <button @click="toggleMode" class="btn-secondary">🔍 검색모드로</button>
+        </div>
       </div>
     </main>
+
+    <!-- AI 챗봇 모달 -->
+    <RecipeChatModal v-if="showChatModal" @close="showChatModal = false" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/store/recipe'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { recipeAPI } from '@/api/recipe'
+import RecipeChatModal from '@/components/RecipeChatModal.vue'
 
 const router = useRouter()
 const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 
+const showChatModal = ref(false)
+const openAIChat = () => {
+  showChatModal.value = true
+}
+
 const searchQuery = ref('')
 const imageErrors = ref({})
 const showRecommendations = ref(false)
+const searchResults = ref([])
+const isSearching = ref(false)
 
-const dummyRecipes = [
-  { id: 9991, title: '시원한 김치찌개', cooking_time_minutes: 30, difficulty: '보통', match_ratio: 95, missing_ingredients: ['두부'], image_url: '' },
-  { id: 9992, title: '간편 계란볶음밥', cooking_time_minutes: 15, difficulty: '쉬움', match_ratio: 100, missing_ingredients: [], image_url: '' },
-  { id: 9993, title: '소고기 미역국', cooking_time_minutes: 45, difficulty: '보통', match_ratio: 80, missing_ingredients: ['소고기'], image_url: '' },
-  { id: 9994, title: '상큼한 사과 샐러드', cooking_time_minutes: 10, difficulty: '쉬움', match_ratio: 100, missing_ingredients: [], image_url: '' },
-]
-
-const loading = computed(() => recipeStore.loading)
+const loading = computed(() => recipeStore.loading || isSearching.value)
 const allRecipes = computed(() => recipeStore.recipes)
 const serverRecs = computed(() => recipeStore.recommendations)
 
@@ -112,18 +135,43 @@ const totalIngredientCount = computed(() => {
 })
 
 const displayRecipes = computed(() => {
-  let list = []
   if (showRecommendations.value) {
-    list = serverRecs.value.length > 0 ? [...serverRecs.value] : dummyRecipes
-    // 일치율 높은 순 -> 일치율 같으면 필요 재료 많은 요리 순
-    return list.sort((a,b) => (b.match_ratio - a.match_ratio))
-  } else {
-    list = allRecipes.value.length > 0 ? allRecipes.value : dummyRecipes
-    if (searchQuery.value.trim()) {
-      return list.filter(r => r.title.includes(searchQuery.value))
-    }
-    return list.slice(0, 48)
+    return [...serverRecs.value].sort((a,b) => (b.match_ratio - a.match_ratio))
+  } else if (searchQuery.value.trim() && searchResults.value.length > 0) {
+    return searchResults.value
+  } else if (searchQuery.value.trim()) {
+    // 클라이언트 측 필터: 제목 또는 재료명에 검색어 포함
+    return allRecipes.value.filter(r => {
+      const titleMatch = r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const ingredientMatch = r.ingredients?.some(ing => 
+        ing.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      )
+      return titleMatch || ingredientMatch
+    })
   }
+  return allRecipes.value.slice(0, 48)
+})
+
+// 검색어 변경 시 서버 검색 (디바운스)
+let searchTimeout = null
+watch(searchQuery, (newVal) => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  if (!newVal.trim()) {
+    searchResults.value = []
+    return
+  }
+  searchTimeout = setTimeout(async () => {
+    isSearching.value = true
+    try {
+      const response = await recipeAPI.searchByIngredient(newVal)
+      searchResults.value = response.results || response || []
+    } catch (e) {
+      console.error('Search failed:', e)
+      searchResults.value = []
+    } finally {
+      isSearching.value = false
+    }
+  }, 300)
 })
 
 onMounted(async () => {
@@ -144,20 +192,21 @@ onMounted(async () => {
 const toggleMode = async () => {
   showRecommendations.value = !showRecommendations.value
   searchQuery.value = ''
+  searchResults.value = []
   if (showRecommendations.value) await recipeStore.fetchRecommendations()
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
 
-const clearSearch = () => { searchQuery.value = ''; showRecommendations.value = false; }
+const clearSearch = () => { searchQuery.value = ''; searchResults.value = []; showRecommendations.value = false; }
 const goToRecipe = (id) => router.push({ name: 'RecipeDetail', params: { id } })
 const handleImageError = (id) => { imageErrors.value[id] = true }
 </script>
 
 <style scoped>
-.recipe-list-view { min-height: 100vh; background: #FCFCFC; padding-bottom: 100px; }
+.recipe-list-view { min-height: 100vh; background: #FCFCFC; padding-bottom: 100px; padding-top: 70px; }
 
 /* Header Premium */
-.header-premium { background: white; border-bottom: 1px solid #f1f3f5; position: sticky; top: 0; z-index: 1000; }
+.header-premium { background: white; border-bottom: 1px solid #f1f3f5; position: sticky; top: 70px; z-index: 999; }
 .header-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
 .view-title { font-size: 1.25rem; font-weight: 800; color: #333; }
 .btn-back { background: none; border: none; cursor: pointer; color: #333; padding: 8px; }
@@ -208,4 +257,56 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
 
 .animate-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* AI 제안 섹션 */
+.ai-suggest-section { margin-top: 30px; }
+.ai-suggest-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+  border: 2px dashed #667eea;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.ai-icon { font-size: 3rem; }
+.ai-text { flex: 1; }
+.ai-text h4 { margin: 0 0 5px; font-size: 1.1rem; color: #333; }
+.ai-text p { margin: 0; font-size: 0.9rem; color: #666; }
+.btn-ai-chat {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-ai-chat:hover { transform: scale(1.05); }
+
+/* 빈 상태 */
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state p { font-size: 1.2rem; color: #666; margin: 0; }
+.empty-state .sub-text { font-size: 0.95rem; color: #adb5bd; margin-top: 10px; }
+.empty-actions { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+.empty-actions .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.empty-actions .btn-secondary {
+  background: #e9ecef;
+  color: #495057;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
 </style>

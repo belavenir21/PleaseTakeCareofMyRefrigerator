@@ -42,7 +42,7 @@ export const refrigeratorAPI = {
 
   // 사진으로 식재료 인식 (Gemini Vision - 일반 사진용)
   visionRecognize(formData) {
-    return api.post('/refrigerator/ingredients/vision/', formData, {
+    return api.post('/refrigerator/ingredients/identify_ingredients_ai/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

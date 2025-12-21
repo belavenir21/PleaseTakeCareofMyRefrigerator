@@ -17,12 +17,13 @@ class RecipeListSerializer(serializers.ModelSerializer):
     """레시피 목록 Serializer (간단한 정보)"""
     ingredients_count = serializers.SerializerMethodField()
     steps_count = serializers.SerializerMethodField()
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True)
     
     class Meta:
         model = Recipe
         fields = [
             'id', 'title', 'cooking_time_minutes', 'difficulty',
-            'image_url', 'tags', 'ingredients_count', 'steps_count'
+            'image_url', 'tags', 'ingredients_count', 'steps_count', 'ingredients'
         ]
     
     def get_ingredients_count(self, obj):
