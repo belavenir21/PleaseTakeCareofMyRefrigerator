@@ -6,10 +6,7 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">보관함</h2>
-        <div class="header-actions">
-          <button @click="showHelp = true" class="btn-help" title="사용 방법">❓</button>
-          <button @click="$router.push({ name: 'IngredientInput' })" class="btn-primary-round">+</button>
-        </div>
+        <button @click="showHelp = true" class="btn-help" title="도움말">❓</button>
       </div>
       <!-- 뷰 모드 탭 -->
       <div class="view-tabs">
@@ -71,6 +68,11 @@
           <div v-if="selectionMode" class="selection-overlay">
             <div class="check-box" :class="{ checked: group.ids.some(id => selectedIds.has(id)) }"></div>
           </div>
+          
+          <!-- 다른 유통기한 표시 배지 -->
+          <div v-if="group.count > 1" class="count-badge" :title="`유통기한이 다른 ${group.primary.name} ${group.count - 1}개 더`">
+            📅 {{ group.count }}
+          </div>
 
           <div class="item-visual">
             <span class="emoji">{{ group.primary.icon || getIngredientEmoji(group.primary.name) }}</span>
@@ -118,6 +120,11 @@
         </div>
       </footer>
     </transition>
+
+    <!-- FAB 버튼들 -->
+    <button v-if="!selectionMode" @click="$router.push({ name: 'IngredientInput' })" class="fab-add">
+      ➕
+    </button>
 
     <button v-if="ingredients.length > 0 && !selectionMode && viewMode === 'list'" @click="recommendRecipes" class="fab-cook">
       🍳 요리하기
@@ -184,6 +191,10 @@
               <!-- 수정 모드가 아닐 때 -->
               <div v-if="editingId !== item.id" class="card-info">
                 <div class="info-row">
+                  <span class="label">카테고리</span>
+                  <span class="value">{{ item.category }}</span>
+                </div>
+                <div class="info-row">
                   <span class="label">수량</span>
                   <span class="value">{{ item.quantity }}{{ item.unit }}</span>
                 </div>
@@ -200,18 +211,27 @@
               <!-- 수정 모드일 때 -->
               <div v-else class="card-edit">
                 <div class="edit-row">
+                  <label>카테고리</label>
+                  <select v-model="editForm.category" class="edit-input">
+                    <option v-for="cat in categories.filter(c => c !== '전체')" :key="cat" :value="cat">{{ cat }}</option>
+                  </select>
+                </div>
+                <div class="edit-row">
                   <label>수량</label>
                   <input v-model.number="editForm.quantity" type="number" min="0.1" step="0.1" class="edit-input" />
                 </div>
                 <div class="edit-row">
                   <label>단위</label>
-                  <select v-model="editForm.unit" class="edit-input">
-                    <option value="개">개</option>
-                    <option value="g">g</option>
-                    <option value="ml">ml</option>
-                    <option value="봉">봉</option>
-                    <option value="팩">팩</option>
-                  </select>
+                  <input v-model="editForm.unit" type="text" class="edit-input" list="unit-options" placeholder="예: 개, g" />
+                  <datalist id="unit-options">
+                    <option value="개"></option>
+                    <option value="g"></option>
+                    <option value="ml"></option>
+                    <option value="봉"></option>
+                    <option value="팩"></option>
+                    <option value="kg"></option>
+                    <option value="L"></option>
+                  </datalist>
                 </div>
                 <div class="edit-row">
                   <label>유통기한</label>
@@ -254,7 +274,11 @@ const router = useRouter()
 const refrigeratorStore = useRefrigeratorStore()
 
 const viewMode = ref('list') // 'list' or 'calendar'
-const categories = ['전체', '육류', '수산/건어물', '채소', '과일', '유제품', '곡류', '가공식품', '기타']
+const categories = [
+  '전체', '채소', '과일/견과', '수산/건어물', '육류/달걀', 
+  '유제품', '곡류', '면/양념/오일', '가공식품', 
+  '간편식/식단', '음료', '기타'
+]
 const selectedCategory = ref('전체')
 const localSortBy = ref('expiry_date')
 const selectionMode = ref(false)
@@ -277,6 +301,8 @@ const showDateModal = (group) => {
 const startEdit = (item) => {
   editingId.value = item.id
   editForm.value = {
+    name: item.name,
+    category: item.category,
     quantity: item.quantity,
     unit: item.unit,
     expiry_date: item.expiry_date,
@@ -286,7 +312,7 @@ const startEdit = (item) => {
 
 const cancelEdit = () => {
   editingId.value = null
-  editForm.value = { quantity: 0, unit: '개', expiry_date: '', storage_method: '냉장' }
+  editForm.value = { name: '', category: '', quantity: 0, unit: '개', expiry_date: '', storage_method: '냉장' }
 }
 
 const saveEdit = async () => {
@@ -530,6 +556,23 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .check-box.checked { background: var(--primary); border-color: var(--primary); }
 .check-box.checked::after { content: '✓'; color: white; display: block; text-align: center; font-weight: 900; }
 
+/* 유통기한 개수 배지 */
+.count-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  z-index: 10;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* 다른 유통기한 배지 (클릭 가능 버튼) */
 .date-badge {
   position: absolute;
@@ -557,6 +600,22 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .emoji { font-size: 2.5rem; }
 .badge-expired { background: #FF6B6B; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
 .badge-warning { background: #FFD43B; color: #856404; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+
+.ingredient-card { position: relative; }
+.count-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: 1px solid #f1f3f5;
+  border-radius: 20px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #495057;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 5;
+}
 
 .item-info { display: flex; flex-direction: column; gap: 6px; }
 .name-cate-row { display: flex; flex-direction: column; }
@@ -807,5 +866,27 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* FAB Buttons */
+.fab-add {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.3s;
+}
+.fab-add:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
 }
 </style>

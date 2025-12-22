@@ -4,7 +4,7 @@ import { useAuthStore } from '@/store/auth'
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'Main',
     component: () => import('@/views/HomeView.vue'),
   },
   {
@@ -81,7 +81,7 @@ router.beforeEach(async (to, from, next) => {
     next({ name: 'Login' })
   } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
     // 비로그인 사용자만 접근 가능한 페이지
-    next({ name: 'Home' })
+    next({ name: 'Main' })
   } else {
     next()
   }

@@ -149,6 +149,7 @@
           </button>
         </div>
 
+
         <div class="items-grid auto-grid">
           <div v-for="(item, index) in detectedList" :key="index" class="card result-card" :class="{ inactive: !item.selected }">
             <div class="card-header">
@@ -157,9 +158,33 @@
             </div>
             
             <div class="form-body">
-              <div class="form-group">
+              <div class="form-group relative">
                 <label>재료명</label>
-                <input v-model="item.name" type="text" class="input-field" :disabled="!item.selected" />
+                <input 
+                  v-model="item.name" 
+                  type="text" 
+                  class="input-field" 
+                  :disabled="!item.selected"
+                  @input="handleDetectedItemInput(index)"
+                  @focus="item.showAutocomplete = true"
+                  @blur="handleDetectedItemBlur(index)"
+                />
+                <!-- 자동완성 -->
+                <div v-if="item.showAutocomplete && item.autocompleteResults?.length > 0" class="autocomplete-dropdown">
+                  <div v-for="res in item.autocompleteResults" :key="res.id" class="auto-item" @mousedown="selectDetectedItemAutocomplete(index, res)">
+                    <span class="auto-icon">{{ res.icon || '📦' }}</span>
+                    <div class="auto-info">
+                      <span class="name">{{ res.name }}</span>
+                      <span class="cate">{{ res.category }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>카테고리</label>
+                <select v-model="item.category" class="input-field" :disabled="!item.selected">
+                  <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
               </div>
               <div class="form-row">
                 <div class="group">
@@ -233,6 +258,13 @@ const cameraInput = ref(null)
 const detectedList = ref([])
 const manualItems = ref([])
 
+// DB와 일치시킨 카테고리 목록
+const categories = [
+  '채소', '과일/견과', '수산/건어물', '육류/달걀', 
+  '유제품', '곡류', '면/양념/오일', '가공식품', 
+  '간편식/식단', '음료', '기타'
+]
+
 const selectedCount = computed(() => detectedList.value.filter(item => item.selected).length)
 const allSelected = computed(() => detectedList.value.length > 0 && detectedList.value.every(item => item.selected))
 const confirmText = computed(() => {
@@ -254,6 +286,7 @@ onMounted(() => {
       isManualMode.value = true
       manualItems.value = names.map(name => ({
         name: name.trim(),
+        category: '기타',
         quantity: 1,
         unit: '개',
         storage_method: '냉장',
@@ -269,7 +302,7 @@ onMounted(() => {
 const startManualMode = () => {
   isManualMode.value = true
   manualItems.value = [{
-    name: '', quantity: 1, unit: '개', storage_method: '냉장', 
+    name: '', category: '기타', quantity: 1, unit: '개', storage_method: '냉장', 
     expiry_date: getTodayPlusDays(7),
     showAutocomplete: false, autocompleteResults: [], isComposing: false
   }]
@@ -277,7 +310,7 @@ const startManualMode = () => {
 
 const addManualItem = () => {
   manualItems.value.push({
-    name: '', quantity: 1, unit: '개', storage_method: '냉장', expiry_date: getTodayPlusDays(7),
+    name: '', category: '기타', quantity: 1, unit: '개', storage_method: '냉장', expiry_date: getTodayPlusDays(7),
     showAutocomplete: false, autocompleteResults: [], isComposing: false
   })
 }
@@ -291,27 +324,85 @@ const toggleSelectAll = () => {
 
 const handleManualItemNameInput = async (index) => {
   const item = manualItems.value[index]
-  if (item.isComposing || !item.name) return
-  const results = await refrigeratorStore.searchMasterIngredients(item.name)
-  item.autocompleteResults = results
-  item.showAutocomplete = results.length > 0
+  
+  console.log('🖱️ Input event:', item.name, 'isComposing:', item.isComposing)
+  
+  // 한글 입력 중이면 검색 안 함 (완성된 후 검색)
+  if (item.isComposing) return
+  if (!item.name) {
+    item.showAutocomplete = false
+    return
+  }
+  
+  console.log('🔍 Searching for:', item.name)
+  try {
+    const results = await refrigeratorStore.searchMasterIngredients(item.name)
+    console.log('📊 Search results:', results)
+    item.autocompleteResults = results
+    item.showAutocomplete = results.length > 0
+  } catch (e) {
+    console.error('검색 실패', e)
+  }
 }
 
 const handleManualItemCompositionEnd = (index) => {
+  console.log('🇰🇷 Composition End')
   manualItems.value[index].isComposing = false
-  handleManualItemNameInput(index)
+  // 약간의 딜레이를 주어 입력값을 확실히 반영 후 검색
+  setTimeout(() => handleManualItemNameInput(index), 50)
 }
 
 const handleManualItemBlur = (index) => {
-  setTimeout(() => { manualItems.value[index].showAutocomplete = false }, 200)
+  // 드롭다운 클릭을 위해 닫기 딜레이
+  setTimeout(() => { manualItems.value[index].showAutocomplete = false }, 300)
 }
 
 const selectManualItemAutocomplete = (index, res) => {
   const item = manualItems.value[index]
   item.name = res.name; item.unit = res.default_unit || '개'
-  const days = { '채소': 7, '육류': 3, '수산물': 2, '가공식품': 30 }[res.category] || 14
+  item.category = res.category || '기타'
+  
+  const daysMap = { 
+    '채소': 7, 
+    '육류/달걀': 5, 
+    '수산/건어물': 3, 
+    '유제품': 10,
+    '가공식품': 60,
+    '면/양념/오일': 180 
+  }
+  const days = daysMap[res.category] || 14
+  
   item.expiry_date = getTodayPlusDays(days)
   item.showAutocomplete = false
+}
+
+// --- Detected Items Autocomplete ---
+const handleDetectedItemInput = async (index) => {
+  const item = detectedList.value[index]
+  if (!item.name) { item.showAutocomplete = false; return }
+  
+  // console.log('🔍 Detected Search:', item.name)
+  const results = await refrigeratorStore.searchMasterIngredients(item.name)
+  item.autocompleteResults = results
+  item.showAutocomplete = results.length > 0
+}
+
+const selectDetectedItemAutocomplete = (index, res) => {
+  const item = detectedList.value[index]
+  item.name = res.name
+  // OCR 인식된 단위/날짜가 더 정확할 수 있으므로, 카테고리만 보정
+  if (res.category) item.category = res.category
+  
+  // 만약 단위가 없으면 기본값 채움
+  if (!item.unit || item.unit === '개') {
+      item.unit = res.default_unit || '개'
+  }
+  
+  item.showAutocomplete = false
+}
+
+const handleDetectedItemBlur = (index) => {
+  setTimeout(() => { detectedList.value[index].showAutocomplete = false }, 300)
 }
 
 const handleReceipt = () => fileInput.value.click()
@@ -324,7 +415,12 @@ const handleReceiptScan = async (event) => {
   loadingMessage.value = '영수증을 읽어오는 중입니다...'
   try {
     const result = await refrigeratorStore.scanIngredient(file)
-    detectedList.value = (result.items || []).map((item, idx) => ({ ...item, selected: true }))
+    detectedList.value = (result.items || []).map((item, idx) => ({ 
+      ...item, 
+      selected: true,
+      showAutocomplete: false,
+      autocompleteResults: [] 
+    }))
     showDetectedList.value = true
   } catch (err) { alert('인식 실패') } finally { loading.value = false }
 }
@@ -336,7 +432,12 @@ const handleCameraCapture = async (event) => {
   loadingMessage.value = '이미지를 분석하는 중입니다...'
   try {
     const result = await refrigeratorStore.visionRecognize(file)
-    detectedList.value = (result.items || []).map((item, idx) => ({ ...item, selected: true }))
+    detectedList.value = (result.items || []).map((item, idx) => ({ 
+      ...item, 
+      selected: true,
+      showAutocomplete: false,
+      autocompleteResults: [] 
+    }))
     showDetectedList.value = true
   } catch (err) { alert('분석 실패') } finally { loading.value = false }
 }
@@ -349,11 +450,14 @@ const removeDetectedItem = (idx) => {
 const addDetectedItem = () => {
   detectedList.value.push({
     name: '',
+    category: '기타',
     quantity: 1,
     unit: '개',
     storage_method: '냉장',
     expiry_date: getTodayPlusDays(7),
-    selected: true
+    selected: true,
+    showAutocomplete: false,
+    autocompleteResults: []
   })
 }
 
@@ -426,12 +530,22 @@ const submitAll = async () => {
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .group { display: flex; flex-direction: column; gap: 6px; }
 .group label { font-size: 0.85rem; font-weight: 700; color: var(--text-light); }
+.relative { position: relative; }
 
 /* Autocomplete */
 .autocomplete-dropdown {
-  position: absolute; top: calc(100% + 5px); left: 0; right: 0;
-  background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-premium);
-  z-index: 50; padding: 10px; border: 1px solid #EEE; max-height: 300px; overflow-y: auto;
+  position: absolute; 
+  top: calc(100% + 5px); 
+  left: 0; 
+  right: 0;
+  background: white; 
+  border-radius: var(--radius-md); 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  z-index: 1000; 
+  padding: 10px; 
+  border: 2px solid var(--primary); 
+  max-height: 300px; 
+  overflow-y: auto;
 }
 .auto-item { display: flex; align-items: center; padding: 12px; border-radius: 10px; cursor: pointer; }
 .auto-item:hover { background: #F8F9FA; }
@@ -462,6 +576,13 @@ const submitAll = async () => {
   display: flex; gap: 16px; border: 1px solid rgba(255, 255, 255, 0.5);
 }
 .floating-action-bar .btn { flex: 1; }
+
+/* Styles to fix dropdown visibility */
+.card, .result-card, .edit-card {
+  overflow: visible !important; 
+  background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); 
+  padding: 24px;
+}
 
 /* Animations */
 .animate-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; }

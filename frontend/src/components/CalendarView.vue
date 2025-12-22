@@ -19,6 +19,7 @@
           'today': date.isToday,
           'has-expiry': date.ingredients.length > 0,
           'expiry-soon': date.expiringSoon,
+          'expired': date.isExpired,
           'clickable': date.ingredients.length > 0
         }]"
         @click="date.ingredients.length > 0 && showDateDetails(date)"
@@ -49,7 +50,10 @@
         </div>
         <div class="modal-body">
           <p class="modal-subtitle">
-            만료 예정 재료 <strong>{{ selectedDate.ingredients.length }}개</strong>
+            <span v-if="getDateStatus(selectedDate.date) === 'expired'">유통기한 지난 재료</span>
+            <span v-else-if="getDateStatus(selectedDate.date) === 'today'">오늘 만료 재료</span>
+            <span v-else>만료 예정 재료</span>
+            <strong>{{ selectedDate.ingredients.length }}개</strong>
           </p>
           <div class="ingredient-list">
             <div 
@@ -149,6 +153,23 @@ const getStorageType = (method) => {
   return methodMap[method] || 'fridge'
 }
 
+// 날짜 상태 판별 (지남/오늘/임박)
+const getDateStatus = (dateStr) => {
+  if (!dateStr) return 'upcoming'
+  
+  // YYYY-MM-DD 문자열을 직접 로컬 날짜로 파싱
+  // new Date(str)은 UTC로 파싱될 위험이 있어 날짜가 밀릴 수 있음
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const targetDate = new Date(year, month - 1, day)
+  
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  if (targetDate < today) return 'expired'
+  if (targetDate.getTime() === today.getTime()) return 'today'
+  return 'upcoming'
+}
+
 // 날짜 상세 모달 표시
 const showDateDetails = (date) => {
   selectedDate.value = date
@@ -204,13 +225,16 @@ const calendarDays = computed(() => {
     })
     
     const daysFromToday = Math.ceil((date - today) / (1000 * 60 * 60 * 24))
+    const isExpired = date < today && expiring.length > 0
     
     days.push({
       day: d,
+      date: `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
       otherMonth: false,
       isToday: date.getTime() === today.getTime(),
       ingredients: expiring,
-      expiringSoon: expiring.length > 0 && daysFromToday <= 3 && daysFromToday >= 0
+      expiringSoon: expiring.length > 0 && daysFromToday <= 3 && daysFromToday >= 0,
+      isExpired: isExpired
     })
   }
   
@@ -658,5 +682,15 @@ const goToRecipes = () => {
 }
 .item-date.urgent {
   color: #fa5252;
+}
+
+/* Expired Date Styles */
+.day-cell.expired {
+  background-color: #fff5f5;
+  border: 1px solid #ffc9c9;
+}
+.day-cell.expired .date-num {
+    color: #fa5252;
+    font-weight: 800;
 }
 </style>

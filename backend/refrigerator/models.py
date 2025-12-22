@@ -21,8 +21,10 @@ class UserIngredient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ingredients')
     name = models.CharField(max_length=100, verbose_name='재료명')
     quantity = models.FloatField(verbose_name='수량')
-    unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='g', verbose_name='단위')
-    storage_method = models.CharField(max_length=10, choices=STORAGE_CHOICES, verbose_name='보관방법')
+    # choices 제한 제거: OCR 및 다양한 사용자 입력 허용
+    unit = models.CharField(max_length=20, default='개', verbose_name='단위')
+    # storage_method choices 제거 (유연성 확보)
+    storage_method = models.CharField(max_length=20, default='냉장', verbose_name='보관방법')
     expiry_date = models.DateField(verbose_name='유통기한')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='등록일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
@@ -38,6 +40,9 @@ class UserIngredient(models.Model):
     
     # 이미지 (사진 촬영 시 저장)
     image = models.ImageField(upload_to='ingredients/', null=True, blank=True)
+    
+    # 카테고리 (마스터 데이터가 없거나 사용자가 직접 지정한 경우)
+    category = models.CharField(max_length=50, blank=True, null=True, verbose_name='카테고리')
     
     class Meta:
         db_table = 'user_ingredients'

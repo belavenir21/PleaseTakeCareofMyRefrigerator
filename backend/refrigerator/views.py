@@ -55,6 +55,23 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             return UserIngredientListSerializer
         return UserIngredientSerializer
     
+    def update(self, request, *args, **kwargs):
+        """수정 요청 시 에러 상세 로깅"""
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            print(f"❌ [Update Error] Data: {request.data}")
+            print(f"❌ [Update Error] Validation: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        self.perform_update(serializer)
+        
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+    
     def get_ai_correction(self, raw_text):
         """SSAFY GMS를 사용하여 오타나 불완전한 텍스트 교정"""
         gms_key = getattr(settings, 'GMS_KEY', None)
@@ -64,12 +81,23 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gms_key}"
         
         prompt = f"""
-        다음은 영수즘 OCR 인식 결과 중 일부입니다. 
-        불완전하게 인식되었거나 오타가 있다면 한국에서 판매되는 가장 가능성 높은 식품/식재료명 1개로만 교정해주세요.
-        다른 설명 없이 교정한 단어 그 자체만 응답하세요.
-        입력: {raw_text}
-        응답:
-        """
+다음은 영수증 OCR 인식 결과입니다. 
+불완전하게 인식되었거나 오타가 있다면 한국에서 판매되는 가장 가능성 높은 식재료명으로 교정해주세요.
+
+중요한 규칙:
+1. 브랜드명(노브랜드, CJ, 풀무원 등)과 수량/가격 정보는 삭제.
+2. 구체적인 품종이나 종류는 최대한 유지할 것. (중요!)
+   - 예: '애호박' -> '애호박' (O), '호박' (X)
+   - 예: '산딸기' -> '산딸기' (O), '딸기' (X)
+   - 예: '청양고추' -> '청양고추' (O)
+   - 예: '부사 사과' -> '사과' (품종이 너무 구체적이면 일반명으로)
+3. '소스', '양념', '장', '육수', '드레싱'이 포함된 경우 원재료로 착각하지 말 것.
+   - 예: '쌀국수소스' -> '쌀국수' (X), '쌀국수소스' (O) 또는 '소스'
+4. 다른 설명 없이 교정한 식재료명 그 자체만 응답
+
+입력: {raw_text}
+응답:
+"""
         
         try:
             payload = {
@@ -163,9 +191,13 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     
                     # 동의어 맵
                     synonyms = {
-                        '계란': '달걀', '쇠고기': '소고기', '쇠고기': '소고기',
+                        '계란': '달걀', '특란': '달걀', '대란': '달걀', '소란': '달걀', '왕란': '달걀', '유정란': '달걀',
+                        '쇠고기': '소고기',
                         '닭': '닭고기', '돼지': '돼지고기', '오리': '오리고기',
-                        '무우': '무', '공기밥': '밥'
+                        '무우': '무', '공기밥': '밥',
+                        '두유': '콩우유', '콩밀크': '콩우유',
+                        '청양고추': '고추', '풋고추': '고추', '홍고추': '고추',
+                        '대파': '파', '쪽파': '파',
                     }
                     for k, v in synonyms.items():
                         if k in target: target = target.replace(k, v)
@@ -229,28 +261,43 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     
                     print(f'  🔍 Searching for: "{item_name}"')
                     
+                    # 불필요한 텍스트 필터링 (가격, 금액, 결제 관련)
+                    skip_keywords = ['금액', '합계', '결제', '카드', '현금', '포인트', '할인', '원', '총', '부가세', '면세', '과세', '대상']
+                    if any(kw in item_name for kw in skip_keywords):
+                        print(f'[OCR-DEBUG] ⏭️ 스킵 (불필요 텍스트): "{item_name}"')
+                        continue
+                    
                     # 1~4. 개선된 매칭 시도
                     matched_master = find_best_match(item_name, masters)
 
-                    # 5. [NEW] AI 기반 텍스트 교정
-                    if not matched_master:
-                        print(f'\n[OCR-DEBUG] 🔍 AI 보정 시도: "{item_name}"')
-                        ai_suggested = self.get_ai_correction(item_name)
-                        if ai_suggested:
-                            print(f'[OCR-DEBUG] 🤖 AI 제안: "{ai_suggested}"')
-                            
-                            # AI 제안이 있으면 일단 반영
-                            item_name = ai_suggested
-                            
-                            # AI 제안값으로 다시 한 번 정밀 매칭
-                            matched_master = find_best_match(ai_suggested, masters)
-                            
-                            if matched_master:
-                                print(f'[OCR-DEBUG] ✅ AI 보정 & DB 매칭 성공: "{original_name}" -> "{matched_master.name}"')
+                    # 5. [NEW] AI 기반 텍스트 교정 (조건 강화)
+                    # - 길이가 3자 이상이고
+                    # - 한글이 50% 이상이고  
+                    # - 숫자가 50% 미만일 때만
+                    if not matched_master and len(item_name) >= 3:
+                        korean_ratio = len(re.findall(r'[가-힣]', item_name)) / len(item_name)
+                        digit_ratio = len(re.findall(r'\d', item_name)) / len(item_name)
+                        
+                        if korean_ratio >= 0.5 and digit_ratio < 0.5:
+                            print(f'\n[OCR-DEBUG] 🔍 AI 보정 시도: "{item_name}"')
+                            ai_suggested = self.get_ai_correction(item_name)
+                            if ai_suggested:
+                                print(f'[OCR-DEBUG] 🤖 AI 제안: "{ai_suggested}"')
+                                
+                                # AI 제안이 있으면 일단 반영
+                                item_name = ai_suggested
+                                
+                                # AI 제안값으로 다시 한 번 정밀 매칭
+                                matched_master = find_best_match(ai_suggested, masters)
+                                
+                                if matched_master:
+                                    print(f'[OCR-DEBUG] ✅ AI 보정 & DB 매칭 성공: "{original_name}" -> "{matched_master.name}"')
+                                else:
+                                    print(f'[OCR-DEBUG] ⚠️ AI 보정 적용 (DB 미존재): "{original_name}" -> "{item_name}"')
                             else:
-                                print(f'[OCR-DEBUG] ⚠️ AI 보정 적용 (DB 미존재): "{original_name}" -> "{item_name}"')
+                                print(f'[OCR-DEBUG] ❓ AI 보정 제안 없음')
                         else:
-                            print(f'[OCR-DEBUG] ❓ AI 보정 제안 없음')
+                            print(f'[OCR-DEBUG] ⏭️ AI 스킵 (한글:{korean_ratio:.1%}, 숫자:{digit_ratio:.1%})')
 
                     # 6. 설정값 결정
                     final_name = item_name

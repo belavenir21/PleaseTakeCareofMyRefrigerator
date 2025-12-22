@@ -18,7 +18,7 @@ export const refrigeratorAPI = {
 
   // 식재료 수정
   updateIngredient(id, data) {
-    return api.put(`/refrigerator/ingredients/${id}/`, data)
+    return api.put(`/refrigerator/ingredients/${id}/`, data).then(res => res.data)
   },
 
   // 식재료 삭제
