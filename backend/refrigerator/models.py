@@ -44,6 +44,10 @@ class UserIngredient(models.Model):
     # 카테고리 (마스터 데이터가 없거나 사용자가 직접 지정한 경우)
     category = models.CharField(max_length=50, blank=True, null=True, verbose_name='카테고리')
     
+    # 휴지통 기능 (Soft Delete)
+    is_deleted = models.BooleanField(default=False, verbose_name='삭제여부')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='삭제일시')
+    
     class Meta:
         db_table = 'user_ingredients'
         verbose_name = '사용자 식재료'

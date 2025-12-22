@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django_filters import rest_framework as filters
 from datetime import date, timedelta, datetime
 from django.conf import settings
+from django.utils import timezone
 import requests
 import re
 from .models import UserIngredient
@@ -48,7 +49,50 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return UserIngredient.objects.filter(user=self.request.user)
+        # 기본 쿼리셋은 삭제되지 않은 항목만
+        return UserIngredient.objects.filter(user=self.request.user, is_deleted=False)
+
+    def destroy(self, request, *args, **kwargs):
+        """Soft Delete 수행"""
+        instance = self.get_object()
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'])
+    def trash(self, request):
+        """휴지통 목록 조회"""
+        queryset = UserIngredient.objects.filter(user=request.user, is_deleted=True).order_by('-deleted_at')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def restore(self, request, pk=None):
+        """휴지통 항목 복구"""
+        try:
+            # 삭제된 항목도 포함해서 검색
+            instance = UserIngredient.objects.get(pk=pk, user=request.user)
+            instance.is_deleted = False
+            instance.deleted_at = None
+            instance.save()
+            return Response({'status': 'restored'}, status=status.HTTP_200_OK)
+        except UserIngredient.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+            
+    @action(detail=True, methods=['delete'])
+    def hard_delete(self, request, pk=None):
+        """영구 삭제"""
+        try:
+            instance = UserIngredient.objects.get(pk=pk, user=request.user)
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except UserIngredient.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -555,8 +599,9 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             return Response({'error': '차감할 수량이 올바르지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
         
         if quantity >= ingredient.quantity:
-            # 전체 소진
-            ingredient.delete()
+            # 전체 소진 (소진은 휴지통 안감? or 소진 기록? 일단 사용자 요구는 '버리기'만 휴지통)
+            # 소비는 실제로 먹어서 없어진 거라 삭제가 맞음 (또는 소비 로그 기록)
+            ingredient.delete() 
             return Response({
                 'message': '재료가 모두 소진되었습니다.',
                 'remaining_quantity': 0,
@@ -573,23 +618,70 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             'deleted': False
         })
 
+    @action(detail=True, methods=['post'])
+    def discard(self, request, pk=None):
+        """재료 부분 버리기 - 수량 차감 및 차감분을 휴지통으로 생성"""
+        ingredient = self.get_object()
+        quantity = float(request.data.get('quantity', 0))
+        
+        if quantity <= 0:
+            return Response({'error': '버릴 수량이 올바르지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 전체 버리기와 같거나 많으면 -> 해당 재료 Soft Delete
+        if quantity >= ingredient.quantity:
+            ingredient.is_deleted = True
+            ingredient.deleted_at = timezone.now()
+            ingredient.save()
+            return Response({
+                'message': '재료를 모두 휴지통에 버렸습니다.',
+                'remaining_quantity': 0,
+                'discarded': True
+            })
+        
+        # 부분 버리기
+        ingredient.quantity -= quantity
+        ingredient.save()
+        
+        # 버려진 수량만큼의 '삭제된' 새 아이템 생성 (휴지통용)
+        UserIngredient.objects.create(
+            user=self.request.user,
+            ingredient_master=ingredient.ingredient_master,
+            name=ingredient.name,
+            category=ingredient.category,
+            quantity=quantity,
+            unit=ingredient.unit,
+            storage_method=ingredient.storage_method,
+            expiry_date=ingredient.expiry_date,
+            purchase_date=ingredient.purchase_date,
+            icon=ingredient.icon,
+            is_deleted=True,
+            deleted_at=timezone.now()
+        )
+        
+        return Response({
+            'message': f'{quantity}{ingredient.unit} 휴지통에 버렸습니다.',
+            'remaining_quantity': ingredient.quantity,
+            'discarded': False
+        })
+
     @action(detail=False, methods=['post'])
     def bulk_delete(self, request):
-        """선택한 여러 식재료를 한 번에 삭제"""
+        """선택한 여러 식재료를 한 번에 휴지통으로"""
         ids = request.data.get('ids', [])
         if not ids:
             return Response({'error': '삭제할 항목이 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        deleted_count, _ = self.get_queryset().filter(id__in=ids).delete()
-        return Response({'message': f'{deleted_count}개의 항목이 삭제되었습니다.'})
+        # Soft Delete
+        self.get_queryset().filter(id__in=ids).update(is_deleted=True, deleted_at=timezone.now())
+        return Response({'message': '선택한 항목들이 휴지통으로 이동되었습니다.'})
 
     @action(detail=False, methods=['post'])
     def clear_expired(self, request):
-        """유통기한이 지난 모든 식재료를 삭제"""
+        """유통기한이 지난 모든 식재료를 휴지통으로"""
         expired_items = self.get_queryset().filter(expiry_date__lt=date.today())
         count = expired_items.count()
         if count == 0:
             return Response({'message': '정리할 재료가 없습니다.'})
             
-        expired_items.delete()
-        return Response({'message': f'유통기한이 지난 {count}개의 항목을 모두 정리했습니다.'})
+        expired_items.update(is_deleted=True, deleted_at=timezone.now())
+        return Response({'message': f'유통기한이 지난 {count}개의 항목을 모두 휴지통으로 보냈습니다.'})

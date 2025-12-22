@@ -38,10 +38,13 @@
         <div class="action-row">
           <div class="left-actions">
             <button @click="toggleSelectionMode" :class="['btn-select-mode', { active: selectionMode }]">
-               <span class="icon">{{ selectionMode ? '✓' : '⚙️' }}</span> {{ selectionMode ? '완료' : '관리' }}
+               <span class="icon">{{ selectionMode ? '✓' : '☑️' }}</span> {{ selectionMode ? '완료' : '선택하기' }}
             </button>
             <button v-if="expiredCount > 0" @click="handleClearExpired" class="btn-clean-expired">
               🗑️ 만료 {{ expiredCount }}개 비우기
+            </button>
+            <button @click="openTrash" class="btn-trash-view">
+              ♻️ 휴지통
             </button>
           </div>
           <select v-model="localSortBy" class="select-minimal">
@@ -121,6 +124,62 @@
       </footer>
     </transition>
 
+    <!-- 부분 버리기 모달 (Teleport로 최상위로 이동) -->
+    <Teleport to="body">
+      <div v-if="showDiscardModal" class="modal-overlay discard-overlay" @click="showDiscardModal = false">
+        <div class="modal-content" @click.stop>
+          <div class="modal-header">
+              <h3>🗑️ 재료 버리기</h3>
+              <button class="close-btn" @click="showDiscardModal = false">✕</button>
+          </div>
+          <div class="modal-body">
+              <p style="text-align:center; margin-bottom: 20px;">
+                  <strong>{{ discardItem?.name }}</strong>을(를) 얼마나 버릴까요?<br>
+                  <span style="font-size:0.9rem; color:#888;">현재 수량: {{ discardItem?.quantity }}{{ discardItem?.unit }}</span>
+              </p>
+              <div class="quantity-control" style="justify-content:center; margin-bottom: 20px; display:flex; align-items:center; gap:10px;">
+                  <button class="btn-qty" @click="decreaseAmount">-</button>
+                  <input type="number" v-model.number="discardAmount" class="qty-input" />
+                  <span style="font-size:1rem; font-weight:bold;">{{ discardItem?.unit }}</span>
+                  <button class="btn-qty" @click="increaseAmount">+</button>
+              </div>
+              <div class="modal-actions">
+                  <button class="btn-cancel" @click="showDiscardModal = false">취소</button>
+                  <button class="btn-danger" @click="handleDiscardConfirm">
+                      {{ discardAmount >= discardItem?.quantity ? '전체 버리기' : `${discardAmount}${discardItem?.unit} 버리기` }}
+                  </button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- 휴지통 모달 -->
+    <transition name="fade">
+      <div v-if="showTrashModal" class="modal-overlay" @click="showTrashModal = false">
+        <div class="modal-content" @click.stop>
+          <div class="modal-header">
+            <h3>♻️ 휴지통</h3>
+            <button class="close-btn" @click="showTrashModal = false">✕</button>
+          </div>
+          <div class="modal-body trash-list">
+              <div v-if="trashItems.length === 0" class="empty-msg-sm">휴지통이 비었습니다 📭</div>
+              <div v-else class="trash-item" v-for="item in trashItems" :key="item.id">
+                  <span class="emoji-sm">{{ item.icon || '🥘' }}</span>
+                  <div class="trash-info">
+                      <span class="name">{{ item.name }}</span>
+                      <span class="meta">{{ item.quantity }}{{ item.unit }} · {{ formatDate(item.expiry_date) }} 삭제됨</span>
+                  </div>
+                  <div class="trash-actions">
+                      <button @click="restoreItem(item.id)" class="btn-restore" title="복구">♻️</button>
+                      <button @click="permanentDelete(item.id)" class="btn-danger-sm" title="영구 삭제">🔥</button>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- FAB 버튼들 -->
     <button v-if="!selectionMode" @click="$router.push({ name: 'IngredientInput' })" class="fab-add">
       ➕
@@ -139,24 +198,24 @@
         </div>
         <div class="modal-body help-content">
           <div class="help-item">
-            <span class="help-icon">⚙️</span>
+            <span class="help-icon">☑️</span>
             <div>
-              <strong>관리 버튼</strong>
-              <p>여러 재료를 선택하여 한번에 삭제할 수 있어요</p>
+              <strong>[선택하기] 버튼</strong>
+              <p>여러 재료를 콕콕 선택해서 <strong>한 번에 싹- 🗑️휴지통</strong>으로 보낼 때 사용해요.</p>
+            </div>
+          </div>
+          <div class="help-item">
+            <span class="help-icon">👆</span>
+            <div>
+              <strong>재료 카드 누르기</strong>
+              <p>재료의 상세 정보를 확인하고 <strong>✏️내용을 수정</strong>하거나, <strong>원하는 만큼만 🗑️덜어서 버릴 때</strong> 사용해요.</p>
             </div>
           </div>
           <div class="help-item">
             <span class="help-icon">📅</span>
             <div>
               <strong>유통기한 배지</strong>
-              <p>같은 재료인데 유통기한이 다른 상품이 더 있다는 표시예요. 클릭하면 자세히 볼 수 있어요</p>
-            </div>
-          </div>
-          <div class="help-item">
-            <span class="help-icon">📋</span>
-            <div>
-              <strong>목록 / 달력 / 챌린지</strong>
-              <p>세 가지 방식으로 재료를 확인할 수 있어요</p>
+              <p>표시된 날짜를 보고 신선도를 챙기세요. 같은 재료가 여러 개면 하나로 묶여서 보여요.</p>
             </div>
           </div>
           <div class="help-item">
@@ -222,16 +281,18 @@
                 </div>
                 <div class="edit-row">
                   <label>단위</label>
-                  <input v-model="editForm.unit" type="text" class="edit-input" list="unit-options" placeholder="예: 개, g" />
-                  <datalist id="unit-options">
-                    <option value="개"></option>
-                    <option value="g"></option>
-                    <option value="ml"></option>
-                    <option value="봉"></option>
-                    <option value="팩"></option>
-                    <option value="kg"></option>
-                    <option value="L"></option>
-                  </datalist>
+                  <div class="unit-wrapper" style="flex:1;">
+                    <input v-model="editForm.unit" type="text" class="edit-input" placeholder="직접 입력" style="width:100%; margin-bottom:5px;" />
+                    <div class="unit-chips" style="display:flex; gap:5px; flex-wrap:wrap;">
+                        <span v-for="u in ['개', 'g', 'kg', 'ml', 'L', '봉', '팩']" 
+                              :key="u" 
+                              @click="editForm.unit = u" 
+                              class="unit-chip"
+                              :class="{ active: editForm.unit === u }">
+                          {{ u }}
+                        </span>
+                    </div>
+                  </div>
                 </div>
                 <div class="edit-row">
                   <label>유통기한</label>
@@ -250,6 +311,7 @@
               <!-- 버튼 -->
               <div class="card-actions">
                 <button v-if="editingId !== item.id" @click="startEdit(item)" class="btn-edit">✏️ 수정</button>
+                <button v-if="editingId !== item.id" @click="checkQuantityAndDelete(item)" class="btn-delete-card">🗑️ 삭제</button>
                 <template v-else>
                   <button @click="saveEdit()" class="btn-save">💾 저장</button>
                   <button @click="cancelEdit()" class="btn-cancel">취소</button>
@@ -328,14 +390,15 @@ const saveEdit = async () => {
 }
 
 
-const ingredients = computed(() => refrigeratorStore.ingredients)
-const expiredCount = computed(() => ingredients.value.filter(i => i.is_expired).length)
+const ingredients = computed(() => refrigeratorStore.ingredients || [])
+const expiredCount = computed(() => ingredients.value.filter(i => i && i.is_expired).length)
 
 // 재료 그룹화: 같은 이름의 재료를 하나로 묶음
 const groupedIngredients = computed(() => {
   const groups = new Map()
   
   ingredients.value.forEach(ing => {
+    if (!ing || !ing.name) return // 데이터 방어 코드
     const key = ing.name
     if (!groups.has(key)) {
       groups.set(key, {
@@ -426,28 +489,119 @@ const selectAll = () => {
 }
 
 const handleBatchDelete = async () => {
-  if (confirm('삭제할까요?')) {
-    await refrigeratorStore.bulkDeleteIngredients(Array.from(selectedIds.value))
-    selectionMode.value = false; selectedIds.value.clear()
-  }
+  // 휴지통으로 이동 (확인 없음)
+  await refrigeratorStore.bulkDeleteIngredients(Array.from(selectedIds.value))
+  selectionMode.value = false; selectedIds.value.clear()
 }
 
 const handleClearExpired = async () => {
-  if (confirm('만료 재료를 모두 비울까요?')) await refrigeratorStore.clearExpiredIngredients()
+  // 만료 재료 휴지통 이동 (확인 없음)
+  await refrigeratorStore.clearExpiredIngredients()
 }
 
 const handleDelete = async (group) => {
   if (group.count > 1) {
-    // 여러 개 있으면 전체 삭제 확인
-    if (confirm(`"${group.primary.name}" 총 ${group.count}개를 모두 삭제하시겠습니까?`)) {
-      await refrigeratorStore.bulkDeleteIngredients(group.ids)
-    }
+    await refrigeratorStore.bulkDeleteIngredients(group.ids)
   } else {
-    // 하나만 있으면 그냥 삭제
-    if (confirm('삭제하시겠습니까?')) {
-      await refrigeratorStore.deleteIngredient(group.primary.id)
+    const item = group.primary
+    // 수량이 1보다 크면 부분 버리기 모달
+    if (parseFloat(item.quantity) > 1) {
+       openDiscardModal(item)
+    } else {
+       await refrigeratorStore.deleteIngredient(item.id)
     }
   }
+}
+
+// Discard Modal Logic
+const showDiscardModal = ref(false)
+const discardItem = ref(null)
+const discardAmount = ref(1)
+
+const openDiscardModal = (item) => {
+  discardItem.value = item
+  discardAmount.value = 1
+  // g, ml일 경우 기본 버리는 양을 50이나 100으로 시작할 수도 있음 (선택사항)
+  if(['g', 'ml'].includes(item.unit) && item.quantity >= 100) discardAmount.value = 100
+  showDiscardModal.value = true
+}
+
+const stepAmount = computed(() => {
+  const unit = discardItem.value?.unit
+  if (!unit) return 1
+  if (['g', 'ml', '그램', '미리'].includes(unit)) return 50 // g 단위는 50씩
+  if (['kg', 'L', '리터'].includes(unit)) return 0.5 // kg 단위는 0.5씩
+  return 1
+})
+
+const decreaseAmount = () => {
+  if (discardAmount.value <= 0) return
+  // 소수점 연산 오류 방지
+  discardAmount.value = Math.max(0, parseFloat((discardAmount.value - stepAmount.value).toFixed(2)))
+}
+
+const increaseAmount = () => {
+  if (!discardItem.value) return
+  const max = discardItem.value.quantity
+  discardAmount.value = Math.min(max, parseFloat((discardAmount.value + stepAmount.value).toFixed(2)))
+}
+
+const handleDiscardConfirm = async () => {
+  if (!discardItem.value) return
+  await refrigeratorStore.discardIngredient(discardItem.value.id, discardAmount.value)
+  showDiscardModal.value = false
+  
+  // 상세 모달이 열려있다면 갱신
+  if (selectedGroup.value) {
+      if (discardAmount.value >= discardItem.value.quantity) {
+          selectedGroup.value.all = selectedGroup.value.all.filter(i => i.id !== discardItem.value.id)
+          selectedGroup.value.count--
+          if(selectedGroup.value.count === 0) selectedGroup.value = null // 다 지워지면 닫기
+      } else {
+          // 수량만 업데이트
+          const updated = selectedGroup.value.all.find(i => i.id === discardItem.value.id)
+          if(updated) updated.quantity -= discardAmount.value
+      }
+  }
+  discardItem.value = null
+}
+
+const checkQuantityAndDelete = async (item) => {
+    const qty = parseFloat(item.quantity)
+    if (qty > 1) {
+        openDiscardModal(item)
+    } else {
+        await refrigeratorStore.deleteIngredient(item.id)
+        if(selectedGroup.value) {
+            selectedGroup.value.all = selectedGroup.value.all.filter(i => i.id !== item.id)
+            selectedGroup.value.count--
+            if(selectedGroup.value.count === 0) selectedGroup.value = null
+        }
+    }
+}
+
+// Trash Bin Logic
+const showTrashModal = ref(false)
+const trashItems = ref([])
+
+const openTrash = async () => {
+  try {
+    const res = await refrigeratorStore.fetchTrash()
+    trashItems.value = res
+    showTrashModal.value = true
+  } catch (e) { console.error(e) }
+}
+
+const restoreItem = async (id) => {
+  await refrigeratorStore.restoreIngredient(id)
+  await openTrash() // Refresh trash
+  await refrigeratorStore.fetchIngredients() // Refresh pantry
+}
+
+const permanentDelete = async (id) => {
+  if (!confirm('정말 영구 삭제하시겠습니까? (복구 불가)')) return
+  await refrigeratorStore.hardDeleteIngredient(id)
+  await openTrash()
 }
 
 const formatDate = (dateString) => {
@@ -889,4 +1043,35 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   transform: scale(1.1) rotate(90deg);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
 }
+
+/* Trash Modal Styles */
+.trash-list { display: flex; flex-direction: column; gap: 10px; }
+.trash-item { display: flex; align-items: center; gap: 12px; padding: 10px; background: #f8f9fa; border-radius: 12px; }
+.emoji-sm { font-size: 1.5rem; }
+.trash-info { flex: 1; display: flex; flex-direction: column; }
+.trash-info .name { font-weight: 700; color: #333; font-size: 0.95rem; }
+.trash-info .meta { font-size: 0.8rem; color: #868e96; }
+.trash-actions { display: flex; gap: 8px; }
+.empty-msg-sm { text-align: center; color: #adb5bd; padding: 40px 0; }
+
+.btn-restore { background: #e7f5ff; color: #1971c2; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+.btn-restore:hover { background: #d0ebff; }
+.btn-trash-view { background: #fff; border: 1px solid #dee2e6; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: 700; color: #495057; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.btn-trash-view:hover { background: #f8f9fa; }
+
+.btn-delete-card {
+  background: white; border: 1px solid #fa5252; color: #fa5252;
+  border-radius: 6px; padding: 4px 8px; font-size: 0.85rem; cursor: pointer;
+}
+.discard-overlay { z-index: 9999 !important; background: rgba(0,0,0,0.8); }
+.qty-input { width: 80px; text-align: center; font-size: 1.2rem; font-weight: bold; padding: 5px; border: 1px solid #ddd; border-radius: 8px; }
+
+.unit-chip { 
+  background: #f1f3f5; padding: 4px 10px; border-radius: 15px; font-size: 0.85rem; cursor: pointer; color: #495057; border: 1px solid #dee2e6; transition: all 0.2s;
+}
+.unit-chip:hover { background: #e9ecef; }
+.unit-chip.active { background: #e7f5ff; color: #1c7ed6; border-color: #1c7ed6; font-weight: 700; }
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

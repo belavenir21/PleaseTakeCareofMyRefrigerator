@@ -71,6 +71,24 @@ export const refrigeratorAPI = {
     return api.post('/refrigerator/ingredients/clear_expired/')
   },
 
+  // 휴지통 목록
+  getTrash() {
+    return api.get('/refrigerator/ingredients/trash/')
+  },
+  // 복구
+  restoreIngredient(id) {
+    return api.post(`/refrigerator/ingredients/${id}/restore/`)
+  },
+  // 영구 삭제
+  hardDeleteIngredient(id) {
+    return api.delete(`/refrigerator/ingredients/${id}/hard_delete/`)
+  },
+
+  // 식재료 부분 버리기 (휴지통)
+  discardIngredient(id, quantity) {
+    return api.post(`/refrigerator/ingredients/${id}/discard/`, { quantity })
+  },
+
   // 식재료 마스터 검색
   searchMasterIngredients(query) {
     return api.get('/master/ingredients/', { params: { search: query } })

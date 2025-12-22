@@ -174,6 +174,41 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     }
   }
 
+  // 휴지통 관련 액션
+  const fetchTrash = async () => {
+    try {
+      const response = await refrigeratorAPI.getTrash()
+      return response.results || response
+    } catch (error) { throw error }
+  }
+  const restoreIngredient = async (id) => {
+    try {
+      await refrigeratorAPI.restoreIngredient(id)
+      await fetchIngredients()
+    } catch (error) { throw error }
+  }
+  const hardDeleteIngredient = async (id) => {
+    try {
+      await refrigeratorAPI.hardDeleteIngredient(id)
+    } catch (error) { throw error }
+  }
+
+  // 식재료 부분 버리기
+  const discardIngredient = async (id, quantity) => {
+    try {
+      const response = await refrigeratorAPI.discardIngredient(id, quantity)
+      const index = ingredients.value.findIndex(item => item.id === id)
+      if (index !== -1) {
+        if (response.discarded || response.remaining_quantity === 0) {
+          ingredients.value.splice(index, 1)
+        } else {
+          ingredients.value[index].quantity = response.remaining_quantity
+        }
+      }
+      return response
+    } catch (error) { throw error }
+  }
+
   // 여러 식재료 일괄 삭제
   const bulkDeleteIngredients = async (ids) => {
     try {
@@ -214,5 +249,9 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     clearExpiredIngredients,
     setSortBy,
     searchMasterIngredients,
+    fetchTrash,
+    restoreIngredient,
+    hardDeleteIngredient,
+    discardIngredient,
   }
 })

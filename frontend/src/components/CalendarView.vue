@@ -49,36 +49,44 @@
           <button class="close-btn" @click="closeModal">✕</button>
         </div>
         <div class="modal-body">
-          <p class="modal-subtitle">
-            <span v-if="getDateStatus(selectedDate.date) === 'expired'">유통기한 지난 재료</span>
-            <span v-else-if="getDateStatus(selectedDate.date) === 'today'">오늘 만료 재료</span>
-            <span v-else>만료 예정 재료</span>
-            <strong>{{ selectedDate.ingredients.length }}개</strong>
-          </p>
-          <div class="ingredient-list">
-            <div 
-              v-for="ingredient in selectedDate.ingredients" 
-              :key="ingredient.id"
-              class="ingredient-card"
-            >
-              <div class="ing-left">
-                <span class="ing-emoji">{{ ingredient.icon || '📦' }}</span>
-                <div class="ing-info">
-                  <div class="ing-name">{{ ingredient.name }}</div>
-                  <div class="ing-category">{{ ingredient.category || '기타' }}</div>
+          <div v-if="getDateStatus(selectedDate.date) === 'expired'" class="expired-humor">
+              <div class="humor-visual">🙅‍♀️😱🙅‍♂️</div>
+              <h4 class="humor-title">설마 아직 안 버리고<br>냉장고에 있는 거 아니죠?</h4>
+              <p class="humor-desc">지금 당장 냉장고 정리하기!!<br>정리하고 오면 말해주세요.<br>내 보관함에서 지워드릴게요!</p>
+              <button class="btn-cleanup" @click="handleDateCleanup(selectedDate)">네, 깨끗이 치웠어요! 🗑️</button>
+          </div>
+
+          <div v-else>
+            <p class="modal-subtitle">
+              <span v-if="getDateStatus(selectedDate.date) === 'today'">오늘 만료 재료</span>
+              <span v-else>만료 예정 재료</span>
+              <strong>{{ selectedDate.ingredients.length }}개</strong>
+            </p>
+            <div class="ingredient-list">
+              <div 
+                v-for="ingredient in selectedDate.ingredients" 
+                :key="ingredient.id"
+                class="ingredient-card"
+              >
+                <div class="ing-left">
+                  <span class="ing-emoji">{{ ingredient.icon || '📦' }}</span>
+                  <div class="ing-info">
+                    <div class="ing-name">{{ ingredient.name }}</div>
+                    <div class="ing-category">{{ ingredient.category || '기타' }}</div>
+                  </div>
                 </div>
-              </div>
-              <div class="ing-right">
-                <div class="ing-quantity">{{ ingredient.quantity }}{{ ingredient.unit }}</div>
-                <div :class="['ing-storage', `storage-${getStorageType(ingredient.storage_method)}`]">
-                  {{ ingredient.storage_method }}
+                <div class="ing-right">
+                  <div class="ing-quantity">{{ ingredient.quantity }}{{ ingredient.unit }}</div>
+                  <div :class="['ing-storage', `storage-${getStorageType(ingredient.storage_method)}`]">
+                    {{ ingredient.storage_method }}
+                  </div>
                 </div>
               </div>
             </div>
+            <button class="btn-use-ingredients" @click="useIngredientsForRecipes">
+              🍳 레시피 찾아보기
+            </button>
           </div>
-          <button class="btn-use-ingredients" @click="useIngredientsForRecipes">
-            🍳 레시피 찾아보기
-          </button>
         </div>
       </div>
     </div>
@@ -177,6 +185,15 @@ const showDateDetails = (date) => {
 
 // 모달 닫기
 const closeModal = () => {
+  selectedDate.value = null
+}
+
+// 만료 재료 일괄 정리 (휴지통)
+const handleDateCleanup = async (dateObj) => {
+  const ids = dateObj.ingredients.map(i => i.id)
+  if(ids.length > 0) {
+      await refrigeratorStore.bulkDeleteIngredients(ids)
+  }
   selectedDate.value = null
 }
 
@@ -692,5 +709,55 @@ const goToRecipes = () => {
 .day-cell.expired .date-num {
     color: #fa5252;
     font-weight: 800;
+}
+
+.expired-humor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 10px;
+}
+.humor-visual {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: shake 1s infinite alternate;
+}
+.humor-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #fa5252;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.humor-desc {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  background: #fff5f5;
+  padding: 15px;
+  border-radius: 12px;
+}
+.btn-cleanup {
+  background: #fa5252;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(250, 82, 82, 0.4);
+  transition: all 0.2s;
+}
+.btn-cleanup:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(250, 82, 82, 0.5);
+}
+
+@keyframes shake {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
 }
 </style>
