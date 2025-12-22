@@ -44,3 +44,56 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
             'difficulty', 'image_url', 'tags', 'ingredients', 'steps',
             'created_at', 'updated_at'
         ]
+
+
+class RecipeCreateSerializer(serializers.ModelSerializer):
+    """레시피 생성용 Serializer"""
+    ingredients = serializers.ListField(
+        child=serializers.DictField(), 
+        write_only=True,
+        help_text="재료 목록 [{'name': '재료명', 'quantity': '수량'}]"
+    )
+    steps = serializers.ListField(
+        child=serializers.DictField(), 
+        write_only=True, 
+        required=False,
+        help_text="조리 단계 [{'description': '설명', 'time_minutes': 5}]"
+    )
+    
+    class Meta:
+        model = Recipe
+        fields = [
+            'title', 'description', 'cooking_time_minutes',
+            'difficulty', 'image_url', 'tags', 'category',
+            'ingredients', 'steps'
+        ]
+    
+    def create(self, validated_data):
+        ingredients_data = validated_data.pop('ingredients', [])
+        steps_data = validated_data.pop('steps', [])
+        
+        # 사용자 레시피로 표시
+        validated_data['api_source'] = 'user'
+        
+        recipe = Recipe.objects.create(**validated_data)
+        
+        # 재료 생성
+        for ing in ingredients_data:
+            RecipeIngredient.objects.create(
+                recipe=recipe,
+                name=ing.get('name', ''),
+                quantity=ing.get('quantity', '')
+            )
+        
+        # 조리 단계 생성
+        for idx, step in enumerate(steps_data, 1):
+            CookingStep.objects.create(
+                recipe=recipe,
+                step_number=idx,
+                description=step.get('description', ''),
+                time_minutes=step.get('time_minutes', 0),
+                icon=step.get('icon', '🍳')
+            )
+        
+        return recipe
+

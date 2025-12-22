@@ -101,6 +101,15 @@
           </div>
         </div>
 
+        <!-- 냉장고 채우기 카드 (마지막에 항상 표시) -->
+        <div class="card add-ingredient-card" @click="$router.push({ name: 'IngredientInput' })">
+          <div class="add-icon">🛒</div>
+          <div class="add-text">
+            <strong>냉장고 채우기</strong>
+            <p>새 재료를 추가해요</p>
+          </div>
+        </div>
+
         <!-- 데이터 없을 때 -->
         <div v-if="filteredIngredients.length === 0" class="empty-msg">
           <p>등록된 식재료가 없습니다. 🧊</p>
@@ -145,6 +154,8 @@
                   <input type="number" v-model.number="discardAmount" class="qty-input" />
                   <span style="font-size:1rem; font-weight:bold;">{{ discardItem?.unit }}</span>
                   <button class="btn-qty" @click="increaseAmount">+</button>
+                  <!-- 전체(최대) 선택 버튼 추가 -->
+                  <button class="btn-max" @click="setMaxAmount">전체</button>
               </div>
               <div class="modal-actions">
                   <button class="btn-cancel" @click="showDiscardModal = false">취소</button>
@@ -183,14 +194,12 @@
       </div>
     </transition>
 
-    <!-- FAB 버튼들 -->
-    <button v-if="!selectionMode" @click="$router.push({ name: 'IngredientInput' })" class="fab-add">
-      ➕
-    </button>
-
-    <button v-if="ingredients.length > 0 && !selectionMode && viewMode === 'list'" @click="recommendRecipes" class="fab-cook">
-      🍳 요리하기
-    </button>
+    <!-- 요리하기 버튼 (중앙 하단 고정) - 목록/달력 뷰 모두 표시 -->
+    <div v-if="ingredients.length > 0 && !selectionMode && (viewMode === 'list' || viewMode === 'calendar')" class="floating-cook-bar">
+      <button @click="recommendRecipes" class="btn-cook-main">
+        요리하기
+      </button>
+    </div>
 
     <!-- 도움말 모달 -->
     <div v-if="showHelp" class="modal-overlay" @click="showHelp = false">
@@ -549,6 +558,11 @@ const increaseAmount = () => {
   discardAmount.value = Math.min(max, parseFloat((discardAmount.value + stepAmount.value).toFixed(2)))
 }
 
+const setMaxAmount = () => {
+  if (!discardItem.value) return
+  discardAmount.value = discardItem.value.quantity
+}
+
 const handleDiscardConfirm = async () => {
   if (!discardItem.value) return
   await refrigeratorStore.discardIngredient(discardItem.value.id, discardAmount.value)
@@ -635,11 +649,25 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 
 <style scoped>
 /* 🎀 Pantry View - Centered Layout */
+/* 🎀 Pantry View - Centered Layout */
 .pantry-view { 
   min-height: 100vh; 
-  background: var(--bg-main); 
+  position: relative;
   padding-bottom: 120px; 
   padding-top: 56px; /* 네비게이션 바 높이만큼 */
+}
+
+/* 🌫️ 배경 블러 처리 */
+.pantry-view::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('/images/pantry-bg.png');
+  background-size: cover;
+  background-position: center top;
+  z-index: -1;
+  filter: blur(5px);
+  transform: scale(1.05); /* 블러 테두리 방지 */
 }
 
 /* 🌸 Header - 네비 바에 바로 붙이기 */
@@ -713,7 +741,7 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   padding: 15px 24px; 
   border-bottom: 1px solid #f1f3f5;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto 25px; /* 하단 여백 25px 추가! */
 }
 .category-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 15px; }
 .category-scroll::-webkit-scrollbar { display: none; }
@@ -797,18 +825,11 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
 }
 
-.item-visual { display: flex; justify-content: space-between; align-items: flex-start; }
-.icon-wrapper { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.ingredient-icon-png { width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; } /* 픽셀 아트라 pixelated 적용 */
-.emoji { font-size: 2.5rem; }
-.badge-expired { background: #FF6B6B; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
-.badge-warning { background: #FFD43B; color: #856404; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
-
-.ingredient-card { position: relative; }
+/* 숫자는 우상단, 만료 상태는 좌상단 */
 .count-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   background: white;
   border: 1px solid #f1f3f5;
   border-radius: 20px;
@@ -818,6 +839,67 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   color: #495057;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   z-index: 5;
+}
+
+/* 아이템 시각 요소 내부 뱃지 위치 조정 */
+.item-visual { 
+  display: flex; 
+  justify-content: center; /* 아이콘 중앙 정렬 */
+  align-items: center;
+  position: relative;
+  min-height: 60px; /* 아이콘 공간 확보 */
+  margin-bottom: 10px;
+}
+
+.icon-wrapper { 
+  width: 60px; 
+  height: 60px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  overflow: hidden; 
+  background: #f8f9fa; /* 아이콘 배경 추가해서 깔끔하게 */
+  border-radius: 50%;
+}
+
+.ingredient-icon-png { 
+  width: 48px; 
+  height: 48px; 
+  object-fit: contain; 
+} 
+
+.emoji { 
+  font-size: 2.8rem; 
+  line-height: 1;
+}
+
+/* 만료/임박 뱃지는 아이콘 좌측 상단에 배치 */
+.badge-expired { 
+  background: #FF6B6B; 
+  color: white; 
+  font-size: 0.7rem; 
+  padding: 3px 8px; 
+  border-radius: 12px; 
+  font-weight: 800;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 5px rgba(255,107,107,0.3);
+  z-index: 2;
+}
+
+.badge-warning { 
+  background: #FFD43B; 
+  color: #856404; 
+  font-size: 0.7rem; 
+  padding: 3px 8px; 
+  border-radius: 12px; 
+  font-weight: 800;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 5px rgba(255,212,59,0.3);
+  z-index: 2;
 }
 
 .item-info { display: flex; flex-direction: column; gap: 6px; }
@@ -1123,4 +1205,140 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* 냉장고 채우기 카드 */
+.add-ingredient-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+  border: 2px dashed #667eea !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 160px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.add-ingredient-card:hover {
+  transform: translateY(-5px);
+  border-color: #5c6bc0 !important;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+}
+.add-icon {
+  font-size: 2.5rem;
+}
+.add-text {
+  text-align: center;
+}
+.add-text strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #5c6bc0;
+  margin-bottom: 4px;
+}
+.add-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #868e96;
+}
+
+/* 요리하기 버튼 (중앙 하단 고정) */
+.floating-cook-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+}
+.btn-cook-main {
+  background: #FF69B4;
+  color: white;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  padding: 16px 50px;
+  border-radius: 50px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: var(--font-title);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  /* 입체감 - 여러 레이어 그림자 */
+  box-shadow: 
+    0 4px 0 #E0559A,
+    0 6px 20px rgba(255, 105, 180, 0.5),
+    inset 0 2px 10px rgba(255, 255, 255, 0.3),
+    0 0 30px rgba(255, 105, 180, 0.4);
+  transition: all 0.2s;
+}
+
+/* 상단 하이라이트 빛 효과 */
+.btn-cook-main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+  border-radius: 50px 50px 0 0;
+  pointer-events: none;
+}
+
+/* 반짝임 효과 */
+.btn-cook-main::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 60%
+  );
+  animation: shine 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.btn-cook-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #E0559A,
+    0 10px 30px rgba(255, 105, 180, 0.6),
+    inset 0 2px 10px rgba(255, 255, 255, 0.4),
+    0 0 40px rgba(255, 105, 180, 0.5);
+}
+
+.btn-cook-main:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #E0559A,
+    0 4px 15px rgba(255, 105, 180, 0.4),
+    inset 0 2px 10px rgba(255, 255, 255, 0.3);
+}
+
+/* 전체(최대) 버튼 */
+.btn-max {
+    background: #868e96;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background 0.2s;
+}
+.btn-max:hover {
+    background: #495057;
+}
+
 </style>

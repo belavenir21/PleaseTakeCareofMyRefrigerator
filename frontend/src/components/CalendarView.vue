@@ -26,14 +26,15 @@
       >
         <span class="date-num">{{ date.day }}</span>
         <div v-if="date.ingredients.length > 0" class="ingredient-icons">
-          <span 
+          <div 
             v-for="ing in date.ingredients.slice(0, 3)" 
             :key="ing.id"
-            class="ing-icon"
+            class="ing-icon-wrapper"
             :title="ing.name"
           >
-            {{ ing.icon || '📦' }}
-          </span>
+            <img v-if="ing.image_url" :src="getFullImageUrl(ing.image_url)" class="ing-img-mini" />
+            <span v-else class="ing-emoji-mini">{{ ing.icon || '📦' }}</span>
+          </div>
           <span v-if="date.ingredients.length > 3" class="more-count">
             +{{ date.ingredients.length - 3 }}
           </span>
@@ -69,7 +70,10 @@
                 class="ingredient-card"
               >
                 <div class="ing-left">
-                  <span class="ing-emoji">{{ ingredient.icon || '📦' }}</span>
+                  <div class="ing-visual">
+                    <img v-if="ingredient.image_url" :src="getFullImageUrl(ingredient.image_url)" class="ing-img-visual" />
+                    <span v-else class="ing-emoji">{{ ingredient.icon || '📦' }}</span>
+                  </div>
                   <div class="ing-info">
                     <div class="ing-name">{{ ingredient.name }}</div>
                     <div class="ing-category">{{ ingredient.category || '기타' }}</div>
@@ -109,7 +113,10 @@
       </div>
       <div v-else class="expiry-list">
         <div v-for="item in monthExpiries" :key="item.id" class="expiry-item">
-          <span class="item-icon">{{ item.icon || '📦' }}</span>
+          <div class="expiry-icon-wrapper">
+            <img v-if="item.image_url" :src="getFullImageUrl(item.image_url)" class="expiry-img" />
+            <span v-else class="item-icon">{{ item.icon || '📦' }}</span>
+          </div>
           <span class="item-name">{{ item.name }}</span>
           <span :class="['item-date', { 'urgent': item.daysLeft <= 3 }]">
             {{ item.daysLeft <= 0 ? '만료됨' : `D-${item.daysLeft}` }}
@@ -201,6 +208,13 @@ const handleDateCleanup = async (dateObj) => {
 const useIngredientsForRecipes = () => {
   closeModal()
   router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
+}
+
+// 이미지 URL 처리 (백엔드 URL 결합)
+const getFullImageUrl = (url) => {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  return `http://127.0.0.1:8000${url}`
 }
 
 // 달력 날짜 생성
@@ -367,7 +381,7 @@ const goToRecipes = () => {
 }
 
 .day-header {
-  background: #667eea;
+  background: #FFB3D9;
   color: white;
   padding: 10px;
   text-align: center;
@@ -386,10 +400,10 @@ const goToRecipes = () => {
   color: #adb5bd;
 }
 .day-cell.today {
-  background: #e7f5ff;
+  background: #FFF0F5;
 }
 .day-cell.today .date-num {
-  background: #228be6;
+  background: #FF69B4;
   color: white;
   border-radius: 50%;
   width: 24px;
@@ -410,7 +424,7 @@ const goToRecipes = () => {
 }
 .day-cell.clickable:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 179, 217, 0.3);
 }
 
 .date-num {
@@ -423,6 +437,23 @@ const goToRecipes = () => {
   flex-wrap: wrap;
   gap: 2px;
   margin-top: 5px;
+}
+.ing-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.ing-img-mini {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ing-emoji-mini {
+  font-size: 1rem;
 }
 .ing-icon {
   font-size: 1rem;
@@ -482,7 +513,7 @@ const goToRecipes = () => {
 
 .modal-header {
   padding: 20px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #FFB3D9;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -526,7 +557,7 @@ const goToRecipes = () => {
 }
 
 .modal-subtitle strong {
-  color: #667eea;
+  color: #FF69B4;
   font-size: 1.1rem;
 }
 
@@ -542,7 +573,7 @@ const goToRecipes = () => {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: #FFF0F5;
   border-radius: 12px;
   transition: transform 0.2s;
 }
@@ -557,8 +588,7 @@ const goToRecipes = () => {
   gap: 12px;
 }
 
-.ing-emoji {
-  font-size: 2rem;
+.ing-visual {
   width: 48px;
   height: 48px;
   display: flex;
@@ -566,6 +596,19 @@ const goToRecipes = () => {
   justify-content: center;
   background: white;
   border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.ing-img-visual {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ing-emoji {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ing-info {
@@ -622,7 +665,7 @@ const goToRecipes = () => {
 .btn-use-ingredients {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #FF69B4;
   color: white;
   border: none;
   border-radius: 12px;
@@ -634,13 +677,13 @@ const goToRecipes = () => {
 
 .btn-use-ingredients:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
 }
 
-/* 임박 알림 배너 */
+/* 임박 알림 배너 - 다홍색 */
 .expiry-alert {
   margin-top: 20px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+  background: #E03131;
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -654,7 +697,7 @@ const goToRecipes = () => {
 .alert-content p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
 .btn-use {
   background: white;
-  color: #ff6b6b;
+  color: #E03131;
   border: none;
   padding: 12px 24px;
   border-radius: 25px;
@@ -692,7 +735,23 @@ const goToRecipes = () => {
   background: #f8f9fa;
   border-radius: 10px;
 }
-.item-icon { font-size: 1.5rem; }
+.item-icon { font-size: 1.5rem; line-height: 1; }
+.expiry-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.expiry-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .item-name { flex: 1; font-weight: 600; }
 .item-date {
   font-weight: 700;

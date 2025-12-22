@@ -164,7 +164,7 @@ onMounted(async () => {
 }
 
 .challenge-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #FFB3D9;
   border-radius: 20px;
   padding: 25px;
   display: flex;
@@ -172,9 +172,11 @@ onMounted(async () => {
   align-items: center;
   color: white;
   margin-bottom: 25px;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 24px rgba(255, 179, 217, 0.35);
 }
 .week-badge {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.3);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -183,11 +185,17 @@ onMounted(async () => {
 .header-content h3 {
   margin: 10px 0 5px;
   font-size: 1.4rem;
+  font-family: 'Jalnan', 'BMJua', sans-serif;
+  color: #FF69B4;
+  -webkit-text-stroke: 1px white;
+  paint-order: stroke fill;
+  text-shadow: 2px 2px 0 white;
 }
 .header-content p {
   margin: 0;
-  opacity: 0.8;
+  opacity: 0.9;
   font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .score-circle {
@@ -201,7 +209,7 @@ onMounted(async () => {
 }
 .circle-bg {
   fill: none;
-  stroke: rgba(255,255,255,0.2);
+  stroke: rgba(255,255,255,0.3);
   stroke-width: 3;
 }
 .circle {
@@ -239,7 +247,7 @@ onMounted(async () => {
 }
 .mission-item:last-child { border-bottom: none; }
 .mission-item.completed {
-  background: #e7f5ff;
+  background: #FFF0F5; /* 핑크 계열로 변경 */
 }
 .mission-icon { font-size: 1.8rem; }
 .mission-info {
@@ -252,15 +260,15 @@ onMounted(async () => {
 .mission-desc { font-size: 0.85rem; color: #868e96; }
 .mission-reward { text-align: right; }
 .points {
-  background: #ffd43b;
-  color: #333;
+  background: #FFB3D9;
+  color: white;
   padding: 6px 12px;
   border-radius: 15px;
   font-weight: 700;
   font-size: 0.85rem;
 }
 .completed-badge {
-  background: #51cf66;
+  background: #FF69B4;
   color: white;
   width: 28px;
   height: 28px;

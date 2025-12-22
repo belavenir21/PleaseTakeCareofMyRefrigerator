@@ -70,7 +70,7 @@ const handleLogin = async () => {
     await authStore.login(formData.value)
     // 로그인 성공 후 인증 상태가 업데이트될 때까지 조금 대기
     await new Promise(resolve => setTimeout(resolve, 100))
-    // Main 페이지로 리디렉션
+    // 로그인 성공 후 타이틀(Main) 페이지로 이동
     await router.push({ name: 'Main' })
   } catch (err) {
     error.value = err.response?.data?.error || '로그인에 실패했습니다.'
@@ -86,7 +86,11 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* 배경 이미지 적용 */
+  background-image: url('/images/login-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   padding: 20px;
 }
 

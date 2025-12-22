@@ -33,6 +33,16 @@ export const recipeAPI = {
       include_ingredients: includeIngredients
     })
   },
+
+  // 레시피 직접 등록
+  createRecipe(recipeData) {
+    return api.post('/recipes/create_recipe/', recipeData)
+  },
+
+  // AI로 레시피 자동 생성
+  generateRecipe(recipeName) {
+    return api.post('/recipes/generate_recipe/', { recipe_name: recipeName })
+  },
 }
 
 export const masterAPI = {

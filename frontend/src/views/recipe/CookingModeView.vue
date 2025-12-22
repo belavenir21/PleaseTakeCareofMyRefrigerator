@@ -6,31 +6,60 @@
       <h3>{{ recipeData?.recipe_title }}</h3>
     </div>
 
-    <!-- 진행률 -->
-    <div class="progress-bar">
-      <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
+    <!-- 로딩 상태 -->
+    <div v-if="!recipeData" class="loading-overlay">
+      <div class="spinner-premium"></div>
+      <p>조리 단계를 불러오는 중...</p>
     </div>
 
-    <!-- 조리 단계 카드 -->
-    <div class="cooking-content">
-      <div v-if="recipeData" class="step-carousel">
-        <div
-          v-for="(step, index) in recipeData.steps"
-          :key="step.id"
-          :class="['step-card', { active: currentStepIndex === index }]"
-          @click="handleStepClick(index)"
-        >
-          <div class="step-icon">{{ step.icon || '👨‍🍳' }}</div>
-          <div class="step-number">Step {{ step.step_number }}</div>
-          <p class="step-description">{{ step.description }}</p>
-          <p class="step-time">⏱️ {{ step.time_minutes }}분</p>
+    <!-- 요리 가이드 튜토리얼 오버레이 -->
+    <transition name="fade">
+      <div v-if="recipeData && showTutorial" class="tutorial-overlay" @click="showTutorial = false">
+        <div class="tutorial-box">
+          <div class="tutorial-hand">☝️</div>
+          <p class="tutorial-text">카드를 탭하여<br/>다음 단계로 넘어가세요!</p>
+          <span class="tutorial-sub">(화면 아무 데나 터치하여 시작)</span>
         </div>
       </div>
+    </transition>
 
-      <!-- 완료 버튼 -->
-      <div v-if="isLastStep" class="completion-section">
-        <button @click="openAdjustModal" class="btn btn-primary btn-large">
-          ✨ 요리 완료
+    <div v-if="recipeData" class="cooking-content">
+      <!-- 진행률 -->
+      <div class="progress-bar">
+        <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
+      </div>
+
+      <!-- 조리 단계 카드 스택 -->
+      <div v-show="currentStepIndex < recipeData.steps.length" class="step-stack">
+        <transition-group name="card-swipe">
+          <div
+            v-for="(step, index) in recipeData.steps"
+            v-show="index >= currentStepIndex"
+            :key="step.id || index"
+            class="step-card"
+            :style="getCardStyle(index)"
+            @click="handleStepClick(index)"
+          >
+            <div class="step-badge">Step {{ index + 1 }}</div>
+            <div class="step-icon">{{ step.icon || '👨‍🍳' }}</div>
+            <p class="step-description">{{ cleanDescription(step.description) }}</p>
+            <div class="step-footer">
+              <span class="step-time">⏱️ {{ step.time_minutes || 0 }}분</span>
+            </div>
+          </div>
+        </transition-group>
+      </div>
+
+      <!-- 완료 버튼 (모든 단계를 마친 후 노출) -->
+      <div v-if="currentStepIndex >= recipeData.steps.length" class="completion-section">
+        <div class="finish-image-container">
+          <img :src="recipeData.image_url" v-if="recipeData.image_url" class="finish-image" />
+          <div v-else class="finish-image-placeholder">🍳</div>
+          <div class="confetti-effect"></div>
+        </div>
+        <div class="finish-celebration">✨ 요리 완성! 고생하셨어요 ✨</div>
+        <button @click="openAdjustModal" class="btn-finish-premium">
+          요리 완료 & 재료 차감하기
         </button>
       </div>
     </div>
@@ -91,6 +120,7 @@ const refrigeratorStore = useRefrigeratorStore()
 const recipeData = ref(null)
 const currentStepIndex = ref(0)
 const showAdjustModal = ref(false)
+const showTutorial = ref(true)
 const adjustableIngredients = ref([])
 
 const progressPercentage = computed(() => {
@@ -104,15 +134,47 @@ const isLastStep = computed(() => {
 })
 
 onMounted(async () => {
-  recipeData.value = await recipeStore.fetchRecipeSteps(route.params.id)
-  // 보관함 재료도 미리 로드
+  try {
+    const data = await recipeStore.fetchRecipeSteps(route.params.id)
+    if (data) {
+      recipeData.value = data
+    } else {
+      console.error('No recipe data returned')
+      alert('레시피 데이터를 찾을 수 없습니다.')
+      router.back()
+    }
+  } catch (err) {
+    console.error('Failed to load cooking steps:', err)
+    alert('조리 단계를 불러오는 중 오류가 발생했습니다.')
+    router.back()
+  }
+
   if (refrigeratorStore.ingredients.length === 0) {
     await refrigeratorStore.fetchIngredients()
   }
 })
 
+// 카드 스택 스타일 계산
+const getCardStyle = (index) => {
+  const diff = index - currentStepIndex.value
+  if (diff < 0) return {} // 이미 이미 넘어간 카드
+  
+  // 뒤에 있는 카드들 (최대 3개까지만 시각적으로 표현)
+  const zIndex = 100 - diff
+  const scale = Math.max(0, 1 - diff * 0.05)
+  const translateY = diff * -15
+  const opacity = Math.max(0, 1 - diff * 0.3)
+  
+  return {
+    zIndex,
+    transform: `scale(${scale}) translateY(${translateY}px)`,
+    opacity,
+    pointerEvents: diff === 0 ? 'auto' : 'none'
+  }
+}
+
 const handleStepClick = (index) => {
-  if (index === currentStepIndex.value && index < recipeData.value.total_steps - 1) {
+  if (index === currentStepIndex.value) {
     currentStepIndex.value++
   }
 }
@@ -123,24 +185,27 @@ const openAdjustModal = async () => {
   const recipe = await recipeStore.fetchRecipe(route.params.id)
   
   if (recipe?.ingredients) {
-    adjustableIngredients.value = recipe.ingredients.map(ing => {
-      // 보관함에서 해당 재료 찾기
-      const normalized = ing.name.replace(/\s+/g, '').toLowerCase()
-      const pantryItem = refrigeratorStore.ingredients.find(p => {
-        const pNorm = p.name.replace(/\s+/g, '').toLowerCase()
-        return pNorm.includes(normalized) || normalized.includes(pNorm)
+    adjustableIngredients.value = recipe.ingredients
+      .map(ing => {
+        const normalized = ing.name.replace(/\s+/g, '').toLowerCase()
+        const pantryItem = refrigeratorStore.ingredients.find(p => {
+          const pNorm = p.name.replace(/\s+/g, '').toLowerCase()
+          return pNorm.includes(normalized) || normalized.includes(pNorm)
+        })
+        
+        // 수량이 '적당량'인 경우 기본 차감량을 1로 설정 (추후 조절 가능)
+        const isAbstract = isAbstractQuantity(ing.quantity)
+
+        return {
+          id: ing.id,
+          name: ing.name,
+          unit: isAbstract ? '적정량' : (extractUnit(ing.quantity) || '개'),
+          usedAmount: isAbstract ? 1 : (extractNumber(ing.quantity) || 1),
+          currentStock: pantryItem?.quantity || 0,
+          hasInPantry: !!pantryItem,
+          pantryId: pantryItem?.id
+        }
       })
-      
-      return {
-        id: ing.id,
-        name: ing.name,
-        unit: extractUnit(ing.quantity) || '개',
-        usedAmount: extractNumber(ing.quantity) || 1,
-        currentStock: pantryItem?.quantity || 0,
-        hasInPantry: !!pantryItem,
-        pantryId: pantryItem?.id
-      }
-    })
   }
   
   showAdjustModal.value = true
@@ -159,6 +224,18 @@ const extractUnit = (str) => {
   const match = String(str).replace(/[\d.]+/g, '').trim()
   return match || '개'
 }
+
+const isAbstractQuantity = (qty) => {
+  if (!qty) return true
+  const abstractTerms = ['적당량', '약간', '조금', '적당히']
+  return abstractTerms.some(term => qty.includes(term))
+}
+
+const cleanDescription = (desc) => {
+  if (!desc) return '';
+  // "1.", "1) ", "Step 1:", "조리단계 1." 등의 패턴 제거
+  return desc.replace(/^(\d+[\.\)\s\-]+|Step\s*\d+[:\s\-]*|단계\s*\d+[:\s\-]*)/i, '').trim();
+};
 
 // 미보유 재료 목록
 const missingIngredients = computed(() => {
@@ -299,69 +376,231 @@ const exitCooking = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 20px;
+  position: relative;
 }
 
-.step-carousel {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding: 20px;
-  max-width: 100%;
+.step-stack {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 450px;
+  perspective: 1000px;
 }
 
 .step-card {
-  min-width: 300px;
-  max-width: 350px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: white;
   color: #333;
-  border-radius: 20px;
+  border-radius: 30px;
   padding: 40px;
   text-align: center;
-  opacity: 0.4;
-  transform: scale(0.9);
-  transition: 0.3s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-.step-card.active {
-  opacity: 1;
-  transform: scale(1);
-  border: 5px solid var(--primary);
+.step-badge {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: var(--primary);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--font-title);
 }
 
 .step-icon {
+  font-size: 5rem;
+  margin-bottom: 30px;
+}
+
+.step-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  font-weight: 500;
+  word-break: keep-all;
+}
+
+.step-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px dashed #eee;
+  padding-top: 20px;
+  color: #868e96;
+  font-size: 0.9rem;
+}
+
+/* 튜토리얼 오버레이 */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.tutorial-box {
+  animation: float 2s infinite ease-in-out;
+}
+
+.tutorial-hand {
   font-size: 4rem;
   margin-bottom: 20px;
 }
 
-.step-number {
-  font-size: 1.2rem;
-  font-weight: 600;
+.tutorial-text {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  font-family: var(--font-title);
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.tutorial-sub {
   color: var(--primary);
-  margin-bottom: 15px;
+  font-weight: 600;
+  opacity: 0.8;
 }
 
-.step-description {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 15px;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
 }
 
-.step-time {
-  color: #666;
+/* 카드 넘기기 애니메이션 (휙 나가는 느낌) */
+.card-swipe-leave-active {
+  position: absolute;
+  z-index: 200 !important;
+}
+
+.card-swipe-leave-to {
+  opacity: 0 !important;
+  transform: translateX(150%) rotate(30deg) !important;
 }
 
 .completion-section {
-  margin-top: 30px;
-  width: 100%;
-  max-width: 400px;
+  text-align: center;
+  perspective: 1000px;
 }
 
-.btn-large {
+.finish-image-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto 30px;
+}
+
+.finish-image {
   width: 100%;
-  padding: 18px;
-  font-size: 1.2rem;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 8px solid white;
+  box-shadow: 0 15px 45px rgba(255, 179, 217, 0.4);
+  animation: celebrateImage 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.finish-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+}
+
+.confetti-effect::before,
+.confetti-effect::after {
+  content: '🎉';
+  position: absolute;
+  font-size: 3rem;
+  animation: fireworks 1s ease-out infinite;
+}
+
+.confetti-effect::before { top: -20px; left: -20px; animation-delay: 0.2s; }
+.confetti-effect::after { bottom: -20px; right: -20px; animation-delay: 0.5s; }
+
+@keyframes celebrateImage {
+  from { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes fireworks {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5) translate(10px, -10px); opacity: 0.8; }
+  100% { transform: scale(2) translate(20px, -20px); opacity: 0; }
+}
+
+.finish-celebration {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 25px;
+  font-family: var(--font-title);
+  text-shadow: 0 2px 10px rgba(255, 179, 217, 0.3);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* 로딩 오버레이 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+}
+
+.spinner-premium {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 179, 217, 0.2);
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* 모달 */

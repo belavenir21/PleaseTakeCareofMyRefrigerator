@@ -122,7 +122,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         if not gms_key:
             return None
             
-        url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gms_key}"
+        url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
         
         prompt = f"""
 다음은 영수증 OCR 인식 결과입니다. 
@@ -458,7 +458,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             # 이미지 base64 인코딩
             image_data = base64.b64encode(image.read()).decode('utf-8')
             
-            url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gms_key}"
+            url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
             
             prompt = """
             이 사진 속에서 식별되는 모든 식재료를 찾아서 JSON 배열 형식으로만 응답해주세요.

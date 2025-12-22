@@ -68,7 +68,7 @@ class RecipeChatbotView(APIView):
         full_prompt = system_prompt + context_info + f"\n\n사용자 질문: {user_message}"
         
         # GMS API 호출
-        url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gms_key}"
+        url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
         
         payload = {
             "contents": [{

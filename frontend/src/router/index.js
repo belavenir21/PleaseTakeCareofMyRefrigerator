@@ -55,6 +55,12 @@ const routes = [
     component: () => import('@/views/user/ProfileView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('@/views/user/SettingsView.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({
@@ -77,11 +83,11 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    // 로그인이 필요한 페이지
+    // 로그인이 필요한 페이지 -> 로그인 페이지로
     next({ name: 'Login' })
   } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    // 비로그인 사용자만 접근 가능한 페이지
-    next({ name: 'Main' })
+    // 이미 로그인한 상태로 로그인/가입 페이지 접근 시 -> 보관함으로
+    next({ name: 'Pantry' })
   } else {
     next()
   }

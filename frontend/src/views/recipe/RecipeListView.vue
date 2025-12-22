@@ -17,7 +17,7 @@
       <section v-if="showRecommendations" class="rec-hero animate-up">
         <div class="hero-content">
           <span class="hero-tag">Best Matching</span>
-          <h1>내 재료 <strong>{{ totalIngredientCount }}가지</strong>로<br/>만드는 맞춤 레시피</h1>
+          <h1 class="game-title">내 재료 <strong>{{ totalIngredientCount }}가지</strong>로<br/>만드는 맞춤 레시피</h1>
           <p v-if="displayRecipes.length > 0">지금 바로 요리 가능한 레시피를 찾았어요!</p>
         </div>
       </section>
@@ -79,16 +79,12 @@
       </section>
 
       <!-- 추천 모드: 더 낮은 정확도 레시피 보기 버튼 -->
-      <div v-if="showRecommendations && !loading && displayRecipes.length > 0 && nextTierCount > 0" class="expand-section">
+      <div v-if="showRecommendations && !loading && displayRecipes.length > 0 && nextTierInfo" class="expand-section">
         <button @click="lowerAccuracy" class="btn-expand">
           <span class="expand-icon">📊</span>
           <div class="expand-text">
-            <strong>더 낮은 정확도 레시피 보기</strong>
-            <p>{{ 
-              accuracyThreshold === 40 ? '30~39%' : 
-              accuracyThreshold === 30 ? '20~29%' : 
-              '10~19%' 
-            }} 매칭 레시피 {{ nextTierCount }}개 더보기</p>
+            <strong>더 많은 레시피 보기</strong>
+            <p>{{ nextTierInfo.label }} 매칭 레시피 {{ nextTierInfo.count }}개 더보기</p>
           </div>
           <span class="expand-arrow">↓</span>
         </button>
@@ -123,13 +119,108 @@
         </div>
       </div>
 
-      <!-- 결과가 없는 경우 -->
+      <!-- 결과가 없는 경우 / 레시피 추가 제안 -->
       <div v-if="!loading && displayRecipes.length === 0" class="empty-state">
-        <p>보관함 재료로 만들 수 있는 요리가 없어요. 🧊</p>
-        <p class="sub-text">AI 셰프에게 레시피를 물어보거나, 검색 모드로 전환해보세요!</p>
-        <div class="empty-actions">
-          <button @click="openAIChat" class="btn-primary">🤖 AI에게 물어보기</button>
-          <button @click="toggleMode" class="btn-secondary">🔍 검색모드로</button>
+        <div v-if="!showAddRecipeForm">
+          <div class="empty-icon">🥺</div>
+          <p v-if="searchQuery">「{{ searchQuery }}」에 대한 레시피가 없어요</p>
+          <p v-else>보관함 재료로 만들 수 있는 요리가 없어요. 🧊</p>
+          <p class="sub-text">AI 셰프에게 레시피를 물어보거나, 직접 추가해보세요!</p>
+          
+          <div class="empty-actions">
+            <button @click="openAIChat" class="btn-primary">🤖 AI에게 물어보기</button>
+            <button @click="showAddRecipeForm = true" class="btn-secondary">✏️ 레시피 추가하기</button>
+            <button v-if="!showRecommendations" @click="toggleMode" class="btn-tertiary">🍳 추천모드로</button>
+          </div>
+        </div>
+        
+        <!-- 레시피 추가 폼 -->
+        <div v-else class="add-recipe-section">
+          <div class="section-header">
+            <h3>✨ 새 레시피 추가하기</h3>
+            <button @click="showAddRecipeForm = false" class="btn-close">✕</button>
+          </div>
+          
+          <div class="add-recipe-options">
+            <div class="option-card" @click="startAIGeneration">
+              <div class="option-icon">🤖</div>
+              <h4>AI가 레시피 만들기</h4>
+              <p>레시피 이름만 입력하면 AI가 재료와 조리법을 자동으로 채워드려요!</p>
+            </div>
+            
+            <div class="option-card" @click="startManualInput">
+              <div class="option-icon">✏️</div>
+              <h4>나만의 레시피 등록</h4>
+              <p>직접 재료와 조리법을 입력해서 나만의 특별한 레시피를 등록해요!</p>
+            </div>
+          </div>
+          
+          <!-- AI 생성 모드 -->
+          <div v-if="aiGenerateMode" class="ai-generate-form">
+            <h4>🍳 AI에게 어떤 레시피를 만들어달라고 할까요?</h4>
+            <div class="input-row">
+              <input 
+                v-model="aiRecipeName" 
+                type="text" 
+                class="input-field"
+                placeholder="예: 김치볶음밥, 크림파스타, 닭볶음탕..."
+                @keyup.enter="generateWithAI"
+              />
+              <button @click="generateWithAI" class="btn-generate" :disabled="generatingRecipe || !aiRecipeName">
+                <span v-if="!generatingRecipe">🚀 생성하기</span>
+                <span v-else>⏳ 생성 중...</span>
+              </button>
+            </div>
+            <p class="hint">💡 원하는 요리 이름을 입력하면 AI가 재료, 조리법, 소요시간 등을 자동으로 생성합니다!</p>
+          </div>
+          
+          <!-- 수동 입력 모드 -->
+          <div v-if="manualInputMode" class="manual-form">
+            <h4>📝 나만의 레시피 정보 입력</h4>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label>레시피 이름 *</label>
+                <input v-model="newRecipe.title" type="text" class="input-field" placeholder="예: 엄마표 김치찌개"/>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label>조리시간(분)</label>
+                  <input v-model.number="newRecipe.cooking_time_minutes" type="number" class="input-field" placeholder="30"/>
+                </div>
+                <div class="form-group">
+                  <label>난이도</label>
+                  <select v-model="newRecipe.difficulty" class="input-field">
+                    <option value="쉬움">쉬움</option>
+                    <option value="보통">보통</option>
+                    <option value="어려움">어려움</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label>설명</label>
+                <textarea v-model="newRecipe.description" class="input-field" rows="2" placeholder="레시피에 대한 간단한 설명"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label>재료 (줄바꿈으로 구분)</label>
+                <textarea v-model="ingredientsText" class="input-field" rows="4" placeholder="양파 1개&#10;돼지고기 200g&#10;고춧가루 2큰술"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label>조리 단계 (줄바꿈으로 구분)</label>
+                <textarea v-model="stepsText" class="input-field" rows="5" placeholder="양파를 채 썬다.&#10;팬에 기름을 두르고 고기를 볶는다.&#10;양념을 넣고 잘 섞는다."></textarea>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button @click="submitManualRecipe" class="btn-submit" :disabled="!newRecipe.title || generatingRecipe">
+                {{ generatingRecipe ? '저장 중...' : '💾 레시피 저장하기' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -152,7 +243,7 @@ const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 
 const showChatModal = ref(false)
-const accuracyThreshold = ref(30) // 초기 정확도를 30%로 낮춰서 더 풍부하게 보여줌
+const accuracyThreshold = ref(80) // 초기 정확도를 80%로 시작 (품질 우선)
 
 const openAIChat = () => {
   showChatModal.value = true
@@ -168,9 +259,17 @@ const loading = computed(() => recipeStore.loading || isSearching.value)
 const allRecipes = computed(() => recipeStore.recipes)
 const serverRecs = computed(() => recipeStore.recommendations)
 
-// 카운트: 백엔드 응답값이 0이면 프론트엔드 데이터라도 가져옴 (보관함 데이터 신뢰)
+// 카운트: 중복된 이름을 제외한 순수 재료 '종류'의 개수 계산
+// 카운트: 중복된 이름을 제외한 순수 재료 '종류'의 개수 계산
 const totalIngredientCount = computed(() => {
-  return recipeStore.userIngredientCount || refrigeratorStore.ingredients.length || 0
+  // 백엔드 값(userIngredientCount)이 있어도 무시하고, 
+  // 현재 보관함 스토어의 데이터로 실시간 계산합니다. (사용자가 28개 vs 20종류의 차이를 느낌)
+  if (!refrigeratorStore.ingredients || refrigeratorStore.ingredients.length === 0) return 0
+  
+  const uniqueNames = new Set(
+    refrigeratorStore.ingredients.map(i => i.name.replace(/\s+/g, '').toLowerCase())
+  )
+  return uniqueNames.size
 })
 
 // 단계별 필터링된 추천 레시피
@@ -179,27 +278,26 @@ const filteredRecommendations = computed(() => {
   return serverRecs.value.filter(r => r.match_ratio >= accuracyThreshold.value)
 })
 
-// 다음 단계 레시피 개수 미리보기
-const nextTierCount = computed(() => {
-  if (!showRecommendations.value) return 0
-  if (accuracyThreshold.value === 40) {
-    return serverRecs.value.filter(r => r.match_ratio >= 30 && r.match_ratio < 40).length
-  } else if (accuracyThreshold.value === 30) {
-    return serverRecs.value.filter(r => r.match_ratio >= 20 && r.match_ratio < 30).length
-  } else if (accuracyThreshold.value === 20) {
-    return serverRecs.value.filter(r => r.match_ratio >= 10 && r.match_ratio < 20).length
+// 다음 단계 정보 (라벨 + 개수)
+const nextTierInfo = computed(() => {
+  if (!showRecommendations.value) return null
+  if (accuracyThreshold.value === 80) {
+    const count = serverRecs.value.filter(r => r.match_ratio >= 60 && r.match_ratio < 80).length
+    return count > 0 ? { label: '60~79%', count, nextThreshold: 60 } : null
+  } else if (accuracyThreshold.value === 60) {
+    const count = serverRecs.value.filter(r => r.match_ratio >= 40 && r.match_ratio < 60).length
+    return count > 0 ? { label: '40~59%', count, nextThreshold: 40 } : null
+  } else if (accuracyThreshold.value === 40) {
+    const count = serverRecs.value.filter(r => r.match_ratio >= 20 && r.match_ratio < 40).length
+    return count > 0 ? { label: '20~39%', count, nextThreshold: 20 } : null
   }
-  return 0
+  return null
 })
 
 // 정확도 낮추기
 const lowerAccuracy = () => {
-  if (accuracyThreshold.value === 40) {
-    accuracyThreshold.value = 30
-  } else if (accuracyThreshold.value === 30) {
-    accuracyThreshold.value = 20
-  } else if (accuracyThreshold.value === 20) {
-    accuracyThreshold.value = 10
+  if (nextTierInfo.value) {
+    accuracyThreshold.value = nextTierInfo.value.nextThreshold
   }
 }
 
@@ -262,7 +360,7 @@ const toggleMode = async () => {
   showRecommendations.value = !showRecommendations.value
   searchQuery.value = ''
   searchResults.value = []
-  accuracyThreshold.value = 30 // 정확도 리셋 (30%가 기본)
+  accuracyThreshold.value = 80 // 정확도 리셋 (80%부터 시작)
   if (showRecommendations.value) await recipeStore.fetchRecommendations()
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
@@ -270,15 +368,130 @@ const toggleMode = async () => {
 const clearSearch = () => { searchQuery.value = ''; searchResults.value = []; showRecommendations.value = false; }
 const goToRecipe = (id) => router.push({ name: 'RecipeDetail', params: { id } })
 const handleImageError = (id) => { imageErrors.value[id] = true }
+
+// ======= 레시피 추가 기능 =======
+const showAddRecipeForm = ref(false)
+const aiGenerateMode = ref(false)
+const manualInputMode = ref(false)
+const aiRecipeName = ref('')
+const generatingRecipe = ref(false)
+const ingredientsText = ref('')
+const stepsText = ref('')
+
+const newRecipe = ref({
+  title: '',
+  description: '',
+  cooking_time_minutes: 30,
+  difficulty: '보통',
+  category: '기타',
+  tags: []
+})
+
+const startAIGeneration = () => {
+  aiGenerateMode.value = true
+  manualInputMode.value = false
+  aiRecipeName.value = searchQuery.value || ''
+}
+
+const startManualInput = () => {
+  manualInputMode.value = true
+  aiGenerateMode.value = false
+  newRecipe.value.title = searchQuery.value || ''
+}
+
+const generateWithAI = async () => {
+  if (!aiRecipeName.value || generatingRecipe.value) return
+  
+  generatingRecipe.value = true
+  try {
+    const response = await recipeAPI.generateRecipe(aiRecipeName.value)
+    alert(response.message || 'AI가 레시피를 생성했습니다!')
+    
+    // 생성된 레시피로 이동
+    if (response.recipe?.id) {
+      router.push({ name: 'RecipeDetail', params: { id: response.recipe.id } })
+    } else {
+      // 리스트 새로고침
+      showAddRecipeForm.value = false
+      aiGenerateMode.value = false
+      await recipeStore.fetchRecipes()
+    }
+  } catch (e) {
+    console.error('AI 레시피 생성 실패:', e)
+    alert(e.response?.data?.error || 'AI 레시피 생성에 실패했습니다.')
+  } finally {
+    generatingRecipe.value = false
+  }
+}
+
+const submitManualRecipe = async () => {
+  if (!newRecipe.value.title || generatingRecipe.value) return
+  
+  generatingRecipe.value = true
+  try {
+    // 재료 파싱 (줄바꿈으로 구분)
+    const ingredients = ingredientsText.value.split('\n')
+      .filter(line => line.trim())
+      .map(line => {
+        // "양파 1개" 형태 파싱
+        const match = line.trim().match(/^(.+?)\s*([\d\/\.]+\s*(?:g|ml|개|큰술|작은술|컵|봉|팩|마리|조각|장|근|모|줄기|송이)?.*)$/i)
+        if (match) {
+          return { name: match[1].trim(), quantity: match[2].trim() || '' }
+        }
+        return { name: line.trim(), quantity: '' }
+      })
+    
+    // 조리 단계 파싱
+    const steps = stepsText.value.split('\n')
+      .filter(line => line.trim())
+      .map(desc => ({ description: desc.trim(), time_minutes: 0 }))
+    
+    const recipeData = {
+      ...newRecipe.value,
+      ingredients,
+      steps
+    }
+    
+    const response = await recipeAPI.createRecipe(recipeData)
+    alert(response.message || '레시피가 등록되었습니다!')
+    
+    // 생성된 레시피로 이동
+    if (response.recipe?.id) {
+      router.push({ name: 'RecipeDetail', params: { id: response.recipe.id } })
+    } else {
+      showAddRecipeForm.value = false
+      manualInputMode.value = false
+      await recipeStore.fetchRecipes()
+    }
+  } catch (e) {
+    console.error('레시피 등록 실패:', e)
+    alert(e.response?.data?.error || '레시피 등록에 실패했습니다.')
+  } finally {
+    generatingRecipe.value = false
+  }
+}
 </script>
 
 <style scoped>
 /* 🍜 레시피 리스트 뷰 */
 .recipe-list-view { 
   min-height: 100vh; 
-  background: var(--bg-main); 
+  position: relative;
   padding-bottom: 100px; 
   padding-top: 56px; 
+}
+
+/* 🌫️ 블러 배경 추가 */
+.recipe-list-view::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('/images/pantry-bg.png');
+  background-size: cover;
+  background-position: center top;
+  z-index: -1;
+  filter: blur(5px);
+  transform: scale(1.05);
 }
 
 /* 🌸 Header - 네비바 연결 */
@@ -337,7 +550,7 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
   background: linear-gradient(135deg, #FFB3D9 0%, #FF8EC9 100%);
   padding: 40px 24px; 
   border-radius: var(--radius-xl);
-  margin: 20px auto 0; 
+  margin: 20px auto 30px; /* 하단 여백 30px 추가! */
   max-width: 1200px;
   color: white; 
   box-shadow: var(--shadow-premium);
@@ -352,23 +565,36 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
   text-transform: uppercase; 
   letter-spacing: 1px; 
 }
-.hero-content h1 { 
+/* 🎮 게임 스타일 제목 */
+.hero-content h1.game-title { 
   font-size: 2rem; 
   margin-top: 15px; 
-  line-height: 1.3; 
+  line-height: 1.4;
+  color: #FF69B4;
+  -webkit-text-stroke: 2px white;
+  paint-order: stroke fill;
+  text-shadow: 
+    2px 2px 0 white,
+    -1px -1px 0 white,
+    1px -1px 0 white,
+    -1px 1px 0 white,
+    0 0 10px rgba(255,255,255,0.5);
 }
-.hero-content h1 strong { 
+.hero-content h1.game-title strong { 
   font-size: 2.8rem; 
-  vertical-align: middle; 
+  vertical-align: middle;
+  color: #FF1493;
 }
 .hero-content p { 
-  margin-top: 10px; 
+  margin-top: 12px; 
   opacity: 0.95; 
-  font-weight: 500; 
+  font-weight: 600;
+  text-shadow: none;
+  color: white;
 }
 
 .search-hero { 
-  margin: 20px auto 0; 
+  margin: 20px auto 30px; /* 하단 여백 30px 추가! */
   max-width: 1200px;
   padding: 0 24px;
 }
@@ -428,8 +654,8 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
 .badge-ratio .num { font-size: 1.3rem; font-weight: 900; color: #FF6B6B; line-height: 1; }
 .badge-ratio .txt { font-size: 0.65rem; font-weight: 800; margin-top: 4px; opacity: 0.8; }
 
-.body-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
-.title { font-size: 1.2rem; font-weight: 800; color: #222; margin: 0; line-height: 1.3; }
+.body-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; font-family: var(--font-button); }
+.title { font-size: 1.2rem; font-weight: 800; color: #222; margin: 0; line-height: 1.3; font-family: var(--font-body); }
 .meta-info { display: flex; gap: 15px; font-size: 0.85rem; color: #868E96; font-weight: 700; }
 
 .matching-status { margin-top: auto; border-top: 1px dashed #EEE; padding-top: 12px; }
@@ -558,5 +784,161 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
   border-radius: 30px;
   font-weight: 700;
   cursor: pointer;
+}
+.empty-actions .btn-tertiary {
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+  padding: 12px 26px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.empty-icon { font-size: 4rem; margin-bottom: 20px; }
+
+/* 레시피 추가 섹션 */
+.add-recipe-section {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+}
+.add-recipe-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.add-recipe-section h3 { margin: 0; font-size: 1.5rem; }
+.btn-close {
+  background: #f1f3f5;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.add-recipe-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+@media (max-width: 600px) {
+  .add-recipe-options { grid-template-columns: 1fr; }
+}
+.option-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+  border: 2px solid #dbe4ff;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.option-card:hover {
+  border-color: #667eea;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+}
+.option-icon { font-size: 3rem; margin-bottom: 15px; }
+.option-card h4 { margin: 0 0 10px; font-size: 1.1rem; color: #333; }
+.option-card p { margin: 0; font-size: 0.9rem; color: #666; }
+
+/* AI 생성 폼 */
+.ai-generate-form {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 25px;
+}
+.ai-generate-form h4 { margin: 0 0 20px; font-size: 1.1rem; }
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+.input-row .input-field { flex: 1; }
+.btn-generate {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-generate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.hint {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  color: #868e96;
+}
+
+/* 수동 입력 폼 */
+.manual-form {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 25px;
+}
+.manual-form h4 { margin: 0 0 20px; font-size: 1.1rem; }
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 6px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.manual-form .input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+.manual-form .input-field:focus {
+  border-color: #667eea;
+  outline: none;
+}
+.manual-form textarea.input-field {
+  resize: vertical;
+  min-height: 80px;
+}
+.form-actions {
+  margin-top: 25px;
+  text-align: center;
+}
+.btn-submit {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(81, 207, 102, 0.3);
+}
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

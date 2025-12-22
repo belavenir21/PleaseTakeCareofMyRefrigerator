@@ -7,14 +7,14 @@
     <div class="nav-container">
       <div class="nav-brand">
         <router-link to="/" class="brand-link">
-          <img src="@/assets/logo.png" alt="냉장고를 부탁해" class="logo-img">
-          <span class="brand-text">냉장고를 부탁해</span>
+          <img src="@/assets/logo.png" alt="로고" class="logo-img">
+          <img src="@/assets/titlelogo.png" alt="냉장고를 부탁해" class="title-img">
         </router-link>
       </div>
       
       <div class="nav-menu">
         <router-link 
-          to="/" 
+          to="/#main-section" 
           class="nav-link"
           :class="{ active: $route.path === '/' }"
           title="홈"
@@ -153,7 +153,7 @@ onUnmounted(() => {
   transition: transform 0.2s;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.2rem; /* 간격을 좁힘 (0.6rem -> 0.2rem) */
   text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7);
 }
 
@@ -169,12 +169,13 @@ onUnmounted(() => {
   filter: drop-shadow(2px 2px 0 rgba(255, 255, 255, 0.7));
 }
 
-/* 🎨 타이틀 텍스트 (나중에 이미지로 교체 가능) */
-.brand-text {
-  font-size: 1.2rem;
-  font-weight: 800;
-  white-space: nowrap;
-  letter-spacing: -0.5px;
+/* 🎨 타이틀 이미지 */
+.title-img {
+  height: 2.0rem; /* 크기 확대 (1.5rem -> 2.0rem) */
+  width: auto;
+  object-fit: contain;
+  margin-left: 0; /* 불필요한 마진 제거 */
+  filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.8));
 }
 
 .brand-link:hover {

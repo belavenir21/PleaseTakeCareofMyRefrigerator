@@ -51,7 +51,7 @@
               :class="{ 'have-ingredient': hasIngredient(ingredient.name), 'need-ingredient': !hasIngredient(ingredient.name) }">
             <span class="ingredient-status-icon">{{ hasIngredient(ingredient.name) ? '✓' : '✗' }}</span>
             <span class="ingredient-name">{{ ingredient.name }}</span>
-            <span class="ingredient-qty">{{ ingredient.quantity }}</span>
+            <span v-if="!isAbstractQuantity(ingredient.quantity)" class="ingredient-qty">{{ ingredient.quantity }}</span>
           </li>
         </ul>
       </div>
@@ -65,15 +65,16 @@
         <div v-for="(step, index) in recipe.steps" :key="step.id" class="step-item">
           <div class="step-number">{{ index + 1 }}</div>
           <div class="step-content">
-            <p>{{ step.description }}</p>
+            <p>{{ cleanDescription(step.description) }}</p>
           </div>
         </div>
       </div>
 
       <!-- 요리 시작 버튼 -->
       <div class="action-section">
-        <button @click="startCooking" :class="['btn', 'btn-large', hasAllIngredients ? 'btn-primary' : 'btn-warning']">
-          {{ hasAllIngredients ? '🍳 요리 시작하기' : '⚠️ 재료 확인 후 시작하기' }}
+        <button @click="startCooking" :class="['btn-start-premium', hasAllIngredients ? 'have-all' : 'need-check']">
+          <span class="btn-icon">{{ hasAllIngredients ? '🍳' : '⚠️' }}</span>
+          <span class="btn-text">{{ hasAllIngredients ? '요리 시작하기' : '재료 확인 후 시작하기' }}</span>
         </button>
       </div>
     </div>
@@ -208,6 +209,19 @@ const confirmStartCooking = () => {
 const cancelCooking = () => {
   showConfirmModal.value = false
 }
+
+// 추상적인 수량 표현인지 확인 (적당량, 약간 등)
+const isAbstractQuantity = (qty) => {
+  if (!qty) return true
+  const abstractTerms = ['적당량', '약간', '조금', '적당히']
+  return abstractTerms.some(term => qty.includes(term))
+}
+
+const cleanDescription = (desc) => {
+  if (!desc) return '';
+  // "1.", "1) ", "Step 1:", "조리단계 1." 등의 패턴 제거
+  return desc.replace(/^(\d+[\.\)\s\-]+|Step\s*\d+[:\s\-]*|단계\s*\d+[:\s\-]*)/i, '').trim();
+};
 </script>
 
 <style scoped>
@@ -258,7 +272,10 @@ const cancelCooking = () => {
 }
 
 .container {
-  padding: 20px;
+  padding: 24px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .recipe-info h1 {
@@ -352,16 +369,141 @@ const cancelCooking = () => {
   font-size: 0.9rem;
 }
 
-.action-section {
-  position: sticky;
-  bottom: 20px;
-  padding-top: 20px;
+.recipe-info, .ingredients-section, .steps-section {
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  /* 애니메이션 및 호버 효과 완전 제거 */
+  transition: none !important;
+  transform: none !important;
+  cursor: default !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.btn-large {
+.recipe-info:hover, .ingredients-section:hover, .steps-section:hover,
+.recipe-info:active, .ingredients-section:active, .steps-section:active {
+  transform: none !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+  border-color: #FFE5F0 !important;
+}
+
+.card {
+  transition: none !important;
+  transform: none !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+.card:hover, .card:active {
+  transform: none !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+  border-color: #FFE5F0 !important;
+}
+
+.action-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px 40px;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 40%, white 100%);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-start-premium {
   width: 100%;
-  padding: 18px;
-  font-size: 1.1rem;
+  max-width: 420px; /* 가로 크기 제한 */
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 
+    0 4px 0 rgba(0,0,0,0.1),
+    0 12px 30px rgba(0,0,0,0.12),
+    inset 0 2px 10px rgba(255,255,255,0.3);
+}
+
+/* 🌈 하늘-노랑-핑크 믹스 그라데이션 (공통 테마) */
+.btn-start-premium.have-all {
+  background: linear-gradient(135deg, #A8D8FF 0%, #FFFACD 50%, #FFB3D9 100%);
+  color: #5A4A6A;
+  box-shadow: 
+    0 6px 0 #89badd,
+    0 15px 35px rgba(168, 216, 255, 0.45);
+}
+
+/* 재료 부족 시 (약간 더 노란색 기운이 섞인 믹스) */
+.btn-start-premium.need-check {
+  background: linear-gradient(135deg, #FFF9E5 0%, #FFEBB3 45%, #FFD4E5 100%);
+  color: #8B7330;
+  box-shadow: 
+    0 6px 0 #d9b863,
+    0 15px 35px rgba(217, 184, 99, 0.3);
+}
+
+.btn-start-premium::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 100%);
+  border-radius: 50px 50px 0 0;
+  pointer-events: none;
+}
+
+.btn-start-premium::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 55%
+  );
+  animation: shine-wide 4s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine-wide {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.btn-start-premium:hover {
+  transform: translateY(-3px);
+}
+
+.btn-start-premium.have-all:hover {
+  box-shadow: 
+    0 8px 0 #89badd,
+    0 15px 40px rgba(168, 216, 255, 0.5),
+    inset 0 2px 10px rgba(255,255,255,0.6);
+}
+
+.btn-start-premium:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
+
+.btn-icon {
+  font-size: 1.4rem;
+}
+
+.btn-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-title);
 }
 
 /* 재료 보유 상태 스타일 */

@@ -1,9 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Pretendard:wght@300;400;500;600;700&display=swap');
+
+/* 🎮 게임 스타일 폰트 - 배민 주아체 & 잘난체 */
+@font-face {
+  font-family: 'BMJua';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJua.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Jalnan';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/Jalnan.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 🎀 Cafe24 써라운드에어 - 메인 UI용 (둥글고 부드러움) */
+@font-face {
+  font-family: 'Cafe24SurroundAir';
+  src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24SsurroundAir.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+/* 💜 박다현체 (백업용) */
+@font-face {
+  font-family: 'ParkDaHyun';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
 
 :root {
   /* 🌸 Kawaii Pastel Pixel Theme */
   --primary: #FFB3D9;
   --primary-dark: #FF8EC9;
+  --hot-pink: #FF69B4;
   --primary-gradient: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 50%, #A8D8FF 100%);
   --secondary: #A8D8FF;
   --secondary-light: #D4ECFF;
@@ -36,6 +68,11 @@
 
   /* ✨ Pixel Dot Pattern */
   --dot-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpattern id='dot' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Ccircle fill='%23FFB3D9' opacity='0.08' cx='10' cy='10' r='2'/%3E%3C/pattern%3E%3Crect fill='url(%23dot)' width='100%25' height='100%25'/%3E%3C/svg%3E");
+
+  /* 🎮 폰트 변수 */
+  --font-title: 'Jalnan', 'BMJua', sans-serif;
+  --font-body: 'Cafe24SurroundAir', 'Pretendard', sans-serif;
+  --font-button: 'Cafe24SurroundAir', 'Pretendard', sans-serif;
 }
 
 * {
@@ -45,12 +82,15 @@
 }
 
 body {
-  font-family: 'Pretendard', -apple-system, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg-main);
   color: var(--text-dark);
-  line-height: 1.65;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   position: relative;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 /* 🌈 Background Sparkle Effect */
@@ -85,14 +125,39 @@ body::before {
   }
 }
 
-/* Typography with Pixel Charm */
+/* Typography - 잘난체 + 게임 스타일 (전역) */
 h1,
 h2,
 h3 {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.8);
+  font-family: 'Jalnan', 'BMJua', 'Outfit', sans-serif;
+  font-weight: normal;
+  letter-spacing: 0.01em;
+  color: var(--text-dark);
+  -webkit-text-stroke: 1px white;
+  paint-order: stroke fill;
+  text-shadow:
+    1px 1px 0 white,
+    -1px -1px 0 white,
+    1px -1px 0 white,
+    -1px 1px 0 white;
+}
+
+/* 🎮 게임 스타일 헤더 - 잘난체 + 픽셀화 효과 */
+.game-title {
+  font-family: 'Jalnan', 'BMJua', sans-serif;
+  font-weight: normal;
+  color: var(--hot-pink);
+  -webkit-text-stroke: 2px white;
+  paint-order: stroke fill;
+  text-shadow:
+    2px 2px 0 white,
+    -1px -1px 0 white,
+    1px -1px 0 white,
+    -1px 1px 0 white,
+    0 0 8px rgba(255, 105, 180, 0.3);
+  letter-spacing: 0.02em;
+  /* 픽셀화 효과 */
+  image-rendering: pixelated;
 }
 
 /* 🎀 Kawaii Card */
@@ -220,9 +285,9 @@ h3 {
 /* Grid Layout - 중앙 집중 */
 .auto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
-  max-width: 900px;
+  max-width: 1000px;
   /* 카드들이 너무 퍼지지 않게 */
   margin: 0 auto;
 }
@@ -275,4 +340,25 @@ h3 {
   top: -10px;
   right: -10px;
   animation: sparkle 2s ease-in-out infinite;
+}
+
+/* 🎀 박다현체 적용 UI 요소들 */
+/* 버튼, 탭, 칩, 선택요소 등 */
+button,
+.chip,
+.tab-btn,
+select,
+input::placeholder,
+.btn-select-mode,
+.btn-clean-expired,
+.btn-trash-view,
+.select-minimal,
+.btn-mode-pill {
+  font-family: var(--font-button);
+}
+
+/* 검색창 placeholder */
+input::placeholder {
+  font-family: var(--font-button);
+  color: var(--text-light);
 }

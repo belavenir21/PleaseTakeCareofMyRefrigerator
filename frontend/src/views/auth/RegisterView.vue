@@ -99,7 +99,8 @@ const handleRegister = async () => {
     success.value = true
     
     setTimeout(() => {
-      router.push({ name: 'Home' })
+      // 가입 성공 후 타이틀(Main) 페이지로 이동
+      router.push({ name: 'Main' })
     }, 2000)
   } catch (err) {
     error.value = err.response?.data?.error || '회원가입에 실패했습니다.'
@@ -115,7 +116,11 @@ const handleRegister = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* 배경 이미지 적용 */
+  background-image: url('/images/login-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   padding: 20px;
 }
 

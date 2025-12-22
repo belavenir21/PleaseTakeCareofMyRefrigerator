@@ -600,10 +600,15 @@ const getFullImageUrl = (path) => {
 .delete-btn { background: none; border: none; color: #FA5252; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 
 .form-body { display: flex; flex-direction: column; gap: 18px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.group { display: flex; flex-direction: column; gap: 6px; }
-.group label { font-size: 0.85rem; font-weight: 700; color: var(--text-light); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.group label { font-size: 0.85rem; font-weight: 700; color: var(--text-light); white-space: nowrap; }
 .relative { position: relative; }
+
+/* 작은 카드에서 보관/유통기한 레이아웃 개선 */
+@media (max-width: 380px) {
+  .form-row { grid-template-columns: 1fr; gap: 12px; }
+}
 
 /* Autocomplete */
 .autocomplete-dropdown {

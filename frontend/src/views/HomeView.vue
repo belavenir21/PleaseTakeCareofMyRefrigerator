@@ -9,11 +9,11 @@
     <!-- 인트로 화면 -->
     <div v-if="showIntro" id="intro" @scroll="onScroll">
       <div class="spacer">
-        <div class="intro-box" :style="{ opacity: introOpacity }">
+        <div id="title-section" class="intro-box" :style="{ opacity: introOpacity }">
           <h1>냉장고를<br>부탁해</h1>
           <p class="scroll-hint">아래로 스크롤 👇</p>
         </div>
-        <div class="intro-btns" :class="{ active: introActive }">
+        <div id="main-section" class="intro-btns" :class="{ active: introActive }">
           <button class="btn fill" @click="startApp('input')">냉장고 정리하기</button>
           <button class="btn outline" @click="startApp('recipes')">레시피 찾기</button>
         </div>
@@ -23,10 +23,42 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
+// 스크롤 이동 함수
+const scrollToSection = (hash) => {
+  if (!hash) {
+    // 해시가 없으면 맨 위로 (타이틀)
+    const container = document.getElementById('intro')
+    if (container) container.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  
+  // 해시 있으면 해당 섹션으로 스크롤 타겟팅 (단, intro-btns는 fixed라 스크롤 위치 계산이 다름)
+  // 이 디자인 구조상(스크롤시 opacity변화 & fixed) 스크롤 위치를 직접 지정해야 함.
+  const container = document.getElementById('intro')
+  if (container) {
+    if (hash === '#main-section') {
+      container.scrollTo({ top: 400, behavior: 'smooth' }) // 적당한 스크롤 값
+    } else {
+      container.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+}
+
+// 라우트 변경 감지 (같은 페이지 내에서 해시 변경 시)
+watch(() => route.hash, (newHash) => {
+  scrollToSection(newHash)
+})
+
+onMounted(() => {
+  // 처음 들어왔을 때도 적용
+  setTimeout(() => scrollToSection(route.hash), 100)
+})
 
 // 상태
 const showIntro = ref(true)
@@ -57,7 +89,7 @@ const startApp = (page) => {
   showIntro.value = false
   
   if (page === 'input') {
-    router.push({ name: 'IngredientInput' })
+    router.push({ name: 'Pantry' }) // 보관함으로 이동
   } else if (page === 'recipes') {
     router.push({ name: 'RecipeList' })
   }

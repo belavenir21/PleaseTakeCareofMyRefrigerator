@@ -1,12 +1,14 @@
 from rest_framework import viewsets, filters, status
 import re
+import requests
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters import rest_framework as django_filters
-from .models import Recipe, CookingStep
+from django.conf import settings
+from .models import Recipe, CookingStep, RecipeIngredient
 from .serializers import (
-    RecipeListSerializer, RecipeDetailSerializer, CookingStepSerializer
+    RecipeListSerializer, RecipeDetailSerializer, CookingStepSerializer, RecipeCreateSerializer
 )
 from refrigerator.models import UserIngredient
 
@@ -46,6 +48,7 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({
             'recipe_id': recipe.id,
             'recipe_title': recipe.title,
+            'image_url': recipe.image_url,
             'total_steps': steps.count(),
             'total_time': recipe.cooking_time_minutes,
             'steps': serializer.data
@@ -271,11 +274,15 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             elif is_diet and '샐러드' in (getattr(recipe, 'category', '') or ''):
                 match_status = 'diet'
                 
+            # 유통기한 임박 재료 매칭 개수 별도 계산
+            expiring_match_count = sum(1 for m in matched_list if m.replace(" ","") in expiring_soon_names)
+            
             recommended_recipes.append({
                 'recipe': recipe,
                 'weighted_score': weighted_score,
                 'display_ratio': display_match_ratio,
                 'match_count': actual_match_count,
+                'expiring_match_count': expiring_match_count,  # 추가
                 'matched_ingredients': matched_list,
                 'missing_ingredients': missing_ingredients,
                 'missing_ingredients_detailed': missing_ingredients_detailed,
@@ -286,10 +293,11 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
         # 필터링: 사용자가 요청한 최소 비율 이상인 것만
         recommended_recipes = [r for r in recommended_recipes if r['display_ratio'] >= min_ratio or r['match_status'] == 'diet']
         
-        # 정렬 우선순위:
-        # 1. 가중치 점수 (매칭 개수 + 임박 재료 보너스)
-        # 2. 매칭 비율
-        recommended_recipes.sort(key=lambda x: (x['weighted_score'], x['display_ratio']), reverse=True)
+        # 정렬 우선순위 변경:
+        # 1. 유통기한 임박 재료 매칭 개수 (가장 중요!)
+        # 2. 전체 매칭 개수
+        # 3. 매칭 비율
+        recommended_recipes.sort(key=lambda x: (x['expiring_match_count'], x['match_count'], x['display_ratio']), reverse=True)
         # 최대 100개까지 반환 (사용자가 더 많이 보길 원하므로 늘림)
         recommended_recipes = recommended_recipes[:100]
         
@@ -318,3 +326,129 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
                 'allergies': user_allergy_names
             }
         })
+    
+    @action(detail=False, methods=['post'])
+    def create_recipe(self, request):
+        """사용자 레시피 직접 등록"""
+        serializer = RecipeCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            recipe = serializer.save()
+            return Response({
+                'message': f'레시피 "{recipe.title}"가 등록되었습니다!',
+                'recipe': RecipeDetailSerializer(recipe).data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'])
+    def generate_recipe(self, request):
+        """AI로 레시피 자동 생성"""
+        recipe_name = request.data.get('recipe_name', '')
+        
+        if not recipe_name:
+            return Response({'error': '레시피 이름을 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        gms_key = getattr(settings, 'GMS_KEY', None)
+        if not gms_key:
+            return Response({'error': 'AI 서비스가 설정되지 않았습니다.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
+        prompt = f"""
+당신은 요리 전문가입니다. "{recipe_name}" 레시피를 JSON 형식으로 생성해주세요.
+
+반드시 아래 형식으로 응답하세요 (코드블록 없이 순수 JSON만):
+{{
+    "title": "레시피 제목",
+    "description": "레시피 설명 (2-3문장)",
+    "cooking_time_minutes": 조리시간(숫자),
+    "difficulty": "쉬움/보통/어려움 중 하나",
+    "category": "한식/양식/중식/일식/디저트/샐러드/기타 중 하나",
+    "tags": ["태그1", "태그2"],
+    "ingredients": [
+        {{"name": "재료명", "quantity": "수량 (예: 200g, 2개)"}},
+        ...
+    ],
+    "steps": [
+        {{"description": "조리 단계 설명", "time_minutes": 소요시간(숫자)}},
+        ...
+    ]
+}}
+
+중요:
+- 재료는 실제 필요한 것만 포함
+- 조리 단계는 상세하게 5-8단계 정도
+- 한국어로 작성
+"""
+        
+        try:
+            url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.7}
+            }
+            response = requests.post(url, json=payload, timeout=30)
+            
+            if response.status_code != 200:
+                error_detail = response.text[:500] if response.text else 'No response body'
+                print(f"[AI-RECIPE-ERROR] Status: {response.status_code}, Detail: {error_detail}")
+                return Response({
+                    'error': f'AI 응답 오류 (Status: {response.status_code})',
+                    'detail': error_detail
+                }, status=status.HTTP_502_BAD_GATEWAY)
+            
+            result = response.json()
+            ai_text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
+            
+            # JSON 파싱
+            import json
+            # 코드블록 제거
+            ai_text = ai_text.strip()
+            if ai_text.startswith('```'):
+                ai_text = ai_text.split('```')[1]
+                if ai_text.startswith('json'):
+                    ai_text = ai_text[4:]
+            if ai_text.endswith('```'):
+                ai_text = ai_text[:-3]
+            
+            recipe_data = json.loads(ai_text.strip())
+            
+            # 레시피 생성
+            recipe = Recipe.objects.create(
+                title=recipe_data.get('title', recipe_name),
+                description=recipe_data.get('description', ''),
+                cooking_time_minutes=recipe_data.get('cooking_time_minutes', 30),
+                difficulty=recipe_data.get('difficulty', '보통'),
+                category=recipe_data.get('category', '기타'),
+                tags=recipe_data.get('tags', []),
+                api_source='ai_generated'
+            )
+            
+            # 재료 생성
+            for ing in recipe_data.get('ingredients', []):
+                RecipeIngredient.objects.create(
+                    recipe=recipe,
+                    name=ing.get('name', ''),
+                    quantity=ing.get('quantity', '')
+                )
+            
+            # 조리 단계 생성
+            for idx, step in enumerate(recipe_data.get('steps', []), 1):
+                CookingStep.objects.create(
+                    recipe=recipe,
+                    step_number=idx,
+                    description=step.get('description', ''),
+                    time_minutes=step.get('time_minutes', 0),
+                    icon='🍳'
+                )
+            
+            return Response({
+                'message': f'AI가 "{recipe.title}" 레시피를 생성했습니다!',
+                'recipe': RecipeDetailSerializer(recipe).data
+            }, status=status.HTTP_201_CREATED)
+            
+        except json.JSONDecodeError as e:
+            return Response({
+                'error': 'AI 응답 파싱 실패',
+                'raw_response': ai_text[:500]
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error': f'레시피 생성 실패: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
