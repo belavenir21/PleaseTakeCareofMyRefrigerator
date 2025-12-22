@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { authAPI, userAPI } from '@/api/auth'
+import api from '@/api/index'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -16,6 +17,45 @@ export const useAuthStore = defineStore('auth', () => {
       await fetchUserProfile()
       return response
     } catch (error) {
+      throw error
+    }
+  }
+
+  // 구글 로그인
+  const googleLogin = async (token) => {
+    try {
+      const response = await authAPI.googleLogin({ access_token: token })
+      // dj-rest-auth 응답에서 토큰(key) 추출
+      const authKey = response.data.key || response.data.token || response.data.access_token
+      if (authKey) {
+        localStorage.setItem('token', authKey)
+        // 즉시 동기화
+        api.defaults.headers.common['Authorization'] = `Token ${authKey}`
+      }
+      isAuthenticated.value = true
+      await fetchUserProfile()
+      return response
+    } catch (error) {
+      localStorage.removeItem('token')
+      throw error
+    }
+  }
+
+  // 카카오 로그인
+  const kakaoLogin = async (token) => {
+    try {
+      const response = await authAPI.kakaoLogin({ access_token: token })
+      const authKey = response.data.key || response.data.token || response.data.access_token
+      if (authKey) {
+        localStorage.setItem('token', authKey)
+        // 즉시 동기화
+        api.defaults.headers.common['Authorization'] = `Token ${authKey}`
+      }
+      isAuthenticated.value = true
+      await fetchUserProfile()
+      return response
+    } catch (error) {
+      localStorage.removeItem('token')
       throw error
     }
   }
@@ -38,11 +78,13 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     try {
       await authAPI.logout()
+    } catch (error) {
+      console.error('Logout error:', error)
+    } finally {
       user.value = null
       profile.value = null
       isAuthenticated.value = false
-    } catch (error) {
-      throw error
+      localStorage.removeItem('token') // 토큰 삭제
     }
   }
 
@@ -80,6 +122,8 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     fetchUserProfile,
+    googleLogin,
+    kakaoLogin,
     updateProfile,
   }
 })

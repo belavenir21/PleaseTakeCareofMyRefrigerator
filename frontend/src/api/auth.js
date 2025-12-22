@@ -15,6 +15,16 @@ export const authAPI = {
   logout() {
     return api.post('/auth/logout/')
   },
+
+  // 구글 로그인
+  googleLogin(data) {
+    return api.post('/auth/google/', data)
+  },
+
+  // 카카오 로그인
+  kakaoLogin(data) {
+    return api.post('/auth/kakao/', data)
+  },
 }
 
 export const userAPI = {

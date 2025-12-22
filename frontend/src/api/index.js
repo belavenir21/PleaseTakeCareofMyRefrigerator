@@ -12,11 +12,14 @@ const api = axios.create({
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      // 헤더를 명시적으로 설정 (공백 주의)
+      config.headers['Authorization'] = `Token ${token}`
+    }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
 // 응답 인터셉터

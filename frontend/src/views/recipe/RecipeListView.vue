@@ -81,19 +81,32 @@
       <!-- 추천 모드: 더 낮은 정확도 레시피 보기 버튼 -->
       <div v-if="showRecommendations && !loading && displayRecipes.length > 0 && nextTierInfo" class="expand-section">
         <button @click="lowerAccuracy" class="btn-expand">
-          <span class="expand-icon">📊</span>
+          <!-- 깔끔한 SVG 아이콘 -->
+          <div class="expand-icon-box">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </div>
+          
           <div class="expand-text">
             <strong>더 많은 레시피 보기</strong>
-            <p>{{ nextTierInfo.label }} 매칭 레시피 {{ nextTierInfo.count }}개 더보기</p>
+            <p>
+              <span class="highlight">{{ nextTierInfo.label }}</span> 매칭 레시피 
+              <span class="highlight">{{ nextTierInfo.count }}개</span> 더보기
+            </p>
           </div>
-          <span class="expand-arrow">↓</span>
+          
+          <!-- 화살표 SVG -->
+          <div class="expand-arrow-box">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
         </button>
       </div>
 
       <!-- AI 챗봇 제안 (추천 모드일 때 항상 표시) -->
       <div v-if="showRecommendations && !loading" class="ai-chat-section">
         <div class="ai-chat-card">
-          <div class="ai-icon">🤖</div>
+          <div class="ai-icon">
+            <img src="@/assets/character-head.png" alt="AI Chef" class="ai-char-img" />
+          </div>
           <div class="ai-text">
             <h4>AI 셰프에게 물어보기</h4>
             <p>보관함 재료로 만들 수 있는 요리를 AI가 직접 추천해드려요!</p>
@@ -108,7 +121,9 @@
       <!-- 결과가 없거나 적을 때 AI 도움 제안 (검색 모드용) -->
       <div v-if="!loading && displayRecipes.length < 5 && !showRecommendations" class="ai-suggest-section">
         <div class="ai-suggest-card">
-          <div class="ai-icon">🤖</div>
+          <div class="ai-icon">
+            <img src="@/assets/character-head.png" alt="AI Chef" class="ai-char-img" />
+          </div>
           <div class="ai-text">
             <h4>AI 셰프에게 물어보기</h4>
             <p>보관함 재료로 만들 수 있는 요리를 AI가 직접 추천해드려요!</p>
@@ -143,7 +158,9 @@
           
           <div class="add-recipe-options">
             <div class="option-card" @click="startAIGeneration">
-              <div class="option-icon">🤖</div>
+              <div class="option-icon">
+                <img src="@/assets/character-head.png" alt="AI" class="ai-char-img-sm" />
+              </div>
               <h4>AI가 레시피 만들기</h4>
               <p>레시피 이름만 입력하면 AI가 재료와 조리법을 자동으로 채워드려요!</p>
             </div>
@@ -655,8 +672,8 @@ const submitManualRecipe = async () => {
 .badge-ratio .txt { font-size: 0.65rem; font-weight: 800; margin-top: 4px; opacity: 0.8; }
 
 .body-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; font-family: var(--font-button); }
-.title { font-size: 1.2rem; font-weight: 800; color: #222; margin: 0; line-height: 1.3; font-family: var(--font-body); }
-.meta-info { display: flex; gap: 15px; font-size: 0.85rem; color: #868E96; font-weight: 700; }
+.title { font-size: 1.2rem; font-weight: 800; color: #6D4C41; margin: 0; line-height: 1.3; font-family: var(--font-body); }
+.meta-info { display: flex; gap: 15px; font-size: 0.85rem; color: #8D6E63; font-weight: 700; }
 
 .matching-status { margin-top: auto; border-top: 1px dashed #EEE; padding-top: 12px; }
 .missing-parts { display: flex; gap: 8px; align-items: baseline; }
@@ -674,20 +691,30 @@ const submitManualRecipe = async () => {
 /* AI 제안 섹션 */
 .ai-suggest-section { margin-top: 30px; }
 .ai-suggest-card {
-  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-  border: 2px dashed #667eea;
+  background: linear-gradient(135deg, #FFF0F6 0%, #FFF5F7 100%); /* 핑크 파스텔 배경 */
+  border: 2px dashed #FF8E99; /* 핑크 테두리 */
   border-radius: 20px;
   padding: 25px;
   display: flex;
   align-items: center;
   gap: 20px;
 }
-.ai-icon { font-size: 3rem; }
+.ai-icon { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+.ai-char-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
 .ai-text { flex: 1; }
-.ai-text h4 { margin: 0 0 5px; font-size: 1.1rem; color: #333; }
-.ai-text p { margin: 0; font-size: 0.9rem; color: #666; }
+.ai-text h4 { margin: 0 0 5px; font-size: 1.1rem; color: #6D4C41; }
+.ai-text p { margin: 0; font-size: 0.9rem; color: #8D6E63; }
 .btn-ai-chat {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); /* 핑크 그라데이션 */
   color: white;
   border: none;
   padding: 14px 28px;
@@ -696,30 +723,93 @@ const submitManualRecipe = async () => {
   font-size: 0.95rem;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
 }
 .btn-ai-chat:hover { transform: scale(1.05); }
 
-/* 정확도 확장 버튼 */
+/* 정확도 확장 버튼 (더 많은 레시피) - 핑크/브라운 테마로 귀엽고 통일성 있게 */
 .expand-section { margin-top: 30px; }
 .btn-expand {
   width: 100%;
-  background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
-  border: 2px dashed #ff922b;
-  border-radius: 16px;
+  background: #FFFFFF;
+  border: 2px solid #FFB6C1;
+  border-radius: 20px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 15px;
   cursor: pointer;
-  transition: all 0.3s;
+  
+  /* 꾹 눌리는 효과를 위한 전환 */
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 0 #FFE0E9, 0 10px 10px rgba(0,0,0,0.05); /* 입체적인 핑크 그림자 (바닥) */
+  color: #6D4C41;
+  
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
 }
+
 .btn-expand:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 146, 43, 0.2);
-  background: linear-gradient(135deg, #fff0d9 0%, #ffd699 100%);
+  transform: translateY(4px); /* 아래로 꾹! */
+  box-shadow: 0 2px 0 #FFE0E9, 0 4px 4px rgba(0,0,0,0.05); /* 그림자가 줄어들어 눌린 느낌 */
+  border-color: #FF8E99;
 }
-.expand-icon {
-  font-size: 2rem;
+
+/* 🍬 캔디 스트라이프 패턴 (완벽한 부드러움) */
+.btn-expand::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  
+  /* 패턴 타일 생성 (정수 픽셀 매칭을 위해 linear-gradient 사용) */
+  background-color: transparent;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 182, 193, 0.3) 25%, 
+    transparent 25%, 
+    transparent 50%, 
+    rgba(255, 182, 193, 0.3) 50%, 
+    rgba(255, 182, 193, 0.3) 75%, 
+    transparent 75%, 
+    transparent
+  );
+  
+  /* 타일 크기 고정 (이 크기만큼만 이동하면 깨짐 없음) */
+  background-size: 40px 40px;
+  
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+  
+  /* 부드러운 흐름 */
+  animation: candy-move 3s linear infinite;
+  will-change: background-position;
+}
+
+.btn-expand:hover::before {
+  opacity: 1; /* 호버 시 선명하게 */
+}
+
+/* 내용물은 패턴 위에 */
+.expand-icon-box, .expand-text, .expand-arrow-box {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes candy-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; } /* 정확히 타일 크기만큼 이동 */
+}
+.expand-icon-box {
+  background: #FFF0F6;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FF80AB; /* 아이콘 핑크 */
 }
 .expand-text {
   flex: 1;
@@ -727,19 +817,25 @@ const submitManualRecipe = async () => {
 }
 .expand-text strong {
   display: block;
-  font-size: 1.1rem;
-  color: #333;
+  font-size: 1.15rem;
+  color: #6D4C41; /* 제목 브라운 */
   margin-bottom: 4px;
 }
 .expand-text p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.95rem;
+  color: #8D6E63; /* 설명 연한 브라운 */
 }
-.expand-arrow {
-  font-size: 1.5rem;
-  color: #ff922b;
+.highlight {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #E91E63; /* 진한 핑크로 숫자 강조 */
+  background: none;
+  padding: 0 2px;
+}
+.expand-arrow-box {
   animation: bounce 2s ease-in-out infinite;
+  color: #FFB6C1;
 }
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
@@ -749,17 +845,23 @@ const submitManualRecipe = async () => {
 /* AI 챗봇 섹션 */
 .ai-chat-section { margin-top: 30px; margin-bottom: 30px; }
 .ai-chat-card {
-  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
-  border: 2px solid #667eea;
+  background: linear-gradient(135deg, #FFF0F6 0%, #FFF5F7 100%); /* 핑크 파스텔 */
+  border: 2px solid #FF8E99; /* 핑크 보더 */
   border-radius: 20px;
   padding: 25px;
   display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 4px 15px rgba(255, 142, 153, 0.2);
 }
 .ai-chat-card:hover {
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 8px 25px rgba(255, 142, 153, 0.3);
+}
+
+.ai-char-img-sm {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
 }
 
 /* 빈 상태 */
@@ -768,13 +870,14 @@ const submitManualRecipe = async () => {
 .empty-state .sub-text { font-size: 0.95rem; color: #adb5bd; margin-top: 10px; }
 .empty-actions { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
 .empty-actions .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
   color: white;
   border: none;
   padding: 14px 28px;
   border-radius: 30px;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
 }
 .empty-actions .btn-secondary {
   background: #e9ecef;
@@ -843,13 +946,13 @@ const submitManualRecipe = async () => {
   transition: all 0.3s;
 }
 .option-card:hover {
-  border-color: #667eea;
+  border-color: #FF8E99;
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 10px 25px rgba(255, 142, 153, 0.2);
 }
 .option-icon { font-size: 3rem; margin-bottom: 15px; }
-.option-card h4 { margin: 0 0 10px; font-size: 1.1rem; color: #333; }
-.option-card p { margin: 0; font-size: 0.9rem; color: #666; }
+.option-card h4 { margin: 0 0 10px; font-size: 1.1rem; color: #6D4C41; }
+.option-card p { margin: 0; font-size: 0.9rem; color: #8D6E63; }
 
 /* AI 생성 폼 */
 .ai-generate-form {
@@ -864,7 +967,7 @@ const submitManualRecipe = async () => {
 }
 .input-row .input-field { flex: 1; }
 .btn-generate {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -872,6 +975,7 @@ const submitManualRecipe = async () => {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
 }
 .btn-generate:disabled {
   opacity: 0.6;
@@ -899,7 +1003,7 @@ const submitManualRecipe = async () => {
   display: block;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #495057;
+  color: #6D4C41;
   margin-bottom: 6px;
 }
 .form-row {

@@ -20,6 +20,11 @@ const routes = [
     meta: { requiresGuest: true },
   },
   {
+    path: '/auth/kakao/callback',
+    name: 'KakaoCallback',
+    component: () => import('@/views/auth/KakaoCallbackView.vue'),
+  },
+  {
     path: '/input',
     name: 'IngredientInput',
     component: () => import('@/views/refrigerator/IngredientInputView.vue'),

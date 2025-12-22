@@ -1,19 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Pretendard:wght@300;400;500;600;700&display=swap');
 
-/* 🎮 게임 스타일 폰트 - 배민 주아체 & 잘난체 */
+/* 🎮 게임 스타일 폰트 - 배민 주아체 (구글 폰트 사용) */
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
 @font-face {
-  font-family: 'BMJua';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJua.woff') format('woff');
+  font-family: 'Jalnan';
+  src: local('Jalnan'), url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
   font-weight: normal;
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Jalnan';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/Jalnan.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
+/* Jalnan 대신 Jua 사용 (거의 같은 느낌) */
 
 /* 🎀 Cafe24 써라운드에어 - 메인 UI용 (둥글고 부드러움) */
 @font-face {

@@ -2,7 +2,9 @@
   <div class="recipe-chatbot">
     <!-- 플로팅 버튼 -->
     <button v-if="!isOpen" @click="toggleChat" class="fab-chat">
-      <span class="fab-icon">🤖</span>
+      <div class="fab-icon-wrap">
+        <img src="@/assets/character-head.png" alt="AI" class="fab-char-img" />
+      </div>
       <span class="fab-label">AI 셰프</span>
     </button>
 
@@ -11,7 +13,7 @@
       <div v-if="isOpen" class="chat-window">
         <div class="chat-header">
           <div class="header-info">
-            <span class="chef-icon">👨‍🍳</span>
+            <img src="@/assets/character-head.png" alt="AI" class="header-char-img" />
             <div>
               <h3>AI 레시피 셰프</h3>
               <p class="subtitle">무엇이든 물어보세요!</p>
@@ -23,7 +25,9 @@
         <div class="chat-body" ref="chatBody">
           <!-- 웰컴 메시지 (메시지 없을 때만) -->
           <div v-if="messages.length === 0" class="welcome-section">
-            <div class="welcome-icon">🍳</div>
+            <div class="welcome-icon-wrap">
+              <img src="@/assets/character-head.png" alt="AI" class="welcome-char-img" />
+            </div>
             <h4>안녕하세요! AI 셰프입니다</h4>
             <p>레시피, 요리 팁, 재료 활용법 등<br/>무엇이든 물어보세요!</p>
           </div>
@@ -192,20 +196,33 @@ const sendMessage = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FFB6C1 0%, #FFC1CC 100%); /* Bubblegum Pink */
   color: white;
   border: none;
-  padding: 14px 24px;
+  padding: 10px 20px; 
   border-radius: 50px;
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 30px rgba(255, 182, 193, 0.5);
   transition: all 0.3s ease;
 }
 .fab-chat:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 12px 40px rgba(255, 182, 193, 0.6);
+}
+.fab-icon-wrap {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fab-char-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 .fab-icon {
   font-size: 1.4rem;
@@ -229,8 +246,9 @@ const sendMessage = async () => {
 }
 
 .chat-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #FFB6C1 0%, #FFC1CC 100%);
+  color: #6D4C41; /* 헤더 텍스트는 브라운으로? 아니면 흰색? 보통 핑크엔 흰색이 낫지만 컨셉상 브라운이면... 일단 흰색 유지 (글자가 작아서) */
+  color: white; 
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -241,8 +259,13 @@ const sendMessage = async () => {
   align-items: center;
   gap: 12px;
 }
-.chef-icon {
-  font-size: 2rem;
+.header-char-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
 }
 .chat-header h3 {
   margin: 0;
@@ -273,23 +296,48 @@ const sendMessage = async () => {
   overflow-y: auto;
   padding: 20px;
   background: #f8f9fa;
+  position: relative; /* 배경 배치를 위해 */
+  z-index: 1;
+}
+
+/* 졸귀탱 캐릭터 배경 */
+.chat-body::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%; /* 적당한 크기 */
+  height: 60%;
+  background: url('@/assets/character.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.15; /* 은은하게 (글자 방해 안 되게) */
+  z-index: -1;
+  pointer-events: none;
 }
 
 .welcome-section {
   text-align: center;
   padding: 30px 20px;
 }
-.welcome-icon {
-  font-size: 4rem;
-  margin-bottom: 15px;
+.welcome-icon-wrap {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+}
+.welcome-char-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: bounce 2s infinite;
 }
 .welcome-section h4 {
   margin: 0 0 10px;
   font-size: 1.2rem;
-  color: #333;
+  color: #6D4C41;
 }
 .welcome-section p {
-  color: #666;
+  color: #8D6E63;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -312,8 +360,8 @@ const sendMessage = async () => {
   transition: all 0.2s;
 }
 .quick-btn:hover {
-  border-color: #667eea;
-  background: #f8f9ff;
+  border-color: #FF8E99;
+  background: #FFF0F6;
   transform: translateX(5px);
 }
 
@@ -328,14 +376,15 @@ const sendMessage = async () => {
 }
 
 .message.user .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #FFB6C1 0%, #FFC1CC 100%);
+  color: white; /* 갈색은 잘 안 보일 수 있으니 흰색 */
   margin-left: 40px;
   border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3);
 }
 .message.assistant .message-content {
   background: white;
-  color: #333;
+  color: #6D4C41;
   margin-right: 40px;
   border-radius: 18px 18px 18px 4px;
   border: 1px solid #e9ecef;
@@ -400,7 +449,7 @@ const sendMessage = async () => {
   cursor: pointer;
 }
 .checkbox-label input {
-  accent-color: #667eea;
+  accent-color: #FF8E99;
 }
 .input-wrap {
   display: flex;
@@ -416,10 +465,10 @@ const sendMessage = async () => {
   transition: border-color 0.2s;
 }
 .input-wrap input:focus {
-  border-color: #667eea;
+  border-color: #FF8E99;
 }
 .btn-send {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FFB6C1 0%, #FFC1CC 100%);
   color: white;
   border: none;
   width: 48px;
@@ -481,8 +530,8 @@ const sendMessage = async () => {
   white-space: nowrap;
 }
 .quick-btn-sm:hover {
-  background: #e7f5ff;
-  border-color: #74c0fc;
+  background: #FFF0F6;
+  border-color: #FF8E99;
   transform: scale(1.02);
 }
 </style>

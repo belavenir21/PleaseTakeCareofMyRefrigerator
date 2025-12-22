@@ -65,7 +65,7 @@ def login_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @authentication_classes([CsrfExemptSessionAuthentication])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny]) # 이미 로그아웃된 상태여도 에러 없이 처리
 def logout_view(request):
     """로그아웃"""
     logout(request)
@@ -74,9 +74,10 @@ def logout_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_detail_view(request):
-    """내 정보 조회"""
+    """내 정보 조회 (프로필 자동 생성 포함)"""
     user = request.user
-    profile = UserProfile.objects.get(user=user)
+    # 프로필이 없으면 생성 (소셜 가입자 대응)
+    profile, created = UserProfile.objects.get_or_create(user=user)
     
     return Response({
         'user': UserSerializer(user).data,
@@ -131,3 +132,63 @@ def user_profile_update_view(request):
         print(f"DEBUG: Exception in profile update: {str(e)}")
         traceback.print_exc()
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# 소셜 로그인 (Google, Kakao)
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = "http://localhost:5173" # 프론트엔드 URL
+    client_class = OAuth2Client
+    permission_classes = [AllowAny]
+    authentication_classes = [CsrfExemptSessionAuthentication]
+    
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            from django.contrib.auth import login
+            login(request, self.user) # 세션 생성!
+        return response
+
+class KakaoLogin(SocialLoginView):
+    adapter_class = KakaoOAuth2Adapter
+    callback_url = "http://localhost:5173/auth/kakao/callback"
+    permission_classes = [AllowAny]
+    authentication_classes = [CsrfExemptSessionAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        # code가 들어오면 access_token으로 교환
+        code = request.data.get('code')
+        if code:
+            import requests
+            from django.conf import settings
+            
+            # 카카오에 토큰 요청
+            token_url = "https://kauth.kakao.com/oauth/token"
+            data = {
+                'grant_type': 'authorization_code',
+                'client_id': settings.SOCIAL_AUTH_KAKAO_CLIENT_ID,
+                'redirect_uri': 'http://localhost:5173/auth/kakao/callback',
+                'code': code,
+            }
+            
+            try:
+                token_response = requests.post(token_url, data=data)
+                token_data = token_response.json()
+                
+                if 'access_token' in token_data:
+                    # access_token으로 request 데이터 교체
+                    request._full_data = {'access_token': token_data['access_token']}
+                else:
+                    return Response({'error': token_data}, status=400)
+            except Exception as e:
+                return Response({'error': str(e)}, status=500)
+        
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            from django.contrib.auth import login
+            login(request, self.user)
+        return response
