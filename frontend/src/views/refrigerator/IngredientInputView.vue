@@ -358,7 +358,7 @@ const submitAll = async () => {
 </script>
 
 <style scoped>
-.ingredient-input-view { min-height: 100vh; padding-bottom: 120px; }
+.ingredient-input-view { min-height: 100vh; padding-bottom: 120px; padding-top: 70px; }
 
 /* Header Premium Glassmorphism */
 .header-glass {
@@ -367,8 +367,8 @@ const submitAll = async () => {
   -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
   position: sticky;
-  top: 0;
-  z-index: 1000;
+  top: 70px;
+  z-index: 999;
 }
 .header-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
 .back-btn { background: none; border: none; cursor: pointer; color: var(--text-dark); padding: 8px; border-radius: 50%; transition: background 0.2s; }

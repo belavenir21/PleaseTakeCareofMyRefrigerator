@@ -45,13 +45,13 @@
 ### 1. 백엔드 (Django)
 ```bash
 cd backend
-./venv/Scripts/activate
+./venv/Scripts/activate   # Windows
+# source venv/bin/activate  # Mac/Linux
 pip install -r requirements.txt
 python manage.py migrate
-# 💾 DB 복구 (fixture 로드)
-python manage.py load_initial_data
 python manage.py runserver
 ```
+> 💡 **db.sqlite3가 Git에 포함되어 있어 별도 DB 복구 불필요!**
 
 ### 2. 프론트엔드 (Vue.js)
 ```bash

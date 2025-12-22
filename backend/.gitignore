@@ -22,9 +22,11 @@ wheels/
 
 # Django
 *.log
-db.sqlite3
+# db.sqlite3 포함 (다른 컴퓨터에서 바로 사용 가능하도록)
 db.sqlite3-journal
 media/
+staticfiles/
+.env
 staticfiles/
 .env
 
