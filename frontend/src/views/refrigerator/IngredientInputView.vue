@@ -173,6 +173,14 @@
               </div>
             </div>
           </div>
+
+          <!-- 수동 추가 카드 -->
+          <div class="card add-card" @click="addDetectedItem">
+            <div class="add-btn-inner">
+              <span class="plus-icon">+</span>
+              <span>누락된 재료 추가</span>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -336,6 +344,17 @@ const handleCameraCapture = async (event) => {
 const removeDetectedItem = (idx) => {
   detectedList.value.splice(idx, 1)
   if (detectedList.value.length === 0) showDetectedList.value = false
+}
+
+const addDetectedItem = () => {
+  detectedList.value.push({
+    name: '',
+    quantity: 1,
+    unit: '개',
+    storage_method: '냉장',
+    expiry_date: getTodayPlusDays(7),
+    selected: true
+  })
 }
 
 const cancelAll = () => {

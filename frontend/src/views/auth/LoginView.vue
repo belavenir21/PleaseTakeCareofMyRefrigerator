@@ -68,7 +68,10 @@ const handleLogin = async () => {
 
   try {
     await authStore.login(formData.value)
-    router.push({ name: 'Home' })
+    // 로그인 성공 후 인증 상태가 업데이트될 때까지 조금 대기
+    await new Promise(resolve => setTimeout(resolve, 100))
+    // Main 페이지로 리디렉션
+    await router.push({ name: 'Main' })
   } catch (err) {
     error.value = err.response?.data?.error || '로그인에 실패했습니다.'
   } finally {

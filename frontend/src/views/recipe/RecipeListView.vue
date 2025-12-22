@@ -72,8 +72,35 @@
         </div>
       </section>
 
-      <!-- 결과가 없거나 적을 때 AI 도움 제안 -->
-      <div v-if="!loading && displayRecipes.length < 5 && showRecommendations" class="ai-suggest-section">
+      <!-- 추천 모드: 더 낮은 정확도 레시피 보기 버튼 -->
+      <div v-if="showRecommendations && !loading && displayRecipes.length > 0 && nextTierCount > 0" class="expand-section">
+        <button @click="lowerAccuracy" class="btn-expand">
+          <span class="expand-icon">📊</span>
+          <div class="expand-text">
+            <strong>더 낮은 정확도 레시피 보기</strong>
+            <p>{{ accuracyThreshold === 40 ? '30~39%' : '20~29%' }} 매칭 레시피 {{ nextTierCount }}개 더보기</p>
+          </div>
+          <span class="expand-arrow">↓</span>
+        </button>
+      </div>
+
+      <!-- AI 챗봇 제안 (추천 모드일 때 항상 표시) -->
+      <div v-if="showRecommendations && !loading" class="ai-chat-section">
+        <div class="ai-chat-card">
+          <div class="ai-icon">🤖</div>
+          <div class="ai-text">
+            <h4>AI 셰프에게 물어보기</h4>
+            <p>보관함 재료로 만들 수 있는 요리를 AI가 직접 추천해드려요!</p>
+          </div>
+          <button @click="openAIChat" class="btn-ai-chat">
+            💬 AI와 대화하기
+          </button>
+        </div>
+      </div>
+
+
+      <!-- 결과가 없거나 적을 때 AI 도움 제안 (검색 모드용) -->
+      <div v-if="!loading && displayRecipes.length < 5 && !showRecommendations" class="ai-suggest-section">
         <div class="ai-suggest-card">
           <div class="ai-icon">🤖</div>
           <div class="ai-text">
@@ -115,6 +142,8 @@ const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 
 const showChatModal = ref(false)
+const accuracyThreshold = ref(40) // 초기 정확도 40%
+
 const openAIChat = () => {
   showChatModal.value = true
 }
@@ -134,9 +163,35 @@ const totalIngredientCount = computed(() => {
   return recipeStore.userIngredientCount || refrigeratorStore.ingredients.length || 0
 })
 
+// 단계별 필터링된 추천 레시피
+const filteredRecommendations = computed(() => {
+  if (!showRecommendations.value) return []
+  return serverRecs.value.filter(r => r.match_ratio >= accuracyThreshold.value)
+})
+
+// 다음 단계 레시피 개수 미리보기
+const nextTierCount = computed(() => {
+  if (!showRecommendations.value) return 0
+  if (accuracyThreshold.value === 40) {
+    return serverRecs.value.filter(r => r.match_ratio >= 30 && r.match_ratio < 40).length
+  } else if (accuracyThreshold.value === 30) {
+    return serverRecs.value.filter(r => r.match_ratio >= 20 && r.match_ratio < 30).length
+  }
+  return 0
+})
+
+// 정확도 낮추기
+const lowerAccuracy = () => {
+  if (accuracyThreshold.value === 40) {
+    accuracyThreshold.value = 30
+  } else if (accuracyThreshold.value === 30) {
+    accuracyThreshold.value = 20
+  }
+}
+
 const displayRecipes = computed(() => {
   if (showRecommendations.value) {
-    return [...serverRecs.value].sort((a,b) => (b.match_ratio - a.match_ratio))
+    return [...filteredRecommendations.value].sort((a,b) => (b.match_ratio - a.match_ratio))
   } else if (searchQuery.value.trim() && searchResults.value.length > 0) {
     return searchResults.value
   } else if (searchQuery.value.trim()) {
@@ -193,6 +248,7 @@ const toggleMode = async () => {
   showRecommendations.value = !showRecommendations.value
   searchQuery.value = ''
   searchResults.value = []
+  accuracyThreshold.value = 40 // 정확도 리셋
   if (showRecommendations.value) await recipeStore.fetchRecommendations()
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
@@ -285,6 +341,69 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
   white-space: nowrap;
 }
 .btn-ai-chat:hover { transform: scale(1.05); }
+
+/* 정확도 확장 버튼 */
+.expand-section { margin-top: 30px; }
+.btn-expand {
+  width: 100%;
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+  border: 2px dashed #ff922b;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-expand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 146, 43, 0.2);
+  background: linear-gradient(135deg, #fff0d9 0%, #ffd699 100%);
+}
+.expand-icon {
+  font-size: 2rem;
+}
+.expand-text {
+  flex: 1;
+  text-align: left;
+}
+.expand-text strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 4px;
+}
+.expand-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+.expand-arrow {
+  font-size: 1.5rem;
+  color: #ff922b;
+  animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* AI 챗봇 섹션 */
+.ai-chat-section { margin-top: 30px; margin-bottom: 30px; }
+.ai-chat-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+  border: 2px solid #667eea;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+.ai-chat-card:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
 
 /* 빈 상태 */
 .empty-state { text-align: center; padding: 60px 20px; }

@@ -265,15 +265,17 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
                 'match_status': match_status
             })
         
-        # 50% 이상 매칭된 레시피만 필터링 (너무 관련없는 레시피 제외)
-        recommended_recipes = [r for r in recommended_recipes if r['display_ratio'] >= 0.5]
+        # 필터링: 최소 1개 재료라도 매칭되거나, 매칭률 20% 이상인 레시피만
+        # (프론트엔드에서 단계별로 표시)
+        recommended_recipes = [r for r in recommended_recipes if r['match_count'] > 0 or r['display_ratio'] >= 0.2]
         
         # 정렬 우선순위:
         # 1. 유통기한 임박 재료 포함 여부 (weighted_ratio가 높을수록 임박 재료 많이 사용)
         # 2. 매칭 비율
         # 3. 매칭 개수
         recommended_recipes.sort(key=lambda x: (x['weighted_ratio'], x['display_ratio'], x['match_count']), reverse=True)
-        recommended_recipes = recommended_recipes[:30]
+        # 최대 50개까지 반환 (단계별 표시용)
+        recommended_recipes = recommended_recipes[:50]
         
         recipes_data = []
         for item in recommended_recipes:

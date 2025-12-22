@@ -7,7 +7,8 @@
     <div class="nav-container">
       <div class="nav-brand">
         <router-link to="/" class="brand-link">
-          🧊 냉장고를 부탁해
+          <img src="@/assets/logo.png" alt="냉장고를 부탁해" class="logo-img">
+          <span class="brand-text">냉장고를 부탁해</span>
         </router-link>
       </div>
       
@@ -16,25 +17,32 @@
           to="/" 
           class="nav-link"
           :class="{ active: $route.path === '/' }"
+          title="홈"
         >
-          🏠 홈
+          🏠
         </router-link>
         
         <router-link 
           to="/pantry" 
           class="nav-link"
           :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
+          title="내 보관함"
         >
-          🗄️ 내 보관함
+          📦
         </router-link>
         
         <router-link 
           to="/profile" 
           class="nav-link"
           :class="{ active: $route.path === '/profile' }"
+          title="내 프로필"
         >
-          👤 내 프로필
+          👤
         </router-link>
+
+        <button @click="handleLogout" class="nav-link logout-btn" title="로그아웃">
+          🚪
+        </button>
       </div>
     </div>
   </nav>
@@ -146,10 +154,33 @@ onUnmounted(() => {
   color: white;
   text-decoration: none;
   transition: opacity 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-img {
+  height: 2.5rem;
+  width: auto;
+  max-width: 3rem;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+
+.brand-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .brand-link:hover {
   opacity: 0.8;
+}
+
+.brand-link:hover .logo-img {
+  transform: scale(1.05);
 }
 
 .nav-menu {
@@ -161,15 +192,18 @@ onUnmounted(() => {
 .nav-link {
   color: white;
   text-decoration: none;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 0.8rem;
   border-radius: 8px;
   transition: all 0.3s;
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-family: inherit;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-link:hover {

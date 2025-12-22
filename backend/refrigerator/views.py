@@ -500,14 +500,31 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def consume(self, request, pk=None):
+        """재료 소진 - 수량 차감"""
         ingredient = self.get_object()
-        quantity = request.data.get('quantity', 0)
+        quantity = float(request.data.get('quantity', 0))
+        
+        if quantity <= 0:
+            return Response({'error': '차감할 수량이 올바르지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         if quantity >= ingredient.quantity:
+            # 전체 소진
             ingredient.delete()
-            return Response({'message': '소진 완료'})
+            return Response({
+                'message': '재료가 모두 소진되었습니다.',
+                'remaining_quantity': 0,
+                'deleted': True
+            })
+        
+        # 부분 차감
         ingredient.quantity -= quantity
         ingredient.save()
-        return Response({'remaining': ingredient.quantity})
+        
+        return Response({
+            'message': f'{quantity}{ingredient.unit} 차감되었습니다.',
+            'remaining_quantity': ingredient.quantity,
+            'deleted': False
+        })
 
     @action(detail=False, methods=['post'])
     def bulk_delete(self, request):

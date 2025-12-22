@@ -99,18 +99,21 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     try {
       const response = await refrigeratorAPI.consumeIngredient(id, quantity)
 
-      // 전체 소진된 경우 목록에서 제거
+      // 재료 업데이트 또는 제거
       const index = ingredients.value.findIndex(item => item.id === id)
       if (index !== -1) {
-        if (response.remaining_quantity !== undefined) {
-          ingredients.value[index].quantity = response.remaining_quantity
-        } else {
+        if (response.deleted || response.remaining_quantity === 0) {
+          // 완전히 소진된 경우 목록에서 제거
           ingredients.value.splice(index, 1)
+        } else if (response.remaining_quantity !== undefined) {
+          // 부분 차감된 경우 수량만 업데이트
+          ingredients.value[index].quantity = response.remaining_quantity
         }
       }
 
       return response
     } catch (error) {
+      console.error('Failed to consume ingredient:', error)
       throw error
     }
   }

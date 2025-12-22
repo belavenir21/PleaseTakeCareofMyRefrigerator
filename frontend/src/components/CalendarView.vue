@@ -18,8 +18,10 @@
           'other-month': date.otherMonth, 
           'today': date.isToday,
           'has-expiry': date.ingredients.length > 0,
-          'expiry-soon': date.expiringSoon
+          'expiry-soon': date.expiringSoon,
+          'clickable': date.ingredients.length > 0
         }]"
+        @click="date.ingredients.length > 0 && showDateDetails(date)"
       >
         <span class="date-num">{{ date.day }}</span>
         <div v-if="date.ingredients.length > 0" class="ingredient-icons">
@@ -34,6 +36,45 @@
           <span v-if="date.ingredients.length > 3" class="more-count">
             +{{ date.ingredients.length - 3 }}
           </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 날짜별 재료 상세 모달 -->
+    <div v-if="selectedDate" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{{ currentYear }}년 {{ currentMonth + 1 }}월 {{ selectedDate.day }}일 🗓️</h3>
+          <button class="close-btn" @click="closeModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-subtitle">
+            만료 예정 재료 <strong>{{ selectedDate.ingredients.length }}개</strong>
+          </p>
+          <div class="ingredient-list">
+            <div 
+              v-for="ingredient in selectedDate.ingredients" 
+              :key="ingredient.id"
+              class="ingredient-card"
+            >
+              <div class="ing-left">
+                <span class="ing-emoji">{{ ingredient.icon || '📦' }}</span>
+                <div class="ing-info">
+                  <div class="ing-name">{{ ingredient.name }}</div>
+                  <div class="ing-category">{{ ingredient.category || '기타' }}</div>
+                </div>
+              </div>
+              <div class="ing-right">
+                <div class="ing-quantity">{{ ingredient.quantity }}{{ ingredient.unit }}</div>
+                <div :class="['ing-storage', `storage-${getStorageType(ingredient.storage_method)}`]">
+                  {{ ingredient.storage_method }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-use-ingredients" @click="useIngredientsForRecipes">
+            🍳 레시피 찾아보기
+          </button>
         </div>
       </div>
     </div>
@@ -78,6 +119,7 @@ const refrigeratorStore = useRefrigeratorStore()
 const now = new Date()
 const currentYear = ref(now.getFullYear())
 const currentMonth = ref(now.getMonth())
+const selectedDate = ref(null)
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -86,6 +128,42 @@ onMounted(async () => {
     await refrigeratorStore.fetchIngredients()
   }
 })
+
+// 저장 타입 이름 변환
+const getStorageName = (type) => {
+  const typeMap = {
+    'fridge': '냉장',
+    'freezer': '냉동',
+    'room': '실온'
+  }
+  return typeMap[type] || '기타'
+}
+
+// 저장 방법을 CSS 클래스용 타입으로 변환
+const getStorageType = (method) => {
+  const methodMap = {
+    '냉장': 'fridge',
+    '냉동': 'freezer',
+    '실온': 'room'
+  }
+  return methodMap[method] || 'fridge'
+}
+
+// 날짜 상세 모달 표시
+const showDateDetails = (date) => {
+  selectedDate.value = date
+}
+
+// 모달 닫기
+const closeModal = () => {
+  selectedDate.value = null
+}
+
+// 해당 재료로 레시피 찾기
+const useIngredientsForRecipes = () => {
+  closeModal()
+  router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
+}
 
 // 달력 날짜 생성
 const calendarDays = computed(() => {
@@ -283,6 +361,14 @@ const goToRecipes = () => {
 .day-cell.expiry-soon {
   background: #ffe3e3;
 }
+.day-cell.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.day-cell.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
 
 .date-num {
   font-size: 0.85rem;
@@ -303,6 +389,209 @@ const goToRecipes = () => {
   font-size: 0.7rem;
   color: #868e96;
   font-weight: 700;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(80vh - 80px);
+}
+
+.modal-subtitle {
+  color: #495057;
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+}
+
+.modal-subtitle strong {
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ingredient-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.ingredient-card:hover {
+  transform: translateX(4px);
+}
+
+.ing-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ing-emoji {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 10px;
+}
+
+.ing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ing-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #212529;
+}
+
+.ing-category {
+  font-size: 0.85rem;
+  color: #868e96;
+}
+
+.ing-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.ing-quantity {
+  font-weight: 700;
+  color: #495057;
+}
+
+.ing-storage {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.storage-fridge {
+  background: #d0ebff;
+  color: #1864ab;
+}
+
+.storage-freezer {
+  background: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.storage-room {
+  background: #ffe8cc;
+  color: #e8590c;
+}
+
+.btn-use-ingredients {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-use-ingredients:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 /* 임박 알림 배너 */
