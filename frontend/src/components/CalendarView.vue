@@ -332,6 +332,8 @@ const goToRecipes = () => {
 <style scoped>
 .calendar-view {
   padding: 20px;
+  max-width: 900px; /* 중앙 정렬 */
+  margin: 0 auto;
 }
 
 .calendar-header {

@@ -159,6 +159,8 @@ onMounted(async () => {
 <style scoped>
 .weekly-challenge {
   padding: 20px;
+  max-width: 900px; /* 중앙 정렬 */
+  margin: 0 auto;
 }
 
 .challenge-header {
