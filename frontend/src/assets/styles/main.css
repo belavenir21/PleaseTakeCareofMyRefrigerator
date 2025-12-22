@@ -1,23 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Premium Dynamic Palette */
-  --primary: #FF6B6B;
-  --primary-gradient: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
-  --secondary: #4dabf7;
-  --accent: #FFD43B;
-  --text-dark: #2D3436;
-  --text-main: #4F5E5F;
-  --text-light: #8E9E9E;
-  --bg-main: #FDFDFD;
-  --bg-sub: #F1F4F8;
-  --glass: rgba(255, 255, 255, 0.85);
+  /* 🌸 Kawaii Pastel Pixel Theme */
+  --primary: #FFB3D9;
+  --primary-dark: #FF8EC9;
+  --primary-gradient: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 50%, #A8D8FF 100%);
+  --secondary: #A8D8FF;
+  --secondary-light: #D4ECFF;
+  --accent-yellow: #FFFACD;
+  --accent-mint: #C3F0CA;
+  --accent-lavender: #E4D4F4;
 
-  --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 15px 45px rgba(255, 107, 107, 0.15);
-  --radius-xl: 32px;
-  --radius-lg: 20px;
+  --text-dark: #5A4A6A;
+  --text-main: #7A6A8A;
+  --text-light: #A89AB8;
+
+  --bg-main: linear-gradient(180deg, #FFF5F9 0%, #F0F8FF 100%);
+  --bg-sub: #FFF9FC;
+  --bg-gradient-candy: linear-gradient(135deg, #FFE5F0 0%, #E5F3FF 50%, #FFF9E5 100%);
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-pink: rgba(255, 228, 240, 0.75);
+
+  /* 🎀 Pixel Art Shadows & Effects */
+  --shadow-pixel: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  --shadow-premium: 0 8px 24px rgba(255, 179, 217, 0.25);
+  --shadow-hover: 0 12px 32px rgba(255, 179, 217, 0.35);
+  --glow-pink: 0 0 20px rgba(255, 179, 217, 0.6);
+  --glow-blue: 0 0 20px rgba(168, 216, 255, 0.6);
+
+  /* ⭐ Border Radius (Rounded but Pixel-friendly) */
+  --radius-xl: 24px;
+  --radius-lg: 16px;
   --radius-md: 12px;
+  --radius-sm: 8px;
+
+  /* ✨ Pixel Dot Pattern */
+  --dot-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpattern id='dot' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Ccircle fill='%23FFB3D9' opacity='0.08' cx='10' cy='10' r='2'/%3E%3C/pattern%3E%3Crect fill='url(%23dot)' width='100%25' height='100%25'/%3E%3C/svg%3E");
 }
 
 * {
@@ -27,109 +45,159 @@
 }
 
 body {
-  font-family: 'Pretendard', sans-serif;
-  background-color: var(--bg-sub);
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-main);
   color: var(--text-dark);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  position: relative;
 }
 
-/* Response Container */
+/* 🌈 Background Sparkle Effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--dot-pattern);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Container - 더 좁게 중앙 집중 */
 .container {
   width: 100%;
-  max-width: 1440px;
-  /* PC 환경을 위해 최대 너비 확장 */
+  max-width: 900px;
+  /* 1440px에서 900px로 축소 */
   margin: 0 auto;
   padding: 0 24px;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
+    max-width: 100%;
   }
 }
 
-/* Typography */
+/* Typography with Pixel Charm */
 h1,
 h2,
 h3 {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.8);
 }
 
-/* Premium Card (반응형 대응) */
+/* 🎀 Kawaii Card */
 .card {
   background: white;
   border-radius: var(--radius-lg);
   padding: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  box-shadow: var(--shadow-premium);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 3px solid #FFE5F0;
+  box-shadow: var(--shadow-pixel), var(--shadow-premium);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
 }
+
+/* Removed sparkle ::before for cleaner look */
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-hover);
-  border-color: rgba(255, 107, 107, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-pixel), var(--shadow-hover);
+  border-color: var(--primary);
 }
 
-/* Button UI (디자인이 깨져보이지 않도록 입체감 부여) */
+/* 🍬 Button - Pixel Game Style */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
+  padding: 14px 28px;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 1rem;
-  border: none;
+  border: 3px solid transparent;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   text-decoration: none;
-  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+  box-shadow: var(--shadow-pixel);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-primary {
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.25);
+  border-color: #FF8EC9;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.35);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0 rgba(255, 142, 201, 0.3), var(--glow-pink);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
   background: white;
   color: var(--text-dark);
-  border: 2px solid #EEE;
-  box-shadow: none;
+  border: 3px solid var(--secondary-light);
 }
 
 .btn-secondary:hover {
-  background: #F8F9FA;
-  border-color: #DDD;
+  background: var(--secondary-light);
+  border-color: var(--secondary);
+  transform: translateY(-3px);
 }
 
-/* Input UI */
+.btn-small {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+/* 💖 Input Field - Cute & Clean */
 .input-field {
   width: 100%;
-  background: #F8F9FA;
-  border: 2px solid #F1F3F5;
+  background: #FFF9FC;
+  border: 3px solid #FFE5F0;
   padding: 14px 18px;
   border-radius: var(--radius-md);
   font-size: 1rem;
   transition: all 0.2s;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--primary);
   background: white;
-  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+  box-shadow: 0 0 0 4px rgba(255, 179, 217, 0.15), var(--shadow-pixel);
+}
+
+.input-field::placeholder {
+  color: var(--text-light);
+}
+
+/* Select Dropdown */
+.input-field.select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23FFB3D9' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
 }
 
 /* Utils */
@@ -149,15 +217,62 @@ h3 {
   margin-top: 32px;
 }
 
-/* Grid Layout for PC/Mobile */
+/* Grid Layout - 중앙 집중 */
 .auto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
+  max-width: 900px;
+  /* 카드들이 너무 퍼지지 않게 */
+  margin: 0 auto;
 }
 
 @media (max-width: 480px) {
   .auto-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ⭐ Loading Spinner - Pixel Star */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #FFE5F0;
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🌟 Sparkle Animation */
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Utility: Add sparkles to any element */
+.sparkle {
+  position: relative;
+}
+
+.sparkle::after {
+  content: '✨';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  animation: sparkle 2s ease-in-out infinite;
 }

@@ -7,13 +7,14 @@ class UserIngredientSerializer(serializers.ModelSerializer):
     is_expired = serializers.ReadOnlyField()
     # category는 모델 필드를 그대로 사용 (쓰기 가능)
     icon = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = UserIngredient
         fields = [
             'id', 'name', 'quantity', 'unit', 'storage_method', 
             'expiry_date', 'image', 'created_at', 'updated_at',
-            'is_expiring_soon', 'is_expired', 'category', 'icon'
+            'is_expiring_soon', 'is_expired', 'category', 'icon', 'image_url'
         ]
         read_only_fields = ['created_at', 'updated_at']
         extra_kwargs = {
@@ -54,6 +55,32 @@ class UserIngredientSerializer(serializers.ModelSerializer):
             '유제품': '🥛', '가공식품': '🥫', '음료': '🧃', '곡류': '🌾',
         }
         return default_icons.get(category, '📦')
+
+    def get_image_url(self, obj):
+        """마스터 데이터의 이미지 URL(아이콘) 반환"""
+        if obj.master_ingredient and obj.master_ingredient.image_url:
+            return obj.master_ingredient.image_url
+        
+        # 이름으로 다시 검색 (연결 안 된 경우 대비)
+        from master.models import IngredientMaster
+        
+        # 동의어 매핑
+        synonyms = {
+            "계란": "달걀", "삼겹살": "돼지고기", "스팸": "햄", "참치캔": "참치",
+            "무": "달랑무", "애호박": "호박", "방울토마토": "토마토"
+        }
+        
+        search_name = obj.name
+        if search_name in synonyms:
+            search_name = synonyms[search_name]
+            
+        master = IngredientMaster.objects.filter(name=search_name).first()
+        if not master:
+            master = IngredientMaster.objects.filter(name__icontains=search_name).first()
+            
+        if master and master.image_url:
+            return master.image_url
+        return None
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -102,12 +129,13 @@ class UserIngredientListSerializer(serializers.ModelSerializer):
     is_expired = serializers.ReadOnlyField()
     category = serializers.SerializerMethodField()
     icon = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = UserIngredient
         fields = [
             'id', 'name', 'quantity', 'unit', 'expiry_date',
-            'is_expiring_soon', 'is_expired', 'category', 'icon', 'storage_method'
+            'is_expiring_soon', 'is_expired', 'category', 'icon', 'storage_method', 'image_url'
         ]
     
     def get_category(self, obj):
@@ -168,6 +196,31 @@ class UserIngredientListSerializer(serializers.ModelSerializer):
             '유제품': '🥛', '가공식품': '🥫', '음료': '🧃', '곡류': '🌾',
         }
         return default_icons.get(category, '📦')
+
+    def get_image_url(self, obj):
+        """마스터 데이터의 이미지 URL(아이콘) 반환"""
+        if obj.master_ingredient and obj.master_ingredient.image_url:
+            return obj.master_ingredient.image_url
+        
+        from master.models import IngredientMaster
+        
+        # 동의어 매핑
+        synonyms = {
+            "계란": "달걀", "삼겹살": "돼지고기", "스팸": "햄", "참치캔": "참치",
+            "무": "달랑무", "애호박": "호박", "방울토마토": "토마토"
+        }
+        
+        search_name = obj.name
+        if search_name in synonyms:
+            search_name = synonyms[search_name]
+            
+        master = IngredientMaster.objects.filter(name=search_name).first()
+        if not master:
+            master = IngredientMaster.objects.filter(name__icontains=search_name).first()
+            
+        if master and master.image_url:
+            return master.image_url
+        return None
 
 class IngredientScanSerializer(serializers.Serializer):
     """사진 스캔을 통한 식재료 등록"""

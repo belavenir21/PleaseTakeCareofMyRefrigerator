@@ -59,42 +59,33 @@ const authStore = useAuthStore()
 
 const isScrolled = ref(false)
 
-// 홈 페이지 여부
 const isHomePage = computed(() => {
   return route.path === '/'
 })
 
-// Auth 페이지 여부 (로그인/회원가입)
 const isAuthPage = computed(() => {
   return route.path === '/login' || route.path === '/register'
 })
 
-// 요리 모드 여부 (전체화면 모드라 네비바 숨김)
 const isCookingMode = computed(() => {
   return route.name === 'CookingMode'
 })
 
-// 네비게이션 바 표시 여부
 const shouldShowNavbar = computed(() => {
-  // 인증되지 않았거나 Auth 페이지면 숨김
   if (!authStore.isAuthenticated || isAuthPage.value) {
     return false
   }
-  // 요리모드면 숨김
   if (isCookingMode.value) {
     return false
   }
-  // 그 외에는 항상 표시
   return true
 })
 
-// 스크롤 이벤트 핸들러
 const handleScroll = () => {
   const scrollTop = window.scrollY || document.documentElement.scrollTop
-  isScrolled.value = scrollTop > 1  // 스크롤하자마자 표시
+  isScrolled.value = scrollTop > 1
 }
 
-// 로그아웃 핸들러
 const handleLogout = async () => {
   try {
     await authStore.logout()
@@ -116,16 +107,18 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 🎀 Slim Kawaii Navigation Bar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  background: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 50%, #A8D8FF 100%);
+  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.25);
+  border-bottom: 2px solid rgba(255, 179, 217, 0.4);
   padding: 0;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
   transform: translateY(0);
   opacity: 1;
 }
@@ -137,110 +130,154 @@ onUnmounted(() => {
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem; /* 높이 축소 */
+  position: relative;
+  height: 56px; /* 고정 높이로 페이지 레이아웃 안정화 */
 }
 
 .nav-brand {
   font-size: 1.5rem;
   font-weight: bold;
+  position: relative;
+  z-index: 10;
 }
 
 .brand-link {
-  color: white;
+  color: var(--text-dark);
   text-decoration: none;
-  transition: opacity 0.3s;
+  transition: transform 0.2s;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.7);
 }
 
+/* 🖼️ 로고 이미지 (나중에 교체 가능) */
 .logo-img {
-  height: 2.5rem;
+  height: 2rem; /* 크기 축소 */
   width: auto;
-  max-width: 3rem;
+  max-width: 2.5rem;
   object-fit: contain;
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
   transition: transform 0.3s;
+  filter: drop-shadow(2px 2px 0 rgba(255, 255, 255, 0.7));
 }
 
+/* 🎨 타이틀 텍스트 (나중에 이미지로 교체 가능) */
 .brand-text {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: 800;
   white-space: nowrap;
+  letter-spacing: -0.5px;
 }
 
 .brand-link:hover {
-  opacity: 0.8;
+  transform: translateY(-2px);
 }
 
 .brand-link:hover .logo-img {
-  transform: scale(1.05);
+  transform: scale(1.1) rotate(3deg);
 }
 
 .nav-menu {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   align-items: center;
+  position: relative;
+  z-index: 10;
 }
 
+/* ✨ 박스 없이 이모티콘만 - 그림자로 클릭 효과 */
 .nav-link {
-  color: white;
+  color: transparent; /* 텍스트 색상 무시 */
   text-decoration: none;
-  padding: 0.6rem 0.8rem;
-  border-radius: 8px;
-  transition: all 0.3s;
-  background: transparent;
-  border: none;
+  padding: 0.3rem;
+  transition: all 0.2s;
+  background: none; /* 박스 제거 */
+  border: none; /* 테두리 제거 */
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.8rem; /* 이모티콘 크기 */
   font-family: inherit;
   white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.15)); /* 이모티콘 그림자 */
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px) scale(1.15); /* 통통 튀는 효과 */
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.25)) drop-shadow(0 0 8px rgba(255, 179, 217, 0.6));
 }
 
+.nav-link:active {
+  transform: translateY(-1px) scale(1.05); /* 눌림 효과 */
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.2));
+}
+
+/* 활성 상태 - 노란 글로우 */
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(2px 2px 0 rgba(255, 215, 0, 0.5)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
   font-weight: bold;
 }
 
 .logout-btn {
-  margin-left: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  margin-left: 0.3rem;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 99, 71, 0.8);
+  filter: drop-shadow(3px 3px 0 rgba(255, 107, 107, 0.4)) drop-shadow(0 0 8px rgba(255, 107, 107, 0.6));
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .nav-container {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    padding: 0.4rem 1rem;
+    height: 48px;
+  }
+  
+  .logo-img {
+    height: 1.7rem;
+  }
+  
+  .brand-text {
+    font-size: 1rem;
   }
   
   .nav-menu {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
+    gap: 0.6rem;
   }
   
   .nav-link {
-    font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.4rem 1rem;
+    height: 44px;
+  }
+  
+  .brand-text {
+    display: none;
+  }
+  
+  .nav-menu {
+    gap: 0.5rem;
+  }
+  
+  .nav-link {
+    font-size: 1.4rem;
+    padding: 0.2rem;
   }
 }
 </style>

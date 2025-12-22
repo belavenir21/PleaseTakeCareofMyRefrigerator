@@ -78,7 +78,10 @@
           </div>
 
           <div class="item-visual">
-            <span class="emoji">{{ group.primary.icon || getIngredientEmoji(group.primary.name) }}</span>
+            <div class="icon-wrapper">
+              <img v-if="group.primary.image_url" :src="getFullImageUrl(group.primary.image_url)" class="ingredient-icon-png" alt="icon" />
+              <span v-else class="emoji">{{ group.primary.icon || getIngredientEmoji(group.primary.name) }}</span>
+            </div>
             <span v-if="group.primary.is_expired" class="badge-expired">만료</span>
             <span v-else-if="group.primary.is_expiring_soon" class="badge-warning">임박</span>
           </div>
@@ -620,15 +623,43 @@ const getIngredientEmoji = (name) => {
   return '🥘'
 }
 
+const getFullImageUrl = (path) => {
+  if (!path) return ''
+  if (path.startsWith('http')) return path
+  const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:8000'
+  return `${baseUrl}${path}`
+}
+
 const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
 </script>
 
 <style scoped>
-.pantry-view { min-height: 100vh; background: #FDFDFD; padding-bottom: 120px; padding-top: 70px; }
+/* 🎀 Pantry View - Centered Layout */
+.pantry-view { 
+  min-height: 100vh; 
+  background: var(--bg-main); 
+  padding-bottom: 120px; 
+  padding-top: 56px; /* 네비게이션 바 높이만큼 */
+}
 
-/* Header */
-.header-premium { background: white; border-bottom: 1px solid #eee; position: sticky; top: 70px; z-index: 999; }
-.header-inner { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+/* 🌸 Header - 네비 바에 바로 붙이기 */
+.header-premium { 
+  background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
+  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
+  position: sticky; 
+  top: 56px; /* 네비게이션 바 바로 아래 */
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
+}
+.header-inner { 
+  height: 60px; 
+  max-width: 1200px; /* 중앙 정렬 */
+  margin: 0 auto;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  padding: 0 24px;
+}
 .btn-back { background: none; border: none; cursor: pointer; color: #333; }
 .view-title { font-size: 1.2rem; font-weight: 800; }
 .header-actions { display: flex; gap: 10px; align-items: center; }
@@ -648,14 +679,15 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 }
 .btn-primary-round { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
 
-/* View Tabs */
+/* View Tabs - 중앙 정렬 */
 .view-tabs {
   display: flex;
   gap: 0;
   background: #f1f3f5;
   border-radius: 12px;
   padding: 4px;
-  margin: 0 20px 15px;
+  margin: 0 auto 15px;
+  max-width: 900px; /* 중앙에 모으기 */
 }
 .tab-btn {
   flex: 1;
@@ -675,8 +707,14 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Toolbar */
-.toolbar-box { background: white; padding: 15px 0; border-bottom: 1px solid #f1f3f5; }
+/* Toolbar - 중앙 정렬 */
+.toolbar-box { 
+  background: white; 
+  padding: 15px 24px; 
+  border-bottom: 1px solid #f1f3f5;
+  max-width: 900px;
+  margin: 0 auto;
+}
 .category-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 15px; }
 .category-scroll::-webkit-scrollbar { display: none; }
 .chip { padding: 6px 14px; border-radius: 20px; border: 1px solid #eee; background: white; font-size: 0.85rem; white-space: nowrap; cursor: pointer; }
@@ -689,10 +727,19 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .btn-clean-expired { background: #FFF5F5; border: 1px solid #ffc9c9; color: #e03131; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
 .select-minimal { border: none; font-weight: 700; color: #666; font-size: 0.85rem; cursor: pointer; }
 
-/* Grid Cards (바둑판) */
-.ingredients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+/* 🍱 Grid Cards - 중앙 정렬 */
+.ingredients-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+  gap: 16px;
+  max-width: 1200px; /* 화면 꽉 차지 않게 */
+  margin: 0 auto;
+}
 @media (min-width: 768px) {
-  .ingredients-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .ingredients-grid { 
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 20px; 
+  }
 }
 
 .ingredient-card { 
@@ -751,6 +798,8 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 }
 
 .item-visual { display: flex; justify-content: space-between; align-items: flex-start; }
+.icon-wrapper { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ingredient-icon-png { width: 44px; height: 44px; object-fit: contain; image-rendering: pixelated; } /* 픽셀 아트라 pixelated 적용 */
 .emoji { font-size: 2.5rem; }
 .badge-expired { background: #FF6B6B; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
 .badge-warning { background: #FFD43B; color: #856404; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }

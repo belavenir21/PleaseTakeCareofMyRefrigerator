@@ -141,6 +141,9 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
         profile = getattr(user, 'profile', None)
         diet_goals = profile.diet_goals if profile else ""
         
+        # 필터 정보
+        min_ratio = float(request.query_params.get('min_ratio', 0.1)) # 기본값 10%로 완화
+        
         # 알레르기 정보 가져오기
         user_allergy_names = []
         forbidden_ingredients = []
@@ -159,6 +162,7 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
         
         user_ings = UserIngredient.objects.filter(user=user)
         user_ingredients_list = []
+        user_unique_names = set() # 종류를 세기 위한 세트
         expiring_soon_names = []
         
         today = date.today()
@@ -167,11 +171,12 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
         for ui in user_ings:
             clean_name = ui.name.replace(" ", "")
             user_ingredients_list.append(clean_name)
+            user_unique_names.add(clean_name) # 종류 추가
             # 유통기한이 3일 이내인 재료들 메모
             if ui.expiry_date <= soon_date:
                 expiring_soon_names.append(clean_name)
                 
-        user_ingredients_count = len(user_ingredients_list)
+        user_ingredients_count = len(user_unique_names) # 중복 제외한 '종류'의 개수
         
         # 2. 레시피 데이터 가져오기 (재료 정보를 한꺼번에 가져옴)
         all_recipes = Recipe.objects.all().prefetch_related('ingredients')
@@ -221,14 +226,25 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
                         break
             
             total_count = len(recipe_ingredients_names)
-            # 순수 매칭 개수 (정수)
+            # 순수 매칭 개수
             actual_match_count = len(matched_list)
-            # 가산점이 포함된 매칭 비율 (정렬용)
-            weighted_match_ratio = match_count / total_count if total_count > 0 else 0
-            # 실제 화면에 보여줄 매칭 비율
+            
+            # 가산점이 포함된 매칭 점수 (정렬용)
+            # 재료 개수 비중을 높이고, 유통기한 임박은 보너스 점수로 처리
+            # 예: 10개 중 4개 매칭이면 40점 + 보너스
+            weighted_score = actual_match_count
+            for m in matched_list:
+                if m.replace(" ","") in expiring_soon_names:
+                    weighted_score += 0.1 # 보너스 점수를 작게 조정하여 비율을 해치지 않게 함
+            
+            # 실제 화면에 보여줄 매칭 비율 (수학적으로 정확하게)
             display_match_ratio = actual_match_count / total_count if total_count > 0 else 0
             
             missing_ingredients = [name for name in recipe_ingredients_names if name not in matched_list]
+            missing_ingredients_detailed = [
+                {'name': ring.name, 'quantity': ring.quantity} 
+                for ring in recipe_ingredients_objs if ring.name not in matched_list
+            ]
             
             # 취향 필터링: 채식인데 고기가 들어가면 탈락
             if is_vegetarian:
@@ -246,43 +262,44 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             
             # 최소 1개라도 매칭되거나, 다이어트용 샐러드인 경우 추천
             # 조건 완화: 매칭이 0개여도 일단 목록에 추가 (정렬로 우선순위 결정)
+            # 매칭 결과 결정
             match_status = 'none'
             if actual_match_count > 0:
                 match_status = 'partial'
                 if display_match_ratio >= 0.8: match_status = 'full'
-                elif display_match_ratio >= 0.4: match_status = 'high'
+                elif display_match_ratio >= 0.5: match_status = 'high'
             elif is_diet and '샐러드' in (getattr(recipe, 'category', '') or ''):
                 match_status = 'diet'
                 
             recommended_recipes.append({
                 'recipe': recipe,
-                'weighted_ratio': weighted_match_ratio,
+                'weighted_score': weighted_score,
                 'display_ratio': display_match_ratio,
                 'match_count': actual_match_count,
                 'matched_ingredients': matched_list,
                 'missing_ingredients': missing_ingredients,
+                'missing_ingredients_detailed': missing_ingredients_detailed,
                 'total_ingredients': total_count,
                 'match_status': match_status
             })
         
-        # 필터링: 최소 1개 재료라도 매칭되거나, 매칭률 20% 이상인 레시피만
-        # (프론트엔드에서 단계별로 표시)
-        recommended_recipes = [r for r in recommended_recipes if r['match_count'] > 0 or r['display_ratio'] >= 0.2]
+        # 필터링: 사용자가 요청한 최소 비율 이상인 것만
+        recommended_recipes = [r for r in recommended_recipes if r['display_ratio'] >= min_ratio or r['match_status'] == 'diet']
         
         # 정렬 우선순위:
-        # 1. 유통기한 임박 재료 포함 여부 (weighted_ratio가 높을수록 임박 재료 많이 사용)
+        # 1. 가중치 점수 (매칭 개수 + 임박 재료 보너스)
         # 2. 매칭 비율
-        # 3. 매칭 개수
-        recommended_recipes.sort(key=lambda x: (x['weighted_ratio'], x['display_ratio'], x['match_count']), reverse=True)
-        # 최대 50개까지 반환 (단계별 표시용)
-        recommended_recipes = recommended_recipes[:50]
+        recommended_recipes.sort(key=lambda x: (x['weighted_score'], x['display_ratio']), reverse=True)
+        # 최대 100개까지 반환 (사용자가 더 많이 보길 원하므로 늘림)
+        recommended_recipes = recommended_recipes[:100]
         
         recipes_data = []
         for item in recommended_recipes:
             recipe_data = RecipeListSerializer(item['recipe']).data
-            recipe_data['match_ratio'] = round(item['display_ratio'] * 100, 1)
+            recipe_data['match_ratio'] = round(item['display_ratio'] * 100, 0) # 정수로 깔끔하게 표시
             recipe_data['match_count'] = item['match_count']
             recipe_data['missing_ingredients'] = item['missing_ingredients']
+            recipe_data['missing_ingredients_detailed'] = item['missing_ingredients_detailed']
             recipe_data['total_ingredients'] = item['total_ingredients']
             recipe_data['match_status'] = item['match_status']
             # 사용 중인 임박 재료가 있는지 표시

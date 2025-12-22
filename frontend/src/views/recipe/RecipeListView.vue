@@ -17,7 +17,7 @@
       <section v-if="showRecommendations" class="rec-hero animate-up">
         <div class="hero-content">
           <span class="hero-tag">Best Matching</span>
-          <h1>내 재료 <strong>{{ totalIngredientCount }}개</strong>로<br/>만드는 맞춤 레시피</h1>
+          <h1>내 재료 <strong>{{ totalIngredientCount }}가지</strong>로<br/>만드는 맞춤 레시피</h1>
           <p v-if="displayRecipes.length > 0">지금 바로 요리 가능한 레시피를 찾았어요!</p>
         </div>
       </section>
@@ -62,7 +62,13 @@
             </div>
             
             <div v-if="showRecommendations" class="matching-status">
-              <div v-if="recipe.missing_ingredients?.length" class="missing-parts">
+              <div v-if="recipe.missing_ingredients_detailed?.length" class="missing-parts">
+                <span class="label">필요:</span>
+                <span class="tags">
+                  {{ recipe.missing_ingredients_detailed.map(ing => `${ing.name}(${ing.quantity})`).join(', ') }}
+                </span>
+              </div>
+              <div v-else-if="recipe.missing_ingredients?.length" class="missing-parts">
                 <span class="label">필요:</span>
                 <span class="tags">{{ recipe.missing_ingredients.join(', ') }}</span>
               </div>
@@ -78,7 +84,11 @@
           <span class="expand-icon">📊</span>
           <div class="expand-text">
             <strong>더 낮은 정확도 레시피 보기</strong>
-            <p>{{ accuracyThreshold === 40 ? '30~39%' : '20~29%' }} 매칭 레시피 {{ nextTierCount }}개 더보기</p>
+            <p>{{ 
+              accuracyThreshold === 40 ? '30~39%' : 
+              accuracyThreshold === 30 ? '20~29%' : 
+              '10~19%' 
+            }} 매칭 레시피 {{ nextTierCount }}개 더보기</p>
           </div>
           <span class="expand-arrow">↓</span>
         </button>
@@ -142,7 +152,7 @@ const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 
 const showChatModal = ref(false)
-const accuracyThreshold = ref(40) // 초기 정확도 40%
+const accuracyThreshold = ref(30) // 초기 정확도를 30%로 낮춰서 더 풍부하게 보여줌
 
 const openAIChat = () => {
   showChatModal.value = true
@@ -176,6 +186,8 @@ const nextTierCount = computed(() => {
     return serverRecs.value.filter(r => r.match_ratio >= 30 && r.match_ratio < 40).length
   } else if (accuracyThreshold.value === 30) {
     return serverRecs.value.filter(r => r.match_ratio >= 20 && r.match_ratio < 30).length
+  } else if (accuracyThreshold.value === 20) {
+    return serverRecs.value.filter(r => r.match_ratio >= 10 && r.match_ratio < 20).length
   }
   return 0
 })
@@ -186,6 +198,8 @@ const lowerAccuracy = () => {
     accuracyThreshold.value = 30
   } else if (accuracyThreshold.value === 30) {
     accuracyThreshold.value = 20
+  } else if (accuracyThreshold.value === 20) {
+    accuracyThreshold.value = 10
   }
 }
 
@@ -248,7 +262,7 @@ const toggleMode = async () => {
   showRecommendations.value = !showRecommendations.value
   searchQuery.value = ''
   searchResults.value = []
-  accuracyThreshold.value = 40 // 정확도 리셋
+  accuracyThreshold.value = 30 // 정확도 리셋 (30%가 기본)
   if (showRecommendations.value) await recipeStore.fetchRecommendations()
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
@@ -259,30 +273,147 @@ const handleImageError = (id) => { imageErrors.value[id] = true }
 </script>
 
 <style scoped>
-.recipe-list-view { min-height: 100vh; background: #FCFCFC; padding-bottom: 100px; padding-top: 70px; }
+/* 🍜 레시피 리스트 뷰 */
+.recipe-list-view { 
+  min-height: 100vh; 
+  background: var(--bg-main); 
+  padding-bottom: 100px; 
+  padding-top: 56px; 
+}
 
-/* Header Premium */
-.header-premium { background: white; border-bottom: 1px solid #f1f3f5; position: sticky; top: 70px; z-index: 999; }
-.header-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
-.view-title { font-size: 1.25rem; font-weight: 800; color: #333; }
-.btn-back { background: none; border: none; cursor: pointer; color: #333; padding: 8px; }
-.btn-mode-pill { background: #333; color: white; border: none; padding: 10px 18px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+/* 🌸 Header - 네비바 연결 */
+.header-premium { 
+  background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
+  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
+  position: sticky; 
+  top: 56px; 
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
+}
+.header-inner { 
+  height: 60px; 
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 24px;
+}
+.view-title { 
+  font-size: 1.2rem; 
+  font-weight: 800; 
+  color: var(--text-dark); 
+}
+.btn-back { 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  color: var(--text-dark); 
+  padding: 8px;
+  transition: transform 0.2s;
+}
+.btn-back:hover {
+  transform: translateX(-3px);
+}
+.btn-mode-pill { 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white; 
+  border: 3px solid transparent;
+  padding: 10px 18px; 
+  border-radius: 50px; 
+  font-weight: 700; 
+  font-size: 0.85rem; 
+  cursor: pointer;
+  box-shadow: var(--shadow-pixel);
+  transition: all 0.2s;
+}
+.btn-mode-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgba(255, 179, 217, 0.4);
+}
 
-/* Hero sections */
-.rec-hero { background: linear-gradient(135deg, #FF6B6B 0%, #FF922B 100%); padding: 40px 24px; border-radius: 24px; margin-top: 20px; color: white; box-shadow: 0 10px 30px rgba(255,107,107,0.25); }
-.hero-tag { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-.hero-content h1 { font-size: 2rem; margin-top: 15px; line-height: 1.3; }
-.hero-content h1 strong { font-size: 2.8rem; vertical-align: middle; }
-.hero-content p { margin-top: 10px; opacity: 0.9; font-weight: 500; }
+/* 🎀 Hero sections - 중앙 정렬 */
+.rec-hero { 
+  background: linear-gradient(135deg, #FFB3D9 0%, #FF8EC9 100%);
+  padding: 40px 24px; 
+  border-radius: var(--radius-xl);
+  margin: 20px auto 0; 
+  max-width: 1200px;
+  color: white; 
+  box-shadow: var(--shadow-premium);
+  border: 3px solid rgba(255, 255, 255, 0.5);
+}
+.hero-tag { 
+  background: rgba(255,255,255,0.3); 
+  padding: 4px 12px; 
+  border-radius: 20px; 
+  font-size: 0.75rem; 
+  font-weight: 800; 
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+}
+.hero-content h1 { 
+  font-size: 2rem; 
+  margin-top: 15px; 
+  line-height: 1.3; 
+}
+.hero-content h1 strong { 
+  font-size: 2.8rem; 
+  vertical-align: middle; 
+}
+.hero-content p { 
+  margin-top: 10px; 
+  opacity: 0.95; 
+  font-weight: 500; 
+}
 
-.search-hero { margin-top: 20px; }
-.search-bar-solid { display: flex; align-items: center; background: white; border: 2px solid #EEE; padding: 16px 24px; border-radius: 16px; gap: 15px; box-shadow: var(--shadow-premium); }
-.search-bar-solid input { border: none; font-size: 1.1rem; width: 100%; outline: none; font-weight: 600; }
+.search-hero { 
+  margin: 20px auto 0; 
+  max-width: 1200px;
+  padding: 0 24px;
+}
+.search-bar-solid { 
+  display: flex; 
+  align-items: center; 
+  background: white; 
+  border: 3px solid #FFE5F0;
+  padding: 16px 24px; 
+  border-radius: var(--radius-lg);
+  gap: 15px; 
+  box-shadow: var(--shadow-pixel), var(--shadow-premium);
+}
+.search-bar-solid input { 
+  border: none; 
+  font-size: 1.1rem; 
+  width: 100%; 
+  outline: none; 
+  font-weight: 600;
+  color: var(--text-dark);
+}
+.search-bar-solid svg {
+  color: var(--primary);
+}
 
-/* Matrix Grid */
-.recipe-grid-matrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 15px; }
+/* 🍱 Matrix Grid - 중앙 정렬 */
+.recipe-grid-matrix { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 @media (min-width: 768px) {
-  .recipe-grid-matrix { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+  .recipe-grid-matrix { 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 24px; 
+  }
+}
+@media (max-width: 480px) {
+  .recipe-grid-matrix {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
 }
 
 .card-recipe-premium { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #F1F3F5; transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column; cursor: pointer; }

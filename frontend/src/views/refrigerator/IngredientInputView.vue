@@ -84,7 +84,10 @@
                 <!-- 자동완성 -->
                 <div v-if="item.showAutocomplete && item.autocompleteResults?.length > 0" class="autocomplete-dropdown">
                   <div v-for="res in item.autocompleteResults" :key="res.id" class="auto-item" @mousedown="selectManualItemAutocomplete(index, res)">
-                    <span class="auto-icon">{{ res.icon || '📦' }}</span>
+                    <div class="auto-icon-wrapper">
+                      <img v-if="res.image_url" :src="getFullImageUrl(res.image_url)" class="ingredient-icon-png" />
+                      <span v-else class="auto-icon">{{ res.icon || '📦' }}</span>
+                    </div>
                     <div class="auto-info">
                       <span class="name">{{ res.name }}</span>
                       <span class="cate">{{ res.category }}</span>
@@ -172,7 +175,10 @@
                 <!-- 자동완성 -->
                 <div v-if="item.showAutocomplete && item.autocompleteResults?.length > 0" class="autocomplete-dropdown">
                   <div v-for="res in item.autocompleteResults" :key="res.id" class="auto-item" @mousedown="selectDetectedItemAutocomplete(index, res)">
-                    <span class="auto-icon">{{ res.icon || '📦' }}</span>
+                    <div class="auto-icon-wrapper">
+                      <img v-if="res.image_url" :src="getFullImageUrl(res.image_url)" class="ingredient-icon-png" />
+                      <span v-else class="auto-icon">{{ res.icon || '📦' }}</span>
+                    </div>
                     <div class="auto-info">
                       <span class="name">{{ res.name }}</span>
                       <span class="cate">{{ res.category }}</span>
@@ -478,32 +484,99 @@ const submitAll = async () => {
     router.push({ name: 'Pantry' })
   } catch (err) { alert('저장 실패') } finally { loading.value = false }
 }
+
+const getFullImageUrl = (path) => {
+  if (!path) return null
+  if (path.startsWith('http')) return path
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  // path가 /media/로 시작하면 그대로 붙이고, 아니면 /media/ 추가 필요할 수 있음
+  return `${baseUrl}${path}`
+}
 </script>
 
 <style scoped>
-.ingredient-input-view { min-height: 100vh; padding-bottom: 120px; padding-top: 70px; }
-
-/* Header Premium Glassmorphism */
-.header-glass {
-  background: var(--glass);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  position: sticky;
-  top: 70px;
-  z-index: 999;
+/* 🎀 식재료 입력 뷰 - 중앙 정렬 */
+.ingredient-input-view { 
+  min-height: 100vh; 
+  background: var(--bg-main);
+  padding-bottom: 120px; 
+  padding-top: 56px; /* 네비게이션 바 높이 */
 }
-.header-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
-.back-btn { background: none; border: none; cursor: pointer; color: var(--text-dark); padding: 8px; border-radius: 50%; transition: background 0.2s; }
-.back-btn:hover { background: rgba(0,0,0,0.05); }
+
+/* 🌸 Header - 네비게이션 바에 붙이기 */
+.header-glass {
+  background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
+  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
+  position: sticky;
+  top: 56px; /* 네비게이션 바 바로 아래 */
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
+}
+.header-inner { 
+  height: 60px; 
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 24px;
+}
+.back-btn { 
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  color: var(--text-dark); 
+  padding: 8px; 
+  border-radius: 50%; 
+  transition: transform 0.2s; 
+}
+.back-btn:hover { 
+  transform: translateX(-3px);
+}
+
+.view-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.placeholder {
+  width: 32px;
+}
+
+/* 🎯 Main Content - 중앙 정렬 */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto !important;
+  padding: 24px;
+}
 
 /* Hero Text */
 .hero-text { margin-bottom: 48px; text-align: center; }
 .hero-text h1 { font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2; }
 .hero-text p { color: var(--text-light); font-size: 1.1rem; }
 
-/* Method Cards */
-.method-card { cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 24px; }
+/* 🍬 Method Cards - 중앙 카드 레이아웃 */
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 900px; /* 카드들이 너무 퍼지지 않게 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+.method-card { 
+  cursor: pointer; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center; 
+  padding: 32px 24px;
+  transition: all 0.3s;
+}
+.method-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
 .method-icon { font-size: 3.5rem; margin-bottom: 24px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .method-card:hover .method-icon { transform: scale(1.2) rotate(5deg); }
 .method-info h3 { font-size: 1.4rem; margin-bottom: 8px; }
@@ -583,6 +656,26 @@ const submitAll = async () => {
   background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); 
   padding: 24px;
 }
+
+/* Ingredient Icon Styles */
+.auto-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.ingredient-icon-png {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.auto-icon { font-size: 1.5rem; }
 
 /* Animations */
 .animate-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; }
