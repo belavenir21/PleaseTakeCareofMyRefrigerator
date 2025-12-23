@@ -172,14 +172,20 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
-# 배포 환경에서는 실제 프론트엔드 도메인 추가 필요
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
+    "https://myfreezydjango.netlify.app",  # Netlify 도메인 직접 추가
 ]
 
-# 프로덕션 도메인 추가 (배포 후 환경변수로 관리)
+# 프로덕션 도메인 추가 (환경변수에서 쉼표로 구분된 리스트 가져오기)
+frontend_urls = config('CORS_ALLOWED_ORIGINS', default='').split(',')
+for url in frontend_urls:
+    if url.strip():
+        CORS_ALLOWED_ORIGINS.append(url.strip())
+
+# FRONTEND_URL 환경변수도 개별적으로 체크
 if config('FRONTEND_URL', default=''):
     CORS_ALLOWED_ORIGINS.append(config('FRONTEND_URL'))
 
@@ -195,13 +201,21 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://myfreezydjango.netlify.app", # Netlify 도메인 추가
+    "https://pleasetakecareofmyrefrigerator-production.up.railway.app", # Railway 도메인 추가
 ]
 
-# 프로덕션 도메인 추가
+# 환경변수에서 추가
 if config('FRONTEND_URL', default=''):
-    CSRF_TRUSTED_ORIGINS.append(config('FRONTEND_URL'))
+    url = config('FRONTEND_URL')
+    if not url.startswith('http'):
+        url = f'https://{url}'
+    CSRF_TRUSTED_ORIGINS.append(url)
 if config('BACKEND_URL', default=''):
-    CSRF_TRUSTED_ORIGINS.append(config('BACKEND_URL'))
+    url = config('BACKEND_URL')
+    if not url.startswith('http'):
+        url = f'https://{url}'
+    CSRF_TRUSTED_ORIGINS.append(url)
 
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
