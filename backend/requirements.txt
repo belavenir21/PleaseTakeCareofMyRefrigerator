@@ -10,6 +10,8 @@ dj-rest-auth==7.0.1
 django-allauth==65.13.1
 PyJWT==2.8.0
 python-jose==3.5.0
+cryptography==46.0.3
+ecdsa==0.19.1
 
 # Google APIs (필수!)
 google-generativeai==0.3.2
