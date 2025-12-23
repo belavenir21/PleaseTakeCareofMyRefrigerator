@@ -6,9 +6,21 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">{{ showRecommendations ? '냉장고 추천 요리' : '레시피 검색' }}</h2>
-        <button @click="toggleMode" class="btn-mode-pill">
-          {{ showRecommendations ? '🔍 검색모드' : '🍳 추천모드' }}
-        </button>
+        
+        <!-- 스위치 토글 -->
+        <div class="mode-toggle-wrapper">
+          <div class="toggle-container">
+            <span class="label-side left" :class="{ active: !showRecommendations }">검색</span>
+            <div class="toggle-switch" @click="toggleMode">
+              <div class="toggle-track" :class="{ active: showRecommendations }">
+                <div class="toggle-thumb" :class="{ active: showRecommendations }">
+                  <img src="@/assets/character-head.png" alt="mode" class="thumb-img" />
+                </div>
+              </div>
+            </div>
+            <span class="label-side right" :class="{ active: showRecommendations }">추천</span>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -47,6 +59,11 @@
             <img v-if="recipe.image_url && !imageErrors[recipe.id]" :src="recipe.image_url" @error="handleImageError(recipe.id)" />
             <div v-else class="thumb-empty">🍲</div>
             
+            <!-- 유저 레시피 배지 -->
+            <div v-if="recipe.author" class="badge-custom">
+              🧑‍🍳 User Recipe
+            </div>
+            
             <!-- 일치율 플로팅 배지 -->
             <div v-if="showRecommendations" class="badge-ratio">
               <span class="num">{{ Math.round(recipe.match_ratio) }}%</span>
@@ -59,13 +76,14 @@
             <div class="meta-info">
               <span class="time">⏱ {{ recipe.cooking_time_minutes }}분</span>
               <span class="level">⭐ {{ recipe.difficulty }}</span>
+              <span v-if="recipe.author" class="author-tag">by {{ recipe.author }}</span>
             </div>
             
             <div v-if="showRecommendations" class="matching-status">
               <div v-if="recipe.missing_ingredients_detailed?.length" class="missing-parts">
                 <span class="label">필요:</span>
                 <span class="tags">
-                  {{ recipe.missing_ingredients_detailed.map(ing => `${ing.name}(${ing.quantity})`).join(', ') }}
+                  {{ recipe.missing_ingredients_detailed.map(formatMissingIngredient).join(', ') }}
                 </span>
               </div>
               <div v-else-if="recipe.missing_ingredients?.length" class="missing-parts">
@@ -134,23 +152,51 @@
         </div>
       </div>
 
+      <!-- 자동 확장 알림 토스트 -->
+      <Transition name="fade">
+        <div v-if="showAutoExpandMessage" class="toast-message">
+          🔔 80% 매칭 결과가 없어, 조건을 완화하여 추천해드려요!
+        </div>
+      </Transition>
+
       <!-- 결과가 없는 경우 / 레시피 추가 제안 -->
       <div v-if="!loading && displayRecipes.length === 0" class="empty-state animate-up">
-        <div v-if="!showAddRecipeForm" class="empty-card">
-          <div class="empty-icon">🍳</div>
-          <p v-if="searchQuery">「{{ searchQuery }}」에 대한 레시피가 없어요</p>
-          <p v-else-if="showRecommendations && serverRecs.length > 0">
-            현재 식재료와 <strong>80% 이상</strong> 일치하는 요리가 없네요.
-          </p>
-          <p v-else>보관함 재료로 만들 수 있는 요리가 아직 없어요. 🧊</p>
-          <p class="sub-text">
-            {{ (showRecommendations && serverRecs.length > 0) ? '아래에서 "더 많은 레시피 보기"를 누르거나, AI 셰프에게 물어보세요!' : 'AI 셰프에게 레시피를 물어보거나, 직접 추가해보세요!' }}
-          </p>
-          
-          <div class="empty-actions">
+        <div v-if="!showAddRecipeForm">
+          <!-- 빈 카드 (안내문만) -->
+          <div class="empty-card">
+            <div class="empty-icon">🍳</div>
+            <p v-if="searchQuery">「{{ searchQuery }}」에 대한 레시피가 없어요</p>
+            <p v-else-if="showRecommendations && serverRecs.length > 0">
+              현재 식재료와 <strong>80% 이상</strong> 일치하는 요리가 없네요.
+            </p>
+            <p v-else>보관함 재료로 만들 수 있는 요리가 아직 없어요. 🧂</p>
+          </div>
+
+          <!-- 60~79% 레시피 보기 버튼 (expand-section) -->
+          <div v-if="showRecommendations && nextTierInfo"class="expand-section" style="margin-top: 20px;">
+            <button @click="lowerAccuracy" class="btn-expand">
+              <div class="expand-icon-box">
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              </div>
+              
+              <div class="expand-text">
+                <strong>더 많은 레시피 보기</strong>
+                <p>
+                  <span class="highlight">{{ nextTierInfo.label }}</span> 매칭 레시피 
+                  <span class="highlight">{{ nextTierInfo.count}}개</span> 더보기
+                </p>
+              </div>
+              
+              <div class="expand-arrow-box">
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- AI 및 레시피 추가 버튼 -->
+          <div class="empty-actions" style="margin-top: 20px;">
             <button @click="openAIChat" class="btn-primary">🤖 AI에게 물어보기</button>
             <button @click="showAddRecipeForm = true" class="btn-secondary">✏️ 레시피 추가하기</button>
-            <button v-if="showRecommendations && nextTierInfo" @click="lowerAccuracy" class="btn-tertiary">🔓 {{ nextTierInfo.label }} 레시피 보기</button>
           </div>
         </div>
         
@@ -396,9 +442,7 @@ onMounted(async () => {
     await recipeStore.fetchRecommendations()
     
     // 만약 80% 이상의 레시피가 하나도 없다면 자동으로 정확도를 낮춤
-    if (serverRecs.value.length > 0 && filteredRecommendations.value.length === 0) {
-      accuracyThreshold.value = 60
-    }
+    checkAutoExpand()
   } else {
     await recipeStore.fetchRecipes()
   }
@@ -409,8 +453,31 @@ const toggleMode = async () => {
   searchQuery.value = ''
   searchResults.value = []
   accuracyThreshold.value = 80 // 정확도 리셋 (80%부터 시작)
-  if (showRecommendations.value) await recipeStore.fetchRecommendations()
+  if (showRecommendations.value) {
+    await recipeStore.fetchRecommendations()
+    checkAutoExpand()
+  }
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
+}
+
+const showAutoExpandMessage = ref(false)
+
+const checkAutoExpand = () => {
+  // 80% 결과가 없으면 자동으로 60%로 낮춤
+  if (showRecommendations.value && serverRecs.value.length > 0 && filteredRecommendations.value.length === 0) {
+    // 60% 이상 결과가 있는지 확인
+    const hasLowerMatch = serverRecs.value.some(r => r.match_ratio >= 60)
+    if (hasLowerMatch) {
+      accuracyThreshold.value = 60
+      showAutoExpandMessage.value = true
+      setTimeout(() => showAutoExpandMessage.value = false, 4000)
+    }
+  }
+}
+
+const formatMissingIngredient = (ing) => {
+  if (!ing.quantity || ing.quantity.includes('적당량')) return ing.name
+  return `${ing.name}(${ing.quantity})`
 }
 
 const clearSearch = () => { searchQuery.value = ''; searchResults.value = []; showRecommendations.value = false; }
@@ -575,21 +642,128 @@ const submitManualRecipe = async () => {
 .btn-back:hover {
   transform: translateX(-3px);
 }
-.btn-mode-pill { 
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white; 
-  border: 3px solid transparent;
-  padding: 10px 18px; 
-  border-radius: 50px; 
-  font-weight: 700; 
-  font-size: 0.85rem; 
-  cursor: pointer;
-  box-shadow: var(--shadow-pixel);
-  transition: all 0.2s;
+/* 스위치 토글 래퍼 */
+.mode-toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
-.btn-mode-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 4px 0 rgba(255, 179, 217, 0.4);
+
+.mode-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6D4C41;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 토글 컨테이너 (라벨 + 스위치) */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 스위치 */
+.toggle-switch {
+  cursor: pointer;
+}
+
+/* 토글 트랙 (iOS 스타일) */
+.toggle-track {
+  width: 70px;
+  height: 36px;
+  background: #E0E0E0;
+  border-radius: 18px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-track.active {
+  background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 12px rgba(255, 107, 157, 0.4);
+}
+
+/* 토글 썸 (동그라미) */
+.toggle-thumb {
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.toggle-thumb.active {
+  left: 36px;
+  transform: rotate(360deg);
+}
+
+.thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 양옆 라벨 */
+.label-side {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #aaa;
+  transition: all 0.3s;
+  padding: 4px 8px;
+  min-width: 45px;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.label-side.active {
+  color: #FF6B9D;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .mode-toggle-wrapper {
+    gap: 4px;
+  }
+  
+  .mode-label {
+    font-size: 0.65rem;
+  }
+  
+  .toggle-container {
+    gap: 10px;
+  }
+  
+  .toggle-track {
+    width: 60px;
+    height: 32px;
+  }
+  
+  .toggle-thumb {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .toggle-thumb.active {
+    left: 30px;
+  }
+  
+  .label-side {
+    font-size: 0.8rem;
+    min-width: 40px;
+  }
 }
 
 /* 🎀 Hero sections - 중앙 정렬 */
@@ -1161,5 +1335,61 @@ const submitManualRecipe = async () => {
   border-radius: 30px;
   box-shadow: var(--shadow-premium);
   border: 3px dashed #FFE5F0;
+}
+
+/* 토스트 메시지 */
+.toast-message {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(60, 60, 60, 0.9);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 50px;
+  z-index: 2000;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  text-align: center;
+  width: auto;
+  min-width: 300px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 20px);
+}
+
+/* 유저 레시피 배지 */
+.badge-custom {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 12px;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.author-tag {
+  font-size: 0.75rem;
+  color: #1971c2;
+  font-weight: 700;
+  background: #e7f5ff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
 }
 </style>

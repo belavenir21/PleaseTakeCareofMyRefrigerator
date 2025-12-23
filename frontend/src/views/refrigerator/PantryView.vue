@@ -6,7 +6,11 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">보관함</h2>
-        <button @click="showHelp = true" class="btn-help" title="도움말">❓</button>
+        <!-- 3. 선택/편집 버튼 헤더로 이동 -->
+        <button v-if="viewMode === 'list'" @click="selectionMode = !selectionMode" class="btn-text-edit">
+          {{ selectionMode ? '완료' : '편집' }}
+        </button>
+        <div v-else class="placeholder"></div>
       </div>
       <!-- 뷰 모드 탭 -->
       <div class="view-tabs">
@@ -24,33 +28,28 @@
 
     <main class="container" v-if="viewMode === 'list'">
       <!-- 상단 컨트롤 도구함 -->
-      <section class="toolbar-box">
-        <div class="category-scroll">
+      <!-- 상단 필터 & 카테고리 박스 (컨텐츠 박스 복구) -->
+      <section class="filter-box-glass">
+        <!-- 카테고리: 줄바꿈 허용 (flex-wrap) -->
+        <div class="category-wrapper">
           <button 
             v-for="cat in categories" :key="cat"
-            :class="['chip', { active: selectedCategory === cat }]"
+            :class="['chip-bubble', { active: selectedCategory === cat }]"
             @click="selectedCategory = cat"
           >
             {{ cat }}
           </button>
         </div>
-
-        <div class="action-row">
-          <div class="left-actions">
-            <button @click="toggleSelectionMode" :class="['btn-select-mode', { active: selectionMode }]">
-               <span class="icon">{{ selectionMode ? '✓' : '☑️' }}</span> {{ selectionMode ? '완료' : '선택하기' }}
-            </button>
-            <button v-if="expiredCount > 0" @click="handleClearExpired" class="btn-clean-expired">
-              🗑️ 만료 {{ expiredCount }}개 비우기
-            </button>
-            <button @click="openTrash" class="btn-trash-view">
-              ♻️ 휴지통
-            </button>
+        
+        <!-- 정렬 드롭다운: 예쁜 디자인 -->
+        <div class="sort-wrapper">
+          <div class="select-container">
+            <select v-model="localSortBy" class="select-bubble">
+              <option value="expiry_date">📅 유통기한순</option>
+              <option value="name">🔤 이름순</option>
+            </select>
+            <span class="select-arrow">▼</span>
           </div>
-          <select v-model="localSortBy" class="select-minimal">
-            <option value="expiry_date">유통기한순</option>
-            <option value="name">이름순</option>
-          </select>
         </div>
       </section>
 
@@ -71,6 +70,7 @@
           class="card ingredient-card"
           :class="{ 
             'expired-border': group.primary.is_expired,
+            'expiring-soon': group.primary.is_expiring_soon && !group.primary.is_expired,
             'selected': group.ids.some(id => selectedIds.has(id)),
             'clickable': !selectionMode
           }"
@@ -81,9 +81,9 @@
             <div class="check-box" :class="{ checked: group.ids.some(id => selectedIds.has(id)) }"></div>
           </div>
           
-          <!-- 다른 유통기한 표시 배지 -->
-          <div v-if="group.count > 1" class="count-badge" :title="`유통기한이 다른 ${group.primary.name} ${group.count - 1}개 더`">
-            📅 {{ group.count }}
+          <!-- 다른 유통기한 표시 배지 - 오른쪽 상단 모서리에 튀어나오게 -->
+          <div v-if="group.count > 1" class="count-badge-floating" :title="`유통기한이 다른 ${group.primary.name} ${group.count - 1}개 더`">
+            {{ group.count }}
           </div>
 
           <div class="item-visual">
@@ -199,6 +199,35 @@
       <button @click="recommendRecipes" class="btn-cook-main">
         요리하기
       </button>
+    </div>
+
+    <!-- 플로팅 액션 버튼 (FAB) 그룹 -->
+    <div class="fab-group">
+      <!-- 만료 비우기 (작고 깔끔하게) -->
+      <transition name="pop">
+        <button v-if="viewMode === 'list' && expiredCount > 0" class="fab-btn fab-alert" @click="handleClearExpired" title="만료 재료 비우기">
+          <span class="fab-icon">🚨</span>
+          <span class="alert-badge">{{ expiredCount }}</span>
+        </button>
+      </transition>
+      
+      <!-- 휴지통 (목록 뷰 전용) -->
+      <button v-if="viewMode === 'list'" class="fab-btn fab-trash" @click="openTrash" title="휴지통">
+         <span class="fab-icon">🗑️</span>
+      </button>
+      
+      <!-- 도움말 (물음표) -->
+      <div class="help-wrapper" @mouseenter="showHelpTooltip = true" @mouseleave="showHelpTooltip = false">
+        <button class="fab-btn fab-help" @click="showHelp = true">
+           <span class="fab-icon-text">?</span>
+        </button>
+        
+        <transition name="fade">
+          <div class="help-tooltip-bubble" v-if="showHelpTooltip || showHelp">
+            {{ helpText }}
+          </div>
+        </transition>
+      </div>
     </div>
 
     <!-- 도움말 모달 -->
@@ -649,6 +678,21 @@ const getFullImageUrl = (path) => {
 }
 
 const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
+  
+// FAB 도움말 텍스트 동적화
+const helpText = computed(() => {
+  if (viewMode.value === 'list') return '유통기한 임박 재료는 알림이 뜹니다! 카드를 눌러 수정하세요.'
+  if (viewMode.value === 'calendar') return '달력에서 식재료 유통기한을 한눈에 확인하세요!'
+  if (viewMode.value === 'challenge') return '주간 챌린지에 도전하여 냉장고를 비워보세요!'
+  return '도움말'
+})
+
+const showHelpTooltip = ref(false)
+
+
+onMounted(() => {
+  refrigeratorStore.fetchIngredients()
+})
 </script>
 
 <style scoped>
@@ -708,7 +752,80 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   background: #e9ecef;
   transform: scale(1.1);
 }
-.btn-primary-round { background: var(--primary); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
+.placeholder {
+  width: 32px;
+}
+
+/* 플로팅 도움말 버튼 (말풍선 모양) */
+.floating-help-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 1000;
+  
+  background: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 100%);
+  color: #6D4C41;
+  border: 3px solid white;
+  border-radius: 50px;
+  padding: 12px 24px;
+  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  font-family: 'YeogiOttaeJalnan', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  
+  box-shadow: 
+    0 8px 24px rgba(255, 179, 217, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.1);
+  
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  animation: float-help 3s ease-in-out infinite;
+}
+
+.floating-help-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(255, 179, 217, 0.5),
+    0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.floating-help-btn .help-icon {
+  font-size: 1.5rem;
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.floating-help-btn .help-text {
+  white-space: nowrap;
+}
+
+@keyframes float-help {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+@media (max-width: 768px) {
+  .floating-help-btn {
+    bottom: 80px;
+    right: 16px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .floating-help-btn .help-icon {
+    font-size: 1.3rem;
+  }
+}
 
 /* View Tabs - 중앙 정렬 */
 .view-tabs {
@@ -758,29 +875,46 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .btn-clean-expired { background: #FFF5F5; border: 1px solid #ffc9c9; color: #e03131; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
 .select-minimal { border: none; font-weight: 700; color: #666; font-size: 0.85rem; cursor: pointer; }
 
-/* 🍱 Grid Cards - 중앙 정렬 */
+/* 🍱 Grid Cards - 중앙 정렬, 세로 긴 직사각형 */
 .ingredients-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
   gap: 16px;
-  max-width: 1200px; /* 화면 꽉 차지 않게 */
+  max-width: 1200px;
   margin: 0 auto;
 }
 @media (min-width: 768px) {
   .ingredients-grid { 
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
     gap: 20px; 
   }
 }
 
 .ingredient-card { 
-  background: white; border: 1px solid #f1f3f5; border-radius: var(--radius-md); padding: 16px; position: relative;
-  display: flex; flex-direction: column; gap: 12px;
+  background: white; 
+  border: 1px solid #f1f3f5; 
+  border-radius: var(--radius-md); 
+  padding: 16px 12px;
+  position: relative;
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px;
   cursor: default;
+  min-height: 180px;
+  overflow: visible; /* 배지가 카드 밖으로 튀어나오게 */
 }
 .ingredient-card.clickable { cursor: pointer; }
 .ingredient-card.clickable:hover { border-color: #dee2e6; }
-.ingredient-card.expired-border { border-color: #FFA8A8; background: #FFF9F9; }
+.ingredient-card.expired-border { 
+  border-color: #FF6B6B; 
+  background: linear-gradient(135deg, #FFE5E5 0%, #FFD0D0 100%);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+.ingredient-card.expiring-soon { 
+  border-color: #FFA500; 
+  background: linear-gradient(135deg, #FFF4E5 0%, #FFE8CC 100%);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
 .ingredient-card.selected { background: #E7F5FF; border-color: #4dabf7; cursor: pointer; }
 
 .selection-overlay { position: absolute; top: 10px; left: 10px; z-index: 10; }
@@ -788,21 +922,36 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .check-box.checked { background: var(--primary); border-color: var(--primary); }
 .check-box.checked::after { content: '✓'; color: white; display: block; text-align: center; font-weight: 900; }
 
-/* 유통기한 개수 배지 */
-.count-badge {
+/* 유통기한 개수 배지 - 가로로 넓은 직사각형 */
+.count-badge-floating {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  top: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
   color: white;
   font-size: 0.7rem;
-  font-weight: 800;
-  padding: 4px 8px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4), 0 0 0 3px white;
+  border: 2px solid white;
   z-index: 10;
   white-space: nowrap;
-  pointer-events: none;
+}
+
+.count-badge-floating::before {
+  content: '카드';
+  font-size: 0.65rem;
+  opacity: 0.9;
+}
+
+.count-badge-floating::after {
+  content: '장';
+  font-size: 0.65rem;
+  opacity: 0.9;
 }
 
 /* 다른 유통기한 배지 (클릭 가능 버튼) */
@@ -1320,13 +1469,211 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
     0 0 40px rgba(255, 105, 180, 0.5);
 }
 
-.btn-cook-main:active {
-  transform: translateY(2px);
-  box-shadow: 
-    0 2px 0 #E0559A,
-    0 4px 15px rgba(255, 105, 180, 0.4),
-    inset 0 2px 10px rgba(255, 255, 255, 0.3);
+/* CSS 추가 */
+.btn-text-edit {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1971c2;
+  cursor: pointer;
+  padding: 4px 8px;
 }
+.btn-text-edit:hover {
+  background: rgba(25, 113, 194, 0.1);
+  border-radius: 8px;
+}
+
+/* Filter Box Styles */
+.filter-box-glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05); /* 부드러운 그림자 */
+  border: 1px solid rgba(255,255,255,0.6);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap; /* 반응형 줄바꿈 */
+}
+
+.category-wrapper {
+  display: flex;
+  flex-wrap: wrap; /* 버튼 넘치면 아래로 */
+  gap: 8px;
+  flex: 1;
+}
+
+.chip-bubble {
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #f1f3f5;
+  color: #495057;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.chip-bubble:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+.chip-bubble.active {
+  background: #FF8787; /* 파스텔 레드 */
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 135, 135, 0.4);
+  transform: scale(1.05);
+}
+
+/* Select Bubble Modern */
+.sort-wrapper {
+  flex-shrink: 0;
+}
+.select-container {
+  position: relative;
+  display: inline-block;
+}
+.select-bubble {
+  appearance: none;
+  background: white;
+  border: 2px solid #FFE3E3;
+  border-radius: 12px;
+  padding: 8px 32px 8px 12px; /* 화살표 공간 확보 */
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #495057;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.select-bubble:hover {
+  border-color: #FF8787;
+}
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #adb5bd;
+  pointer-events: none;
+}
+
+/* FAB New Design */
+.fab-group {
+  position: fixed;
+  bottom: 80px;
+  right: 30px; /* 우측 사이드 고정 스타일 */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1500;
+  align-items: center;
+}
+
+/* 모바일/태블릿 반응형 */
+@media (min-width: 1400px) {
+  .fab-group {
+    /* 화면이 넓으면 중앙 컨텐츠 옆에 붙이기 */
+    right: auto;
+    left: 50%;
+    margin-left: 540px;
+  }
+}
+
+.fab-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+.fab-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+.fab-icon {
+  font-size: 1.2rem; /* 이모지 크기 적당하게 */
+  line-height: 1;
+}
+.fab-icon-text {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: white;
+  font-family: 'Fredoka One', cursive, sans-serif; /* 귀여운 폰트 */
+}
+
+/* 도움말 버튼 (물음표) */
+.fab-help {
+  background: linear-gradient(135deg, #A5D8FF 0%, #74C0FC 100%); /* 파스텔 블루 */
+}
+
+/* 만료 경고 */
+.fab-alert {
+  background: #FFF5F5;
+  border: 2px solid #FF8787;
+}
+.alert-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #FF6B6B;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+/* 휴지통 */
+.fab-trash {
+  background: #F8F9FA;
+  color: #495057;
+}
+.fab-trash:hover {
+  background: #FFE3E3;
+}
+
+/* 말풍선 툴팁 (물음표 옆) */
+.help-tooltip-bubble {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #343a40;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border-bottom-right-radius: 4px; /* 말풍선 꼬리 느낌 */
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  pointer-events: none;
+}
+
+/* 기존 Select Minimal 삭제를 위해 덮어쓰기 */ 
+.select-minimal { display: none; }
+
+
 
 /* 전체(최대) 버튼 */
 .btn-max {
