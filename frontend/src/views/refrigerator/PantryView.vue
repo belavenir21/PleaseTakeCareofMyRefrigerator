@@ -6,11 +6,7 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">보관함</h2>
-        <!-- 3. 선택/편집 버튼 헤더로 이동 -->
-        <button v-if="viewMode === 'list'" @click="selectionMode = !selectionMode" class="btn-text-edit">
-          {{ selectionMode ? '완료' : '편집' }}
-        </button>
-        <div v-else class="placeholder"></div>
+        <div class="placeholder"></div>
       </div>
       <!-- 뷰 모드 탭 -->
       <div class="view-tabs">
@@ -19,9 +15,6 @@
         </button>
         <button :class="['tab-btn', { active: viewMode === 'calendar' }]" @click="viewMode = 'calendar'">
           📅 달력
-        </button>
-        <button :class="['tab-btn', { active: viewMode === 'challenge' }]" @click="viewMode = 'challenge'">
-          🏆 챌린지
         </button>
       </div>
     </header>
@@ -50,6 +43,11 @@
             </select>
             <span class="select-arrow">▼</span>
           </div>
+
+          <!-- 편집 버튼 (필터 박스 안으로 이동) -->
+          <button @click="selectionMode = !selectionMode" class="btn-capsule-edit" :class="{ active: selectionMode }">
+            {{ selectionMode ? '✅ 완료' : '✏️ 편집' }}
+          </button>
         </div>
       </section>
 
@@ -120,8 +118,7 @@
     <!-- 달력 뷰 -->
     <CalendarView v-if="viewMode === 'calendar'" />
 
-    <!-- 챌린지 뷰 -->
-    <WeeklyChallenge v-if="viewMode === 'challenge'" />
+
 
     <!-- 하단 일괄 삭제 바 -->
     <transition name="up">
@@ -228,6 +225,11 @@
           </div>
         </transition>
       </div>
+      
+      <!-- 챌린지 바로가기 (FAB 추가) -->
+      <button class="fab-btn fab-challenge" @click="$router.push({ name: 'Challenge' })" title="주간 챌린지">
+         <span class="fab-icon">🏆</span>
+      </button>
     </div>
 
     <!-- 도움말 모달 -->
@@ -1620,6 +1622,15 @@ onMounted(() => {
   background: linear-gradient(135deg, #A5D8FF 0%, #74C0FC 100%); /* 파스텔 블루 */
 }
 
+/* 챌린지 FAB */
+.fab-challenge {
+  background: white;
+  border: 2px solid #FFD43B; /* 노랑 */
+}
+.fab-challenge:hover {
+  background: #FFF9DB;
+}
+
 /* 만료 경고 */
 .fab-alert {
   background: #FFF5F5;
@@ -1692,4 +1703,30 @@ onMounted(() => {
     background: #495057;
 }
 
+/* 편집 버튼 (캡슐형) */
+.btn-capsule-edit {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: white;
+  border: 2px solid #e9ecef;
+  color: #495057;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px; /* 드롭다운과 간격 */
+}
+.btn-capsule-edit:hover {
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+.btn-capsule-edit.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
 </style>

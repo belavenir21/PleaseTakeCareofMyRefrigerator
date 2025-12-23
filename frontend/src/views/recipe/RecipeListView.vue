@@ -60,8 +60,8 @@
             <div v-else class="thumb-empty">🍲</div>
             
             <!-- 유저 레시피 배지 -->
-            <div v-if="recipe.author" class="badge-custom">
-              🧑‍🍳 User Recipe
+            <div v-if="recipe.author || recipe.api_source === 'user'" class="badge-custom">
+              🧑‍🍳 {{ recipe.author ? `${recipe.author} 레시피` : 'User Recipe' }}
             </div>
             
             <!-- 일치율 플로팅 배지 -->
@@ -77,6 +77,7 @@
               <span class="time">⏱ {{ recipe.cooking_time_minutes }}분</span>
               <span class="level">⭐ {{ recipe.difficulty }}</span>
               <span v-if="recipe.author" class="author-tag">by {{ recipe.author }}</span>
+              <span v-else-if="recipe.api_source === 'user'" class="author-tag">Custom</span>
             </div>
             
             <div v-if="showRecommendations" class="matching-status">

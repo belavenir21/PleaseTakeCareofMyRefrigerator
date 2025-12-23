@@ -35,6 +35,18 @@
         </div>
       </div>
 
+      <!-- 주간 챌린지 바로가기 -->
+      <div class="challenge-section card clickable-card" @click="$router.push({ name: 'Challenge' })">
+        <div class="challenge-content">
+          <div class="challenge-icon">🏆</div>
+          <div class="challenge-info">
+             <h3>주간 챌린지 도전하기</h3>
+             <p>냉장고 파먹기 미션을 달성해보세요!</p>
+          </div>
+          <div class="arrow-icon">➜</div>
+        </div>
+      </div>
+
       <!-- 프로필 수정 폼 -->
       <div class="edit-section card">
         <h3>✏️ 프로필 설정</h3>
@@ -579,5 +591,54 @@ small {
   .container {
     padding: 16px;
   }
+}
+
+/* 🏆 Challenge Section */
+.challenge-section {
+  background: linear-gradient(135deg, #FFF9DB 0%, #FFEC99 100%);
+  border: 2px solid #FFD43B;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer; /* 커서 추가 */
+  transition: transform 0.2s; /* 트랜지션 명시 */
+}
+.challenge-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 212, 59, 0.3);
+}
+
+.challenge-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+.challenge-icon {
+  font-size: 2.5rem;
+  background: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(255, 212, 59, 0.4);
+}
+.challenge-info h3 {
+  margin: 0 0 5px;
+  color: #495057;
+  font-size: 1.1rem;
+}
+.challenge-info p {
+  margin: 0;
+  color: #868e96;
+  font-size: 0.9rem;
+}
+.arrow-icon {
+  margin-left: auto;
+  font-size: 1.5rem;
+  color: #E67700;
+  font-weight: bold;
 }
 </style>

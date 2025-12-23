@@ -66,6 +66,12 @@ const routes = [
     component: () => import('@/views/user/SettingsView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/challenge',
+    name: 'Challenge',
+    component: () => import('@/views/challenge/ChallengeView.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({
