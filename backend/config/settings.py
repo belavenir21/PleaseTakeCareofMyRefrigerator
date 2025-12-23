@@ -22,7 +22,12 @@ SECRET_KEY = config('SECRET_KEY', default='your-secret-key-here-change-in-produc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS 설정 (환경변수에서 쉼표로 구분된 리스트 가져오기)
+allowed_hosts_config = config('ALLOWED_HOSTS', default='*')
+if allowed_hosts_config == '*':
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_config.split(',') if host.strip()]
 
 # Application definition
 INSTALLED_APPS = [
