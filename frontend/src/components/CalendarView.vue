@@ -25,18 +25,30 @@
         @click="date.ingredients.length > 0 && showDateDetails(date)"
       >
         <span class="date-num">{{ date.day }}</span>
+        
         <div v-if="date.ingredients.length > 0" class="ingredient-icons">
-          <div 
-            v-for="ing in date.ingredients.slice(0, 3)" 
-            :key="ing.id"
-            class="ing-icon-wrapper"
-            :title="ing.name"
-          >
-            <img v-if="ing.image_url" :src="getFullImageUrl(ing.image_url)" class="ing-img-mini" />
-            <span v-else class="ing-emoji-mini">{{ ing.icon || '📦' }}</span>
-          </div>
-          <span v-if="date.ingredients.length > 3" class="more-count">
+          <!-- PC: 최대 3개, 모바일: 최대 2개 -->
+          <template v-for="(ing, i) in date.ingredients">
+             <div 
+              v-if="i < 3"
+              :key="ing.id"
+              class="ing-icon-wrapper"
+              :class="{ 'hide-mobile': i >= 2 }"
+              :title="ing.name"
+            >
+              <img v-if="ing.image_url" :src="getFullImageUrl(ing.image_url)" class="ing-img-mini" />
+              <span v-else class="ing-emoji-mini">{{ ing.icon || '📦' }}</span>
+            </div>
+          </template>
+          
+          <!-- 더보기 카운트 PC용 (4개 이상일 때) -->
+          <span v-if="date.ingredients.length > 3" class="more-count pc-count">
             +{{ date.ingredients.length - 3 }}
+          </span>
+          
+          <!-- 더보기 카운트 모바일용 (3개 이상일 때) -->
+          <span v-if="date.ingredients.length > 2" class="more-count mobile-count">
+            +{{ date.ingredients.length - 2 }}
           </span>
         </div>
       </div>
@@ -51,7 +63,9 @@
         </div>
         <div class="modal-body">
           <div v-if="getDateStatus(selectedDate.date) === 'expired'" class="expired-humor">
-              <div class="humor-visual">🙅‍♀️😱🙅‍♂️</div>
+              <div class="humor-visual">
+                <img src="@/assets/images/face-angry.png" alt="Angry Face" class="humor-img" />
+              </div>
               <h4 class="humor-title">설마 아직 안 버리고<br>냉장고에 있는 거 아니죠?</h4>
               <p class="humor-desc">지금 당장 냉장고 정리하기!!<br>정리하고 오면 말해주세요.<br>내 보관함에서 지워드릴게요!</p>
               <button class="btn-cleanup" @click="handleDateCleanup(selectedDate)">네, 깨끗이 치웠어요! 🗑️</button>
@@ -391,9 +405,16 @@ const goToRecipes = () => {
 
 .day-cell {
   background: white;
-  min-height: 70px;
-  padding: 8px;
+  min-height: 80px; /* 최소 높이 */
+  max-height: 100px; /* 최대 높이 고정 */
+  padding: 4px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.2s;
+  overflow: hidden; /* 넘치는 내용 숨김 */
 }
 .day-cell.other-month {
   background: #f8f9fa;
@@ -434,35 +455,62 @@ const goToRecipes = () => {
 
 .ingredient-icons {
   display: flex;
-  flex-wrap: wrap;
   gap: 2px;
-  margin-top: 5px;
+  flex-wrap: wrap; 
+  justify-content: center;
+  margin-top: 2px;
+  width: 100%;
+  max-height: 60px; /* 아이콘 영역 높이 제한 */
+  overflow: hidden;
 }
+
 .ing-icon-wrapper {
   width: 24px;
   height: 24px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border-radius: 4px;
-}
-.ing-img-mini {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  border: none;
+  overflow: visible;
 }
 .ing-emoji-mini {
-  font-size: 1rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.ing-icon {
-  font-size: 1rem;
-  cursor: help;
+.ing-img-mini {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
 }
-.more-count {
-  font-size: 0.7rem;
-  color: #868e96;
-  font-weight: 700;
+
+/* 모바일 전용 스타일 */
+.mobile-count { display: none; }
+.pc-count { display: inline-block; }
+
+@media (max-width: 768px) {
+  .day-cell {
+    min-height: 50px; /* 모바일 셀 높이 축소 */
+    max-height: 60px;
+    padding: 2px;
+  }
+  .date-num {
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+  .ingredient-icons {
+    gap: 1px;
+    margin-top: 0;
+  }
+  .ing-icon-wrapper { width: 22px; height: 22px; }
+  .ing-emoji-mini { font-size: 1.2rem; }
+  
+  /* 모바일에서 3번째 아이콘 숨기기 */
+  .hide-mobile { display: none; }
+  
+  /* 모바일 카운트 표시 */
+  .mobile-count { display: inline-block; font-size: 0.6rem; }
+  .pc-count { display: none; }
 }
 
 /* 모달 스타일 */
@@ -780,10 +828,18 @@ const goToRecipes = () => {
   padding: 30px 10px;
 }
 .humor-visual {
-  font-size: 4rem;
+  width: 120px;
+  height: 120px;
   margin-bottom: 20px;
   animation: shake 1s infinite alternate;
 }
+.humor-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
 .humor-title {
   margin: 0;
   font-size: 1.2rem;

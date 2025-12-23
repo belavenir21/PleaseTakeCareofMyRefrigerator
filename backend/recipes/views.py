@@ -58,6 +58,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeListSerializer
         return RecipeDetailSerializer
     
+    def get_serializer_context(self):
+        """Serializer에 request context 전달"""
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
     @action(detail=True, methods=['get'])
     def steps(self, request, pk=None):
         """레시피의 조리 단계 조회 (요리 모드용)"""

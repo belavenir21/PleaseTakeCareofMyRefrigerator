@@ -1,15 +1,11 @@
 <template>
   <div class="ingredient-input-view">
-    <!-- 헤더 -->
-    <header class="header-glass">
-      <div class="container header-inner">
-        <button @click="$router.push({ name: 'Pantry' })" class="back-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
+    <header class="header-premium">
+      <div class="header-inner">
+        <button @click="$router.push({ name: 'Pantry' })" class="btn-back-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <h2 class="view-title">신규 식재료 등록</h2>
-        <div class="placeholder"></div>
+        <h2 class="view-title">식재료 등록</h2>
       </div>
     </header>
 
@@ -521,46 +517,10 @@ const getFullImageUrl = (path) => {
   min-height: 100vh; 
   background: var(--bg-main);
   padding-bottom: 120px; 
-  padding-top: 70px; /* 네비게이션 바 높이 70px */
 }
 
-/* 🌸 Header - 네비게이션 바에 붙이기 */
-.header-glass {
-  background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
-  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
-  position: relative;
-  z-index: 998;
-  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
-}
-.header-inner { 
-  height: 60px; 
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-  padding: 0 24px;
-}
-.back-btn { 
-  background: none; 
-  border: none; 
-  cursor: pointer; 
-  color: var(--text-dark); 
-  padding: 8px; 
-  border-radius: 50%; 
-  transition: transform 0.2s; 
-}
-.back-btn:hover { 
-  transform: translateX(-3px);
-}
 
-.view-title {
-  font-family: 'YeogiOttaeJalnan', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--text-dark);
-}
-
+/* 🌸 Header - 전역 스타일 활용으로 대체됨 */
 .placeholder {
   width: 32px;
 }

@@ -18,7 +18,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     ingredients_count = serializers.SerializerMethodField()
     steps_count = serializers.SerializerMethodField()
     ingredients = RecipeIngredientSerializer(many=True, read_only=True)
-    author = serializers.CharField(source='author.profile.nickname', read_only=True)
+    author = serializers.SerializerMethodField()
     is_scraped = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     
@@ -42,6 +42,14 @@ class RecipeListSerializer(serializers.ModelSerializer):
     
     def get_steps_count(self, obj):
         return obj.steps.count()
+    
+    def get_author(self, obj):
+        """작성자 닉네임 반환 (안전하게)"""
+        if obj.author:
+            if hasattr(obj.author, 'profile') and obj.author.profile:
+                return obj.author.profile.nickname or obj.author.username
+            return obj.author.username
+        return None
         
     def get_is_scraped(self, obj):
         request = self.context.get('request')
@@ -53,8 +61,9 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
     """레시피 상세 Serializer"""
     ingredients = RecipeIngredientSerializer(many=True, read_only=True)
     steps = CookingStepSerializer(many=True, read_only=True)
-    author = serializers.CharField(source='author.profile.nickname', read_only=True)
+    author = serializers.SerializerMethodField()
     is_scraped = serializers.SerializerMethodField()
+    scraped_count = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     
     class Meta:
@@ -62,7 +71,7 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'cooking_time_minutes',
             'difficulty', 'image_url', 'image', 'tags', 'ingredients', 'steps',
-            'created_at', 'updated_at', 'author', 'is_scraped'
+            'created_at', 'updated_at', 'author', 'is_scraped', 'scraped_count'
         ]
         
     def get_image_url(self, obj):
@@ -72,12 +81,24 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return obj.image_url
+    
+    def get_author(self, obj):
+        """작성자 닉네임 반환 (안전하게)"""
+        if obj.author:
+            if hasattr(obj.author, 'profile') and obj.author.profile:
+                return obj.author.profile.nickname or obj.author.username
+            return obj.author.username
+        return None
         
     def get_is_scraped(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return obj.scraped_by.filter(id=request.user.id).exists()
         return False
+    
+    def get_scraped_count(self, obj):
+        """즐겨찾기한 사람 수"""
+        return obj.scraped_by.count()
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):

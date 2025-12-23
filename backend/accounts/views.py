@@ -77,7 +77,10 @@ def user_detail_view(request):
     """내 정보 조회 (프로필 자동 생성 포함)"""
     user = request.user
     # 프로필이 없으면 생성 (소셜 가입자 대응)
-    profile, created = UserProfile.objects.get_or_create(user=user)
+    profile, created = UserProfile.objects.get_or_create(
+        user=user,
+        defaults={'nickname': user.username}
+    )
     
     return Response({
         'user': UserSerializer(user).data,
@@ -98,7 +101,10 @@ def user_profile_update_view(request):
 
     try:
         # 프로필이 없으면 생성 (안정성 강화)
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile, created = UserProfile.objects.get_or_create(
+            user=request.user,
+            defaults={'nickname': request.user.username}
+        )
         
         # 닉네임 중복 검사
         new_nickname = request.data.get('nickname')
@@ -192,3 +198,43 @@ class KakaoLogin(SocialLoginView):
             from django.contrib.auth import login
             login(request, self.user)
         return response
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def find_id_view(request):
+    """아이디 찾기 (이메일로 조회)"""
+    email = request.data.get('email')
+    if not email:
+        return Response({'error': '이메일을 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        user = User.objects.get(email=email)
+        # 보안상 마스킹 처리를 할 수도 있지만, 요구사항이 명확하지 않으므로 전체 반환
+        return Response({'username': user.username})
+    except User.DoesNotExist:
+        return Response({'error': '해당 이메일로 가입된 계정을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+    except User.MultipleObjectsReturned:
+        # 이메일 중복이 허용되면 안되지만, 만약 발생한다면
+        return Response({'error': '다수의 계정이 발견되었습니다. 고객센터로 문의해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def find_password_view(request):
+    """비밀번호 찾기 (아이디와 이메일 일치 확인)"""
+    username = request.data.get('username')
+    email = request.data.get('email')
+    
+    if not username or not email:
+        return Response({'error': '아이디와 이메일을 모두 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    try:
+        user = User.objects.get(username=username, email=email)
+        # 실제 서비스라면: 임시 비밀번호 생성 후 이메일 발송
+        # 현재 데모 환경에서는 성공 메시지만 반환
+        return Response({
+            'message': '확인되었습니다. (이메일 발송 시스템이 연동되지 않아, 관리자에게 비밀번호 초기화를 요청해주세요.)'
+        })
+    except User.DoesNotExist:
+        return Response({'error': '정보가 일치하는 회원을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)

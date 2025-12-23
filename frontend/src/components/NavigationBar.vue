@@ -14,15 +14,6 @@
       
       <div class="nav-menu">
         <router-link 
-          to="/#main-section" 
-          class="nav-link"
-          :class="{ active: $route.path === '/' }"
-          title="홈"
-        >
-          <img :src="homeIcon" alt="홈" class="nav-icon-img" />
-        </router-link>
-        
-        <router-link 
           to="/pantry" 
           class="nav-link"
           :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
@@ -61,7 +52,6 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
-import homeIcon from '@/assets/images/home-button.png'
 import pantryIcon from '@/assets/images/pantry-button.png'
 import profileIcon from '@/assets/images/profile-button.png'
 import challengeIcon from '@/assets/images/challenge-nav.png'

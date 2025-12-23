@@ -6,6 +6,13 @@ from pathlib import Path
 from decouple import config
 import os
 
+# 배포용 패키지는 선택적으로 import (로컬 개발 시 없어도 됨)
+try:
+    import dj_database_url
+    HAS_DJ_DATABASE_URL = True
+except ImportError:
+    HAS_DJ_DATABASE_URL = False
+
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,6 +67,16 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+]
+
+# Whitenoise는 배포 환경에서만 사용 (로컬에서는 선택사항)
+try:
+    import whitenoise
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+except ImportError:
+    pass
+
+MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # CORS
     'django.middleware.common.CommonMiddleware',
@@ -91,12 +108,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# 프로덕션 환경에서는 PostgreSQL, 로컬에서는 SQLite 사용
+if 'DATABASE_URL' in os.environ and HAS_DJ_DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ['DATABASE_URL'],
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # 로컬 개발 환경용
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -121,8 +149,16 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Whitenoise 설정 (배포 시 정적 파일 압축 및 캐싱)
+# 로컬 개발 환경에서는 whitenoise가 없어도 작동하도록 조건부 설정
+try:
+    import whitenoise
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+except ImportError:
+    pass  # 로컬에서는 기본 정적 파일 핸들러 사용
 
 # Media files
 MEDIA_URL = 'media/'
@@ -136,11 +172,17 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
+# 배포 환경에서는 실제 프론트엔드 도메인 추가 필요
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
 ]
+
+# 프로덕션 도메인 추가 (배포 후 환경변수로 관리)
+if config('FRONTEND_URL', default=''):
+    CORS_ALLOWED_ORIGINS.append(config('FRONTEND_URL'))
+
 CORS_ALLOW_CREDENTIALS = True
 
 # 허용할 헤더 명시 (Authorization 필수)
@@ -154,14 +196,21 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+# 프로덕션 도메인 추가
+if config('FRONTEND_URL', default=''):
+    CSRF_TRUSTED_ORIGINS.append(config('FRONTEND_URL'))
+if config('BACKEND_URL', default=''):
+    CSRF_TRUSTED_ORIGINS.append(config('BACKEND_URL'))
+
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False  # 프론트에서 필요한 경우 접근 가능하도록
 SESSION_COOKIE_HTTPONLY = True
 
-# 로컬 개발 환경용 (HTTPS가 아님)
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+# 프로덕션 환경에서는 HTTPS 사용
+CSRF_COOKIE_SECURE = not DEBUG  # DEBUG=False면 Secure 쿠키 사용
+SESSION_COOKIE_SECURE = not DEBUG
 
 # REST Framework settings
 REST_FRAMEWORK = {
@@ -176,13 +225,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# 쿠키 설정 수동 고정
-SESSION_COOKIE_HTTPONLY = False
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
 
 # dj-rest-auth & allauth settings
 ACCOUNT_EMAIL_VERIFICATION = 'none'

@@ -37,7 +37,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         
         # 프로필 자동 생성
-        UserProfile.objects.create(user=user)
+        UserProfile.objects.create(user=user, nickname=user.username)
         
         return user
 

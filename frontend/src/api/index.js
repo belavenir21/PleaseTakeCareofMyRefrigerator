@@ -28,7 +28,9 @@ api.interceptors.response.use(
     return response.data
   },
   (error) => {
-    console.error('API Error:', error.response?.data || error.message)
+    const url = error.config?.url
+    const status = error.response?.status
+    console.error(`🔴 API Error [${status}] at ${url}:`, error.response?.data || error.message)
     return Promise.reject(error)
   }
 )

@@ -23,21 +23,48 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 구글 로그인
   const googleLogin = async (token) => {
+    console.log('🔵 Google login started with token:', token?.substring(0, 20) + '...')
     try {
       const response = await authAPI.googleLogin({ access_token: token })
-      // dj-rest-auth 응답에서 토큰(key) 추출
-      const authKey = response.data.key || response.data.token || response.data.access_token
+      console.log('🔵 Google login response:', response)
+
+      // 응답 인터셉터가 이미 response.data를 반환하므로 response에서 바로 key 추출
+      const authKey = response.key || response.token || response.access_token
+      console.log('🔵 Auth key extracted:', authKey ? 'Yes' : 'No')
+
       if (authKey) {
         localStorage.setItem('token', authKey)
         // 즉시 동기화
         api.defaults.headers.common['Authorization'] = `Token ${authKey}`
       }
+
       isAuthenticated.value = true
+      console.log('🔵 Fetching user profile...')
       await fetchUserProfile()
+      console.log('🔵 Google login completed successfully')
+
       return response
     } catch (error) {
-      localStorage.removeItem('token')
-      throw error
+      console.error('🔴 Google login error:', error)
+      console.error('🔴 Error response:', error.response?.data)
+
+      // 에러가 발생해도 토큰이 저장되었을 수 있으므로 확인
+      const savedToken = localStorage.getItem('token')
+      if (savedToken) {
+        console.log('🟡 Token exists despite error, attempting to fetch profile...')
+        try {
+          await fetchUserProfile()
+          console.log('🟢 Profile fetched successfully despite error!')
+          return { data: { success: true } }
+        } catch (profileError) {
+          console.error('🔴 Profile fetch also failed:', profileError)
+          localStorage.removeItem('token')
+          throw error
+        }
+      } else {
+        localStorage.removeItem('token')
+        throw error
+      }
     }
   }
 
@@ -45,7 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
   const kakaoLogin = async (token) => {
     try {
       const response = await authAPI.kakaoLogin({ access_token: token })
-      const authKey = response.data.key || response.data.token || response.data.access_token
+      const authKey = response.key || response.token || response.access_token
       if (authKey) {
         localStorage.setItem('token', authKey)
         // 즉시 동기화
@@ -82,10 +109,16 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
+      // 로컬 스토리지 정리
+      localStorage.removeItem('token')
+
+      // API 헤더 초기화
+      delete api.defaults.headers.common['Authorization']
+
+      // 상태 초기화
       user.value = null
       profile.value = null
       isAuthenticated.value = false
-
     }
   }
 
@@ -115,6 +148,16 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // 아이디 찾기
+  const findId = async (data) => {
+    return await authAPI.findId(data)
+  }
+
+  // 비밀번호 찾기
+  const findPassword = async (data) => {
+    return await authAPI.findPassword(data)
+  }
+
   return {
     user,
     profile,
@@ -126,5 +169,7 @@ export const useAuthStore = defineStore('auth', () => {
     googleLogin,
     kakaoLogin,
     updateProfile,
+    findId,
+    findPassword,
   }
 })

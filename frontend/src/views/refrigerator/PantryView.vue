@@ -1,16 +1,25 @@
 <template>
   <div class="pantry-view">
     <header class="header-premium">
-      <div class="container header-inner" style="justify-content: center; position: relative;">
-        <!-- 뒤로가기 버튼 (절대 위치로 왼쪽 고정) -->
-        <button @click="$router.push({ name: 'Home' })" class="btn-back-header" style="position: absolute; left: 20px;">
+      <div class="header-inner">
+        <!-- 뒤로가기 버튼 -->
+        <button @click="$router.push({ name: 'Home' })" class="btn-back-header">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         
         <h2 class="view-title">보관함</h2>
         
-        <!-- 우측 도움말 버튼 (절대 위치로 우측 고정) -->
-        <button class="btn-help" @click="showHelp = true" style="position: absolute; right: 20px;">?</button>
+        <div class="header-actions-mobile">
+          <!-- 모바일 전용 편집 버튼 (목록 뷰에서만 노출) -->
+          <button v-if="viewMode === 'list'" class="btn-action-header" @click="selectionMode = !selectionMode" :class="{ active: selectionMode }">
+            {{ selectionMode ? '완료' : '편집' }}
+          </button>
+
+          <!-- 모바일 전용 필터 버튼 (달력 뷰에서는 숨김) -->
+          <button v-if="viewMode === 'list'" class="btn-action-header" @click="showFilterModal = true" title="필터 메뉴">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </div>
       </div>
 
       <!-- 뷰 모드 탭 -->
@@ -27,34 +36,69 @@
     <main class="container" v-if="viewMode === 'list'">
       <!-- 상단 컨트롤 도구함 -->
       <!-- 상단 필터 & 카테고리 박스 (컨텐츠 박스 복구) -->
-      <section class="filter-box-glass">
-        <!-- 카테고리: 줄바꿈 허용 (flex-wrap) -->
-        <div class="category-wrapper">
-          <button 
-            v-for="cat in categories" :key="cat"
-            :class="['chip-bubble', { active: selectedCategory === cat }]"
-            @click="selectedCategory = cat"
-          >
-            {{ cat }}
-          </button>
-        </div>
-        
-        <!-- 정렬 드롭다운: 예쁜 디자인 -->
-        <div class="sort-wrapper">
-          <div class="select-container">
-            <select v-model="localSortBy" class="select-bubble">
-              <option value="expiry_date">📅 유통기한순</option>
-              <option value="name">🔤 이름순</option>
-            </select>
-            <span class="select-arrow">▼</span>
+      <!-- 상단 필터 & 카테고리 박스 (데스크탑: 노출, 모바일: 모달 내부로 이동) -->
+      <section class="filter-box-glass desktop-only">
+        <div class="filter-content-inner">
+          <div class="category-wrapper">
+            <button 
+              v-for="cat in categories" :key="cat"
+              :class="['chip-bubble', { active: selectedCategory === cat }]"
+              @click="selectedCategory = cat"
+            >
+              {{ cat }}
+            </button>
           </div>
-
-          <!-- 편집 버튼 (필터 박스 안으로 이동) -->
-          <button @click="selectionMode = !selectionMode" class="btn-capsule-edit" :class="{ active: selectionMode }">
-            {{ selectionMode ? '✅ 완료' : '✏️ 편집' }}
-          </button>
+          
+          <div class="sort-wrapper">
+            <div class="select-container">
+              <select v-model="localSortBy" class="select-bubble">
+                <option value="expiry_date">📅 유통기한순</option>
+                <option value="name">🔤 이름순</option>
+              </select>
+              <span class="select-arrow">▼</span>
+            </div>
+            <button @click="selectionMode = !selectionMode" class="btn-capsule-edit" :class="{ active: selectionMode }">
+              {{ selectionMode ? '✅ 완료' : '✏️ 편집' }}
+            </button>
+          </div>
         </div>
       </section>
+
+      <!-- 모바일 필터 모달 (사이드 드로어 형태) -->
+      <Teleport to="body">
+        <Transition name="slide-right">
+          <div v-if="showFilterModal" class="mobile-filter-overlay" @click.self="showFilterModal = false">
+            <div class="mobile-filter-drawer">
+              <div class="drawer-header">
+                <h3>🔍 필터 및 정렬</h3>
+                <button class="btn-close-drawer" @click="showFilterModal = false">✕</button>
+              </div>
+              <div class="drawer-content">
+                <div class="filter-section">
+                  <label>카테고리</label>
+                  <div class="category-grid">
+                    <button 
+                      v-for="cat in categories" :key="cat"
+                      :class="['chip-bubble', { active: selectedCategory === cat }]"
+                      @click="selectedCategory = cat"
+                    >
+                      {{ cat }}
+                    </button>
+                  </div>
+                </div>
+                <div class="filter-section">
+                  <label>정렬 기준</label>
+                  <div class="sort-options">
+                    <button :class="['sort-opt-btn', { active: localSortBy === 'expiry_date' }]" @click="localSortBy = 'expiry_date'">유통기한순</button>
+                    <button :class="['sort-opt-btn', { active: localSortBy === 'name' }]" @click="localSortBy = 'name'">이름순</button>
+                  </div>
+                </div>
+                <button class="btn-apply-filter" @click="showFilterModal = false">적용하기</button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
 
       <!-- 식재료 그리드 (바둑판 배치) -->
       <section class="ingredients-grid auto-grid mt-lg">
@@ -197,7 +241,7 @@
     </transition>
 
     <!-- 요리하기 버튼 (중앙 하단 고정) - 목록/달력 뷰 모두 표시 -->
-    <div v-if="ingredients.length > 0 && !selectionMode && (viewMode === 'list' || viewMode === 'calendar')" class="floating-cook-bar">
+    <div v-if="!selectionMode && (viewMode === 'list' || viewMode === 'calendar')" class="floating-cook-bar">
       <button @click="recommendRecipes" class="btn-cook-main">
         요리하기
       </button>
@@ -206,8 +250,8 @@
     <!-- 플로팅 액션 버튼 (FAB) 그룹 -->
     <div class="fab-group">
       <!-- 만료 비우기 (작고 깔끔하게) -->
-      <transition name="pop">
-        <button v-if="viewMode === 'list' && expiredCount > 0" class="fab-btn fab-alert" @click="handleClearExpired" title="만료 재료 비우기">
+      <transition name="pop-fast">
+        <button v-if="viewMode === 'list' && expiredCount > 0" class="fab-btn fab-alert" @click="handleClearExpiredClick" title="만료 재료 비우기">
           <img :src="expireIcon" class="fab-img-icon" alt="만료" />
           <span class="alert-badge">{{ expiredCount }}</span>
         </button>
@@ -217,100 +261,102 @@
       <button v-if="viewMode === 'list'" class="fab-btn fab-trash" @click="openTrash" title="휴지통">
           <img :src="trashIcon" class="fab-img-icon" alt="휴지통" />
       </button>
-      
       <!-- 도움말 (물음표) -->
-      <div class="help-wrapper" @mouseenter="showHelpTooltip = true" @mouseleave="showHelpTooltip = false">
+      <div class="help-wrapper">
         <button class="fab-btn fab-help" @click="showHelp = true">
            <img :src="noticeIcon" class="fab-img-icon" alt="도움말" />
         </button>
-        
-        <transition name="fade">
-          <div class="help-tooltip-bubble" v-if="showHelpTooltip || showHelp">
-            {{ helpText }}
-          </div>
-        </transition>
-      </div>
-      
-      <!-- 챌린지 바로가기 (FAB 추가) -->
-      <button class="fab-btn fab-challenge" @click="$router.push({ name: 'Challenge' })" title="주간 챌린지">
-         <img :src="challengeIcon" class="fab-img-icon" alt="챌린지" />
-      </button>
-    </div>
-
-    <!-- 도움말 모달 -->
-    <div v-if="showHelp" class="modal-overlay" @click="showHelp = false">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h3>📖 보관함 사용 가이드</h3>
-          <button class="close-btn" @click="showHelp = false">✕</button>
-        </div>
-        <div class="modal-body help-content">
-          <!-- 목록 뷰 도움말 -->
-          <div v-if="viewMode === 'list'" class="help-section">
-            <div class="help-item">
-              <span class="help-icon">✏️</span>
-              <div>
-                <strong>[편집] 버튼</strong>
-                <p><strong>다중 선택 모드</strong>를 켜서 여러 재료를 한 번에 선택하고 휴지통으로 보낼 수 있어요.</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">👆</span>
-              <div>
-                <strong>재료 카드 클릭</strong>
-                <p>재료의 상세 정보를 수정하거나, <strong>일부 수량만 덜어서 버리기(부분 버리기)</strong>를 할 수 있어요.</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">🔍</span>
-              <div>
-                <strong>필터 및 정렬</strong>
-                <p>상단 필터로 카테고리별 재료를 모아보거나, 유통기한/이름순으로 정렬할 수 있어요.</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">🚨</span>
-              <div>
-                <strong>만료 재료 비우기</strong>
-                <p>유통기한이 지난 재료가 있으면 🚨버튼이 떠요. 눌러서 한 번에 싹 정리하세요!</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">🏆</span>
-              <div>
-                <strong>주간 챌린지</strong>
-                <p>매주 새로운 요리 미션에 도전해보세요! 우측 하단 🏆버튼을 눌러 확인하세요.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 달력 뷰 도움말 -->
-          <div v-else-if="viewMode === 'calendar'" class="help-section">
-             <div class="help-item">
-              <span class="help-icon">🔴</span>
-              <div>
-                <strong>만료 예정일 확인</strong>
-                <p>달력 날짜 아래에 있는 <strong>빨간 점(🔴)</strong>은 그날 만료되는 재료가 있다는 뜻이에요.</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">📅</span>
-              <div>
-                <strong>날짜 클릭</strong>
-                <p>날짜를 누르면 해당 날짜에 만료되는 재료 목록이 아래에 표시됩니다.</p>
-              </div>
-            </div>
-            <div class="help-item">
-              <span class="help-icon">🍳</span>
-              <div>
-                <strong>요리하기</strong>
-                <p>재료가 충분하다면 [요리하기] 버튼을 눌러 레시피를 추천받아 보세요!</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
+
+    <!-- 도움말 모달 (Teleport로 최상위 이동) -->
+    <Teleport to="body">
+      <transition name="fade">
+        <div v-if="showHelp" class="modal-overlay" @click="showHelp = false">
+          <div class="modal-content" @click.stop>
+            <div class="modal-header">
+              <h3>💡 보관함 이용 가이드</h3>
+              <button class="close-btn" @click="showHelp = false">✕</button>
+            </div>
+            <div class="modal-body help-guide">
+              <!-- 뷰 모드에 따라 가이드 내용 변경 -->
+              <template v-if="viewMode === 'list'">
+                <div class="guide-item">
+                  <span class="guide-emoji">🛒</span>
+                  <div class="guide-text">
+                    <strong>식재료 등록하기</strong>
+                    <p>'냉장고 채우기' 버튼을 눌러 영수증 스캔이나 인공지능 분석으로 간편하게 등록하세요.</p>
+                  </div>
+                </div>
+                <div class="guide-item">
+                  <span class="guide-emoji">🍱</span>
+                  <div class="guide-text">
+                    <strong>재료 그룹화</strong>
+                    <p>같은 이름의 재료는 자동으로 묶여서 보여집니다. 클릭하면 상세 내역을 볼 수 있어요.</p>
+                  </div>
+                </div>
+                <div class="guide-item">
+                  <span class="guide-emoji">🍳</span>
+                  <div class="guide-text">
+                    <strong>요리하기</strong>
+                    <p>하단 '요리하기' 버튼을 누르면 지금 바로 만들 수 있는 맞춤 레시피를 추천해드려요!</p>
+                  </div>
+                </div>
+                <div class="guide-item">
+                  <span class="guide-emoji">✏️</span>
+                  <div class="guide-text">
+                    <strong>편집 모드</strong>
+                    <p>상단 '편집' 버튼을 눌러 여러 재료를 한꺼번에 삭제하거나 관리할 수 있습니다.</p>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="guide-item">
+                  <span class="guide-emoji">📅</span>
+                  <div class="guide-text">
+                    <strong>유통기한 달력</strong>
+                    <p>한 달 동안 어떤 재료들이 만료되는지 한눈에 확인하세요.</p>
+                  </div>
+                </div>
+                <div class="guide-item">
+                  <span class="guide-emoji">⚠️</span>
+                  <div class="guide-text">
+                    <strong>임박 알림</strong>
+                    <p>노란색은 3일 이내, 빨간색은 만료된 재료가 있는 날짜예요.</p>
+                  </div>
+                </div>
+                <div class="guide-item">
+                  <span class="guide-emoji">🔍</span>
+                  <div class="guide-text">
+                    <strong>상세 확인</strong>
+                    <p>날짜를 클릭하면 해당 날짜에 만료되는 구체적인 재료 목록을 볼 수 있습니다.</p>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+          </div>
+        </div>
+      </transition>
+    </Teleport>
+
+    <!-- 만료 재료 삭제 확인 모달 -->
+    <Teleport to="body">
+      <div v-if="showExpireConfirm" class="modal-overlay" @click="showExpireConfirm = false">
+        <div class="modal-content-alert" @click.stop>
+          <div class="modal-icon shake">🗑️</div>
+          <h3>만료된 재료 정리</h3>
+          <p>만료된 재료 <strong>{{ expiredCount }}개</strong>를 모두 삭제할까요?</p>
+          <p class="warning-text">⚠️ 이 작업은 되돌릴 수 없습니다.</p>
+          <div class="modal-actions">
+            <button class="btn-cancel" @click="showExpireConfirm = false">취소</button>
+            <button class="btn-delete" @click="confirmClearExpired">삭제하기</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+
 
     <!-- 유통기한 상세 모달 -->
     <div v-if="selectedGroup" class="modal-overlay" @click="selectedGroup = null">
@@ -456,6 +502,7 @@ const localSortBy = ref('expiry_date')
 const selectionMode = ref(false)
 const selectedIds = ref(new Set())
 const showHelp = ref(false)
+const showFilterModal = ref(false)
 const selectedGroup = ref(null)
 const editingId = ref(null)
 const editForm = ref({
@@ -624,9 +671,33 @@ const handleBatchDelete = async () => {
   selectionMode.value = false; selectedIds.value.clear()
 }
 
-const handleClearExpired = async () => {
-  // 만료 재료 휴지통 이동 (확인 없음)
-  await refrigeratorStore.clearExpiredIngredients()
+// 만료 재료 처리 관련 로직
+const showExpireConfirm = ref(false)
+
+const handleClearExpiredClick = () => {
+  console.log('[PantryView] 🗑️ Clear expired clicked, expiredCount:', expiredCount.value)
+  if (expiredCount.value > 0) {
+    console.log('[PantryView] ✅ Showing confirmation modal')
+    showExpireConfirm.value = true
+  } else {
+    console.log('[PantryView] ⚠️ No expired ingredients')
+    alert("현재 만료된 재료가 없어요! 👏")
+  }
+}
+
+const confirmClearExpired = async () => {
+    try {
+        console.log('[PantryView] 🔥 Confirming clear expired ingredients...')
+        await refrigeratorStore.clearExpiredIngredients()
+        console.log('[PantryView] ✅ Successfully cleared expired ingredients')
+        showExpireConfirm.value = false
+        // 즉시 데이터 새로고침
+        await refrigeratorStore.fetchIngredients()
+        console.log('[PantryView] 🔄 Ingredients refreshed')
+    } catch (e) {
+        console.error('[PantryView] ❌ Failed to clear expired:', e)
+        alert('만료 재료 정리에 실패했어요.')
+    }
 }
 
 const handleDelete = async (group) => {
@@ -785,13 +856,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 🎀 Pantry View - Centered Layout */
-/* 🎀 Pantry View - Centered Layout */
+/* 🌸 Header - main.css 전역 스타일 활용 */
 .pantry-view { 
   min-height: 100vh; 
   position: relative;
   padding-bottom: 120px; 
-  padding-top: 70px; /* 네비게이션 바 높이 70px */
 }
 
 /* 🌫️ 배경 블러 처리 */
@@ -807,33 +876,10 @@ onMounted(() => {
   transform: scale(1.05); /* 블러 테두리 방지 */
 }
 
-/* 🌸 Header - 네비 바에 바로 붙이기 */
-.header-premium { 
-  background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
-  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
-  position: relative; 
-  z-index: 998;
-  box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
-}
-.header-inner { 
-  height: 60px; 
-  max-width: 1200px; /* 중앙 정렬 */
-  margin: 0 auto;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; /* 제목 중앙 정렬 */
-  padding: 0 50px; /* 좌우 버튼 공간 확보 */
-  position: relative;
-}
 .btn-back-header {
-  position: absolute;
-  left: 20px;
-  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333;
-  padding: 5px;
-  display: flex; align-items: center; justify-content: center;
+  z-index: 1010; /* 전역 버튼 위로 정렬 보정 */
 }
-.btn-back { background: none; border: none; cursor: pointer; color: #333; }
-.view-title { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 1.2rem; font-weight: 800; }
+
 .header-actions { display: flex; gap: 10px; align-items: center; }
 .btn-help {
   background: #f8f9fa;
@@ -931,9 +977,10 @@ onMounted(() => {
   background: #f1f3f5;
   border-radius: 12px;
   padding: 4px;
-  margin: 0 auto 15px;
+  margin: 15px auto 15px; /* 상단 여백 15px 추가 */
   max-width: 900px; /* 중앙에 모으기 */
 }
+
 .tab-btn {
   flex: 1;
   padding: 10px 20px;
@@ -975,15 +1022,23 @@ onMounted(() => {
 /* 🍱 Grid Cards - 중앙 정렬, 세로 긴 직사각형 */
 .ingredients-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
   gap: 16px;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px 20px;
 }
 @media (min-width: 768px) {
   .ingredients-grid { 
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
     gap: 20px; 
+  }
+}
+@media (max-width: 768px) {
+  .ingredients-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0 12px 12px;
   }
 }
 
@@ -1013,6 +1068,46 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
 }
 .ingredient-card.selected { background: #E7F5FF; border-color: #4dabf7; cursor: pointer; }
+
+@media (max-width: 768px) {
+  .ingredient-card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .ingredient-card .icon-wrapper { width: 45px; height: 45px; }
+  .ingredient-card .ingredient-icon-png { width: 45px; height: 45px; }
+  .ingredient-card .emoji { font-size: 2.2rem; }
+  .ingredient-card .name { font-size: 0.8rem; }
+  .ingredient-card .qty { font-size: 0.75rem; }
+  .ingredient-card .expiry-date { font-size: 0.7rem; }
+  .ingredient-card .category { display: none; }
+  .ingredient-card .selection-overlay { top: 6px; left: 6px; }
+  .ingredient-card .check-box { width: 18px; height: 18px; }
+}
+
+/* 재료 추가 버튼 - 모바일에서 상단 가로 배치 */
+.add-ingredient-card {
+  background: linear-gradient(135deg, #FFF9FB 0%, #FFE5F0 100%);
+  border: 2px dashed #FFB3D9;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 120px;
+}
+
+@media (max-width: 768px) {
+  .add-ingredient-card {
+    grid-column: 1 / -1;
+    padding: 16px;
+    min-height: auto;
+    order: -1;
+  }
+}
 
 .selection-overlay { position: absolute; top: 10px; left: 10px; z-index: 10; }
 .check-box { width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 50%; background: white; }
@@ -1551,6 +1646,88 @@ onMounted(() => {
 
 <!-- 전역 스타일 (모달용) -->
 <style>
+/* 만료 재료 삭제 확인 모달 */
+.modal-content-alert {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.modal-content-alert .modal-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.modal-content-alert .shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.modal-content-alert h3 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  color: #212529;
+}
+
+.modal-content-alert p {
+  margin: 8px 0;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.modal-content-alert .warning-text {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 16px;
+}
+
+.modal-content-alert .modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-content-alert .btn-cancel,
+.modal-content-alert .btn-delete {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-content-alert .btn-cancel {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.modal-content-alert .btn-cancel:hover {
+  background: #dee2e6;
+}
+
+.modal-content-alert .btn-delete {
+  background: #ff6b6b;
+  color: white;
+}
+
+.modal-content-alert .btn-delete:hover {
+  background: #ff5252;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
 /* btn-danger 스타일 정의 (확실하게 적용) */
 .btn-danger {
   background: #ff6b6b !important;
@@ -1724,6 +1901,14 @@ onMounted(() => {
     0 0 40px rgba(255, 105, 180, 0.5);
 }
 
+@media (max-width: 768px) {
+  .btn-cook-main {
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    bottom: 16px;
+  }
+}
+
 /* CSS 추가 */
 .btn-text-edit {
   border: none;
@@ -1748,18 +1933,20 @@ onMounted(() => {
   margin-bottom: 24px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.05); /* 부드러운 그림자 */
   border: 1px solid rgba(255,255,255,0.6);
+}
+
+.filter-content-inner {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
-  flex-wrap: wrap; /* 반응형 줄바꿈 */
+  width: 100%;
 }
 
 .category-wrapper {
   display: flex;
   flex-wrap: wrap; /* 버튼 넘치면 아래로 */
   gap: 8px;
-  flex: 1;
 }
 
 .chip-bubble {
@@ -1787,6 +1974,7 @@ onMounted(() => {
 /* Select Bubble Modern */
 .sort-wrapper {
   flex-shrink: 0;
+  margin-left: auto; /* 데스크탑에서 우측으로 밀기 */
 }
 .select-container {
   position: relative;
@@ -1823,21 +2011,20 @@ onMounted(() => {
 .fab-group {
   position: fixed;
   bottom: 80px;
-  right: 30px; /* 우측 사이드 고정 스타일 */
+  right: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  z-index: 1500;
+  z-index: 2000; /* 최상단 */
+  pointer-events: auto; /* 클릭 가능 */
   align-items: center;
 }
 
 /* 모바일/태블릿 반응형 */
 @media (min-width: 1400px) {
   .fab-group {
-    /* 화면이 넓으면 중앙 컨텐츠 옆에 붙이기 */
-    right: auto;
-    left: 50%;
-    margin-left: 540px;
+    /* 화면이 넓으면 오른쪽 여백 증가 */
+    right: 40px;
   }
 }
 
@@ -1882,6 +2069,15 @@ onMounted(() => {
   font-weight: 900;
   color: white;
   font-family: 'Fredoka One', cursive, sans-serif; /* 귀여운 폰트 */
+}
+
+/* 빠른 애니메이션 (달력 전환 시 즉시 사라지게) */
+.pop-fast-enter-active, .pop-fast-leave-active { 
+  transition: all 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
+}
+.pop-fast-enter-from, .pop-fast-leave-to { 
+  opacity: 0; 
+  transform: scale(0.5) translateY(20px); 
 }
 
 /* FAB 이미지 아이콘 - 그림자 효과 추가 */
@@ -1978,4 +2174,222 @@ onMounted(() => {
   color: white;
   border-color: #333;
 }
+/* 모바일 헤더 액션 그룹 */
+.header-actions-mobile {
+  position: absolute;
+  right: 15px;
+  display: none; /* 데스크탑 숨김 */
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-action-header {
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-action-header:hover {
+  background: white;
+  transform: translateY(-1px);
+}
+
+.btn-action-header.active {
+  background: var(--primary-dark);
+  color: white;
+}
+
+/* 모바일 필터 버튼 (햄버거) - 기존 클래스 덮어쓰기 */
+.btn-filter-mobile {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .header-actions-mobile { display: flex; }
+}
+
+/* 모바일 필터 사이드 드로어 */
+.mobile-filter-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-filter-drawer {
+  width: 80%;
+  max-width: 320px;
+  height: 100%;
+  background: white;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  animation: slideDrawer 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDrawer {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid #f1f3f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.drawer-header h3 { margin: 0; font-size: 1.2rem; color: #6D4C41; }
+.btn-close-drawer { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #aaa; }
+
+.drawer-content {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 알림 모달 스타일 */
+.modal-content-alert {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: popFast 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.alert-icon-bin {
+  font-size: 3rem; margin-bottom: 15px;
+  animation: shake 0.5s ease-in-out;
+}
+.modal-content-alert h3 { margin: 0 0 10px; font-size: 1.2rem; }
+.modal-content-alert p { color: #666; margin-bottom: 25px; line-height: 1.5; }
+
+.btn-cancel-gray {
+  background: #f1f3f5; color: #495057; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; cursor: pointer;
+}
+.btn-danger-confirm {
+  background: #FF6B6B; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+
+.filter-section label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #888;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.sort-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sort-opt-btn {
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid #f1f3f5;
+  background: white;
+  font-weight: 700;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sort-opt-btn.active {
+  background: #FF8787;
+  color: white;
+  border-color: #FF8787;
+  box-shadow: 0 4px 12px rgba(255, 135, 135, 0.3);
+}
+
+.btn-apply-filter {
+  margin-top: auto;
+  background: var(--primary-dark);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 15px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(255, 142, 201, 0.3);
+}
+
+/* Slide Transition */
+.slide-right-enter-active, .slide-right-leave-active { transition: all 0.3s ease; }
+.slide-right-enter-from, .slide-right-leave-to { opacity: 0; transform: translateX(20px); }
+
+/* 모바일 전용 노출 제어 */
+@media (max-width: 768px) {
+  .btn-filter-mobile { display: flex; }
+  .desktop-only { display: none !important; }
+  
+  .view-tabs { margin: 0 20px 25px; padding: 0 4px; } /* 모바일 좌우 패딩 및 여백 조정 */
+  .ingredients-grid { margin-top: 30px !important; } /* 상단 간격 추가 */
+}
+
+/* 도움말 가이드 스타일 */
+.help-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.guide-item {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+.guide-emoji {
+  font-size: 1.8rem;
+  padding-top: 4px;
+}
+.guide-text strong {
+  display: block;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 4px;
+}
+.guide-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+}
 </style>
+

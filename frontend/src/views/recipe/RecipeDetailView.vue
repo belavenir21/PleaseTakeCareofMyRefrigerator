@@ -6,6 +6,10 @@
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">레시피 상세</h2>
+        <!-- 즐겨찾기 버튼 -->
+        <button v-if="recipe" @click="toggleScrap" class="btn-scrap-header" :class="{ active: recipe.is_scraped }">
+          {{ recipe.is_scraped ? '💖' : '🤍' }}
+        </button>
       </div>
     </header>
 
@@ -22,7 +26,9 @@
           alt="레시피 이미지" 
           @error="imageError = true"
         />
-        <div v-else class="recipe-placeholder">🍽️</div>
+        <div v-else class="recipe-placeholder">
+          <img :src="potIcon" class="placeholder-pot" alt="No Image" />
+        </div>
 
         <!-- 이미지 업로드 버튼 (작성자용) -->
         <button v-if="isAuthor" class="btn-upload-image" @click="triggerFileUpload" :disabled="isUploading">
@@ -41,6 +47,16 @@
       <div class="recipe-info card">
         <h1>{{ recipe.title }}</h1>
         <p>{{ recipe.description }}</p>
+        
+        <!-- 작성자 및 즐겨찾기 정보 -->
+        <div class="recipe-stats">
+          <span v-if="recipe.author" class="author-info">
+            👤 by {{ recipe.author }}
+          </span>
+          <span class="scrap-count">
+            💖 {{ recipe.scraped_count || 0 }}명이 즐겨찾기
+          </span>
+        </div>
         
         <div class="recipe-meta">
           <div class="meta-item">
@@ -124,6 +140,8 @@ import { useRecipeStore } from '@/store/recipe'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 import { useAuthStore } from '@/store/auth'
 import axios from '@/api'
+import { recipeAPI } from '@/api/recipe'
+import potIcon from '@/assets/images/pot.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -247,18 +265,28 @@ const cleanDescription = (desc) => {
 const isAuthor = computed(() => {
     if (!recipe.value) return false
     const user = authStore.user
+    const profile = authStore.profile
     if (!user) return false
     
-    // 1. 내가 작성한 레시피 (author 닉네임 비교는 부정확할 수 있으나 현재는 ID 비교 필드가 없음)
-    // -> 백엔드에서 author_id를 주지 않는다면 닉네임으로 비교해야 함. 
-    // -> 하지만 가장 확실한 건 api_source가 'user'이고 내가 만든 것일 때.
-    // -> 일단 닉네임 비교 + api_source 체크
+    console.log('[RecipeDetail] 🔍 Checking isAuthor...')
+    console.log('[RecipeDetail] Recipe author:', recipe.value.author)
+    console.log('[RecipeDetail] User profile:', profile)
+    console.log('[RecipeDetail] User nickname:', profile?.nickname)
+    console.log('[RecipeDetail] User username:', user.username)
+    console.log('[RecipeDetail] API source:', recipe.value.api_source)
     
-    // 만약 recipe.author가 내 닉네임과 같다면 true
-    if (recipe.value.author === user.nickname || recipe.value.author === user.username) return true
+    // 작성자 닉네임 또는 username 비교
+    const nickname = profile?.nickname
+    const isMatch = recipe.value.author === nickname || recipe.value.author === user.username
+    console.log('[RecipeDetail] ✅ Author match:', isMatch)
     
-    // 혹은 api_source가 user인데 author 정보가 없을 때 (혹시나)
-    if (recipe.value.api_source === 'user' && !recipe.value.author) return true
+    if (isMatch) return true
+    
+    // 혹은 api_source가 user/ai_generated인데 author 정보가 없을 때
+    if ((recipe.value.api_source === 'user' || recipe.value.api_source === 'ai_generated') && !recipe.value.author) {
+        console.log('[RecipeDetail] ✅ User recipe without author')
+        return true
+    }
     
     return false
 })
@@ -307,6 +335,49 @@ const handleImageUpload = async (event) => {
         event.target.value = null
     }
 }
+
+// 즐겨찾기 토글
+const toggleScrap = async () => {
+  console.log('[RecipeDetail] 💖 Toggle scrap clicked')
+  console.log('[RecipeDetail] 📌 Current recipe:', recipe.value?.id, recipe.value?.title)
+  console.log('[RecipeDetail] 📌 Current scrap status:', recipe.value?.is_scraped)
+  
+  if (!authStore.isAuthenticated) {
+    alert('로그인이 필요한 기능입니다.')
+    router.push({ name: 'Login' })
+    return
+  }
+  
+  if (!recipe.value) return
+  
+  try {
+    const response = await recipeAPI.toggleScrap(recipe.value.id)
+    console.log('[RecipeDetail] ✅ Scrap toggle response:', response)
+    
+    // 현재 레시피 상태 업데이트
+    recipe.value.is_scraped = response.scraped
+    
+    // 즐겨찾기 개수 즉시 업데이트
+    if (response.scraped) {
+      recipe.value.scraped_count = (recipe.value.scraped_count || 0) + 1
+    } else {
+      recipe.value.scraped_count = Math.max(0, (recipe.value.scraped_count || 0) - 1)
+    }
+    console.log('[RecipeDetail] 📊 Updated scraped_count:', recipe.value.scraped_count)
+    
+    // authStore의 프로필 정보 갱신
+    await authStore.fetchUserProfile()
+    console.log('[RecipeDetail] 🔄 Profile refreshed')
+  } catch (e) {
+    console.error('[RecipeDetail] ❌ 스크랩 실패:', e)
+    if (e.response?.status === 401) {
+      alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
+      router.push({ name: 'Login' })
+    } else {
+      alert('스크랩 처리에 실패했습니다.')
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -337,6 +408,34 @@ const handleImageUpload = async (event) => {
   padding: 5px;
   display: flex; align-items: center; justify-content: center;
 }
+
+.btn-scrap-header {
+  position: absolute;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btn-scrap-header:hover {
+  transform: scale(1.2);
+}
+
+.btn-scrap-header.active {
+  animation: heartbeat 0.3s ease;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
 .view-title {
   font-size: 1.2rem;
   font-weight: 800;
@@ -364,7 +463,15 @@ const handleImageUpload = async (event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 6rem;
+  background: #f8f9fa;
+}
+
+.placeholder-pot {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  opacity: 0.4;
+  filter: grayscale(40%);
 }
 
 .container {
@@ -376,6 +483,28 @@ const handleImageUpload = async (event) => {
 
 .recipe-info h1 {
   margin: 0 0 10px;
+}
+
+.recipe-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f1f3f5;
+  border-bottom: 1px solid #f1f3f5;
+  margin: 16px 0 0;
+}
+
+.author-info {
+  font-size: 0.95rem;
+  color: #6D4C41;
+  font-weight: 600;
+}
+
+.scrap-count {
+  font-size: 0.9rem;
+  color: #868e96;
+  margin-left: auto;
 }
 
 .recipe-meta {

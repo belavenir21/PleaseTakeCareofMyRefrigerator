@@ -74,6 +74,9 @@
   --font-title: 'Jalnan', 'BMJua', sans-serif;
   --font-body: 'Cafe24SurroundAir', 'Pretendard', sans-serif;
   --font-button: 'Cafe24SurroundAir', 'Pretendard', sans-serif;
+
+  /* 📏 Layout Heights */
+  --nav-height: 70px;
 }
 
 * {
@@ -276,6 +279,14 @@ h3 {
   margin-top: 32px;
 }
 
+.mt-xl {
+  margin-top: 48px;
+}
+
+.mb-lg {
+  margin-bottom: 32px;
+}
+
 /* Grid Layout - 중앙 집중 */
 .auto-grid {
   display: grid;
@@ -336,13 +347,12 @@ h3 {
   animation: sparkle 2s ease-in-out infinite;
 }
 
-/* 🎀 박다현체 적용 UI 요소들 */
-/* 버튼, 탭, 칩, 선택요소 등 */
+/* 🎀 UI 요소 폰트 통일 */
 button,
 .chip,
 .tab-btn,
 select,
-input::placeholder,
+input,
 .btn-select-mode,
 .btn-clean-expired,
 .btn-trash-view,
@@ -351,8 +361,138 @@ input::placeholder,
   font-family: var(--font-button);
 }
 
-/* 검색창 placeholder */
 input::placeholder {
   font-family: var(--font-button);
   color: var(--text-light);
+}
+
+/* 🌸 Global Header System */
+.header-premium {
+  background: var(--primary-gradient);
+  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
+  position: sticky;
+  top: var(--nav-height) !important;
+  left: 0;
+  right: 0;
+  width: 100% !important;
+  margin: 0 !important;
+  z-index: 997;
+  box-shadow: 0 4px 12px rgba(255, 179, 217, 0.15);
+}
+
+
+
+.header-inner {
+  height: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 80px;
+  /* 좌우 버튼 공간 확보 */
+}
+
+.btn-back-header {
+  position: absolute;
+  left: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dark);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.btn-back-header:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateX(-3px);
+}
+
+.view-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 0 !important;
+  font-family: var(--font-title);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* 🏠 Default View Padding (Desktop) */
+.pantry-view,
+.recipe-list-view,
+.challenge-view,
+.profile-view,
+.settings-view,
+.ingredient-input-view {
+  padding-top: var(--nav-height) !important;
+}
+
+/* 📱 Mobile Responsive Header Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 48px;
+  }
+
+  .header-premium {
+    top: var(--nav-height) !important;
+    /* 모바일 네비바 높이 48px */
+  }
+
+  /* 페이지별 상단 여백 보정 */
+  .pantry-view,
+  .recipe-list-view,
+  .challenge-view,
+  .profile-view,
+  .settings-view,
+  .ingredient-input-view {
+    padding-top: var(--nav-height) !important;
+  }
+
+  /* 모바일에서 카드 및 텍스트 중앙 정렬 보정 (쏠림 방지) */
+  .ai-suggest-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --nav-height: 44px;
+  }
+
+  .header-premium {
+    top: var(--nav-height) !important;
+    /* 초소형 모바일 네비바 높이 44px */
+  }
+
+  /* 페이지별 상단 여백 보정 */
+  .pantry-view,
+  .recipe-list-view,
+  .challenge-view,
+  .profile-view,
+  .settings-view,
+  .ingredient-input-view {
+    padding-top: var(--nav-height) !important;
+  }
+
+  /* 헤더 텍스트 겹침 방지 (초소형 기기) */
+  .header-inner {
+    padding: 0 60px !important;
+  }
+
+  .view-title {
+    font-size: 1.1rem !important;
+  }
 }

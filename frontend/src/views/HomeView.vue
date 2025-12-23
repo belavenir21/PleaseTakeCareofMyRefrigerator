@@ -338,7 +338,7 @@ const startApp = (page) => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 400px;
+  max-width: 320px;
   opacity: 0;
   transition: 0.5s;
   display: flex;
@@ -410,7 +410,7 @@ const startApp = (page) => {
   }
 
   .intro-btns {
-    max-width: 260px; /* 모바일에서는 버튼 너비 축소 */
+    max-width: 240px; /* 모바일에서는 버튼 너비 축소 */
     gap: 15px;
   }
   
@@ -425,7 +425,7 @@ const startApp = (page) => {
 
 @media (max-width: 480px) {
   .intro-btns {
-    max-width: 220px; /* 더 작은 화면 대응 */
+    max-width: 200px; /* 더 작은 화면 대응 */
   }
   
   .title-wrapper {

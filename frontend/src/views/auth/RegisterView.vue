@@ -1,5 +1,13 @@
 <template>
   <div class="register-view">
+    <!-- 뒤로가기 버튼 추가 -->
+    <button class="back-button" @click="goToHome">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      홈으로
+    </button>
+
     <div class="register-container">
       <h1>회원가입</h1>
       
@@ -20,6 +28,7 @@
             type="text"
             class="input"
             required
+            placeholder="아이디를 입력하세요"
           />
         </div>
 
@@ -31,6 +40,7 @@
             type="email"
             class="input"
             required
+            placeholder="example@email.com"
           />
         </div>
 
@@ -43,6 +53,7 @@
             class="input"
             required
             minlength="8"
+            placeholder="8자 이상 입력하세요"
           />
         </div>
 
@@ -54,6 +65,7 @@
             type="password"
             class="input"
             required
+            placeholder="비밀번호를 다시 입력하세요"
           />
         </div>
 
@@ -62,8 +74,8 @@
         </button>
 
         <div class="text-center">
-          <router-link to="/login" class="link">
-            이미 회원이신가요? 로그인
+          <router-link to="/login" class="link-button">
+            이미 회원이신가요? <strong>로그인</strong>
           </router-link>
         </div>
       </form>
@@ -90,6 +102,11 @@ const loading = ref(false)
 const error = ref('')
 const success = ref(false)
 
+// 홈으로 이동
+const goToHome = () => {
+  router.push({ name: 'Main' })
+}
+
 const handleRegister = async () => {
   error.value = ''
   loading.value = true
@@ -99,7 +116,6 @@ const handleRegister = async () => {
     success.value = true
     
     setTimeout(() => {
-      // 가입 성공 후 타이틀(Main) 페이지로 이동
       router.push({ name: 'Main' })
     }, 2000)
   } catch (err) {
@@ -112,16 +128,43 @@ const handleRegister = async () => {
 
 <style scoped>
 .register-view {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* 배경 이미지 적용 */
   background-image: url('/images/login-bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   padding: 20px;
+}
+
+/* 뒤로가기 버튼 */
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.back-button:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .register-container {
@@ -146,17 +189,77 @@ h1 {
   gap: 15px;
 }
 
+/* Input 스타일 */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.1);
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.alert-error {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.alert-success {
+  background: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+}
+
 .text-center {
   text-align: center;
   margin-top: 15px;
 }
 
-.link {
-  color: var(--primary);
+.link-button {
+  display: inline-block;
+  color: #666;
   text-decoration: none;
+  font-size: 0.95rem;
+  padding: 8px 0;
+  transition: color 0.2s;
 }
 
-.link:hover {
+.link-button strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.link-button:hover {
+  color: #333;
+}
+
+.link-button:hover strong {
   text-decoration: underline;
 }
 </style>

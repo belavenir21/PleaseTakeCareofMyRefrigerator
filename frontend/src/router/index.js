@@ -40,13 +40,13 @@ const routes = [
     path: '/recipes',
     name: 'RecipeList',
     component: () => import('@/views/recipe/RecipeListView.vue'),
-    meta: { requiresAuth: true },
+    // 비로그인 사용자도 레시피 구경 가능
   },
   {
     path: '/recipes/:id',
     name: 'RecipeDetail',
     component: () => import('@/views/recipe/RecipeDetailView.vue'),
-    meta: { requiresAuth: true },
+    // 비로그인 사용자도 레시피 상세 조회 가능
   },
   {
     path: '/cook/:id',

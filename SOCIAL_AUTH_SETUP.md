@@ -26,6 +26,7 @@
     *   **승인된 리디렉션 URI(Authorized redirect URIs)**:
         *   `http://localhost:5173` (프론트엔드 URL)
         *   `http://localhost:8000/accounts/google/login/callback/`
+        *   `https://your-app.netlify.app` (실배포 프론트엔드)
     *   **[만들기]** 클릭.
 4.  **키 확인**:
     *   **클라이언트 ID**: `~.apps.googleusercontent.com` 형태.

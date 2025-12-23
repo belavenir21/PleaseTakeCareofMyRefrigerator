@@ -130,12 +130,10 @@
 
 5. **마스터 데이터** ✅
    - 식재료 마스터 검색 (GET /api/master/ingredients/)
-   - 알레르기 목록 (GET /api/master/allergies/)
 
 ### Frontend
 1. **프로젝트 설정** ✅
    - Vue 3 + Vite
-   - Pinia 상태 관리
    - Vue Router
    - Axios API 통신
 
@@ -155,26 +153,27 @@
 ## 📝 추가 작업이 필요한 항목
 
 ### 1. AI 모델 통합
-- [ ] Object Detection 모델 학습 및 연동
+- [ ] VISION API 모델 연동
 - [ ] OCR 모델 연동
 - [ ] Django에서 AI 모델 서빙
 
-### 2. 외부 API 연동
+### 2. 외부 API 연동✅
 - [ ] 식품안전나라 API 데이터 수집
 - [ ] 농식품공공데이터 API 이미지 연동
 - [ ] 마스터 데이터 적재 스크립트
 
-### 3. 추가 기능
-- [ ] 영수증 OCR 처리
-- [ ] 식재료 이미지 자동 태깅
+### 3. 추가 기능 ✅
+- [x] 영수증 OCR 처리
+- [x] 식재료 이미지 자동 태깅
+- [x] 소셜 로그인 (Google, Kakao)
 - [ ] 알림 시스템 (Push notification)
-- [ ] 소셜 로그인 (Google, Kakao)
 
-### 4. UI/UX 개선
-- [ ] 모바일 최적화
-- [ ] 로딩 애니메이션
-- [ ] 에러 핸들링 개선
-- [ ] 재료 소진 확인 모달
+### 4. UI/UX 개선 ✅
+- [x] 모바일 최적화 및 중앙 정렬 레이아웃
+- [x] 전역 파스텔 픽셀 아트 테마 적용
+- [x] 로딩 애니메이션 및 젤리 효과
+- [x] 재료 소진/삭제 확인 모달 (Teleport)
+- [x] 헤더 디자인 시스템 통일 (header-premium)
 
 ### 5. 테스트
 - [ ] 백엔드 단위 테스트
@@ -187,10 +186,8 @@
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv\Scripts\activate
 pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
 python manage.py runserver
 ```
 
@@ -221,9 +218,7 @@ npm run dev
 
 ## 📞 팀 정보
 
-- 임서영
 - 손서영
-- 조윤채
 
 대전2반 라따뚜이팀
 

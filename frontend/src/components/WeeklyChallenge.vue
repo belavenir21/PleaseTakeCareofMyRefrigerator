@@ -170,7 +170,18 @@ onMounted(async () => {
   // 내 레시피 개수 가져오기
   try {
       const res = await axios.get('/recipes/', { params: { author: 'me' } })
-      stats.value.createdRecipes = res.data.count || (res.data.results ? res.data.results.length : 0)
+      // 서버 응답 형태에 따라 count 처리
+      if (typeof res.data.count === 'number') {
+        stats.value.createdRecipes = res.data.count
+      } else if (Array.isArray(res.data.results)) {
+        stats.value.createdRecipes = res.data.results.length
+      } else if (Array.isArray(res.data)) {
+        // 결과 자체가 배열인 경우 (예: 커스텀 응답)
+        stats.value.createdRecipes = res.data.length
+      } else {
+        // 기본값
+        stats.value.createdRecipes = 0
+      }
   } catch (e) {
       console.error('Failed to fetch my recipes count', e)
   }

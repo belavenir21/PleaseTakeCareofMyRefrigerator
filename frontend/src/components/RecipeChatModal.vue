@@ -3,10 +3,12 @@
     <div class="chat-modal">
       <div class="chat-header">
         <div class="header-info">
-          <span class="chef-icon">👨‍🍳</span>
+          <div class="ai-avatar-mini">
+            <img src="@/assets/character-head.png" alt="AI Chef" />
+          </div>
           <div>
-            <h3>AI 레시피 셰프</h3>
-            <p class="subtitle">무엇이든 물어보세요!</p>
+            <h3>AI 셰프 파트너</h3>
+            <p class="subtitle">맛있는 레시피를 제안해드려요 ✨</p>
           </div>
         </div>
         <button @click="$emit('close')" class="btn-close">×</button>
@@ -15,7 +17,9 @@
       <div class="chat-body" ref="chatBody">
         <!-- 빠른 질문 버튼 -->
         <div v-if="messages.length === 0" class="welcome-section">
-          <div class="welcome-icon">🍳</div>
+          <div class="welcome-icon">
+            <img src="@/assets/character.png" alt="Welcome AI" class="welcome-img" />
+          </div>
           <h4>AI 셰프가 도와드릴게요!</h4>
           <p>내 냉장고 재료로 만들 수 있는<br/>요리를 추천해드려요.</p>
         </div>
@@ -158,31 +162,56 @@ const sendMessageWithIngredients = async (includeIngredients) => {
 }
 
 .chat-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px;
+  background: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 100%);
+  color: var(--text-dark);
+  padding: 16px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid rgba(255, 179, 217, 0.3);
 }
 .header-info {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.chef-icon { font-size: 2rem; }
-.chat-header h3 { margin: 0; font-size: 1.1rem; }
-.subtitle { margin: 0; font-size: 0.8rem; opacity: 0.8; }
-.btn-close {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
+.ai-avatar-mini {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
+
+
+.ai-avatar-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.chat-header h3 { margin: 0; font-size: 1rem; font-weight: 800; color: #6D4C41; }
+.subtitle { margin: 0; font-size: 0.75rem; color: #8D6E63; opacity: 0.9; }
+.btn-close {
+  background: rgba(255,255,255,0.5);
+  border: none;
+  color: #6D4C41;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.btn-close:hover { background: white; transform: rotate(90deg); }
 
 .chat-body {
   flex: 1;
@@ -195,26 +224,52 @@ const sendMessageWithIngredients = async (includeIngredients) => {
   text-align: center;
   padding: 30px 20px;
 }
-.welcome-icon { font-size: 4rem; margin-bottom: 15px; }
+.welcome-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.welcome-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  animation: floatBounce 2.5s ease-in-out infinite;
+}
+
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
 .welcome-section h4 { margin: 0 0 10px; font-size: 1.2rem; color: #333; }
 .welcome-section p { color: #666; font-size: 0.9rem; line-height: 1.5; }
 
 .message { margin-bottom: 16px; }
 .message.user .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF9EBC 0%, #FF6B9D 100%);
   color: white;
   margin-left: 60px;
-  border-radius: 18px 18px 4px 18px;
-  padding: 14px 18px;
+  border-radius: 20px 20px 4px 20px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.2);
+  font-size: 0.9rem;
 }
 .message.assistant .message-content {
   background: white;
-  color: #333;
+  color: #5D4037;
   margin-right: 60px;
-  border-radius: 18px 18px 18px 4px;
-  border: 1px solid #e9ecef;
-  padding: 14px 18px;
+  border-radius: 20px 20px 20px 4px;
+  border: 1px solid #FFE0E9;
+  padding: 12px 16px;
   line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 .typing-indicator {
@@ -280,14 +335,19 @@ const sendMessageWithIngredients = async (includeIngredients) => {
 }
 .input-wrap input:focus { border-color: #667eea; }
 .btn-send {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF9EBC 0%, #FF6B9D 100%);
   color: white;
   border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
   font-size: 1.3rem;
   cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3); }
 .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>

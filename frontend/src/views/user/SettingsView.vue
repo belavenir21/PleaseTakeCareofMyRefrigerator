@@ -1,9 +1,12 @@
 <template>
   <div class="settings-view">
-    <header class="header">
-      <button @click="goBack" class="btn-back">←</button>
-      <h2>계정 설정</h2>
-      <div style="width: 24px"></div>
+    <header class="header-premium">
+      <div class="header-inner">
+        <button @click="goBack" class="btn-back-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 class="view-title">계정 설정</h2>
+      </div>
     </header>
 
     <div class="container">
@@ -65,34 +68,8 @@ const handleDeleteAccount = () => {
 .settings-view {
   min-height: 100vh;
   background: var(--bg-main);
-  padding-top: 70px;
 }
 
-.header {
-  background: white;
-  padding: 12px 20px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 70px;
-  z-index: 100;
-}
-
-.header h2 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin: 0;
-}
-
-.btn-back {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0;
-}
 
 .container {
   max-width: 600px;

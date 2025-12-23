@@ -25,6 +25,16 @@ export const authAPI = {
   kakaoLogin(data) {
     return api.post('/auth/kakao/', data)
   },
+
+  // 아이디 찾기
+  findId(data) {
+    return api.post('/auth/find-id/', data)
+  },
+
+  // 비밀번호 찾기
+  findPassword(data) {
+    return api.post('/auth/find-password/', data)
+  },
 }
 
 export const userAPI = {
