@@ -4,6 +4,7 @@ URL configuration for refrigerator project.
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.http import HttpResponse # 추가
 from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -37,6 +38,9 @@ urlpatterns = [
     path('api/refrigerator/', include('refrigerator.urls')),
     path('api/recipes/', include('recipes.urls')),
     path('api/master/', include('master.urls')),
+    
+    # Health Check (Add this)
+    path('health/', lambda r: HttpResponse("OK"), name='health_check'),
 ]
 
 # Media files in development
