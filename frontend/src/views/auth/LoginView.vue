@@ -255,8 +255,12 @@ const proceedToKakaoLogin = () => {
       window.Kakao.init(KAKAO_API_KEY)
     }
 
+    // 현재 도메인 기반으로 리다이렉트 URI 생성
+    const redirectUri = `${window.location.origin}/auth/kakao/callback`
+    console.log('Kakao redirect URI:', redirectUri)
+
     window.Kakao.Auth.authorize({
-      redirectUri: 'http://localhost:5173/auth/kakao/callback'
+      redirectUri: redirectUri
     })
   } catch (e) {
     console.error('Kakao init/login error:', e)

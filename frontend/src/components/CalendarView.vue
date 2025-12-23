@@ -228,7 +228,11 @@ const useIngredientsForRecipes = () => {
 const getFullImageUrl = (url) => {
   if (!url) return ''
   if (url.startsWith('http')) return url
-  return `http://127.0.0.1:8000${url}`
+  // 환경변수에서 API URL 가져오기 (/api 제거)
+  const baseUrl = import.meta.env.VITE_API_URL 
+    ? import.meta.env.VITE_API_URL.replace('/api', '') 
+    : 'http://localhost:8000'
+  return `${baseUrl}${url}`
 }
 
 // 달력 날짜 생성
