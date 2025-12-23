@@ -13,36 +13,50 @@
       </div>
       
       <div class="nav-menu">
-        <router-link 
-          to="/pantry" 
+        <a 
+          @click.prevent="handleNavClick('/pantry')"
           class="nav-link"
           :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
           title="내 보관함"
         >
           <img :src="pantryIcon" alt="보관함" class="nav-icon-img" />
-        </router-link>
+        </a>
 
-        <router-link 
-          to="/challenge" 
+        <a 
+          @click.prevent="handleNavClick('/challenge')"
           class="nav-link"
           :class="{ active: $route.path === '/challenge' }"
           title="챌린지"
         >
           <img :src="challengeIcon" alt="챌린지" class="nav-icon-img" />
-        </router-link>
+        </a>
         
-        <router-link 
-          to="/profile" 
+        <a 
+          @click.prevent="handleNavClick('/profile')"
           class="nav-link"
           :class="{ active: $route.path === '/profile' }"
           title="내 프로필"
         >
           <img :src="profileIcon" alt="프로필" class="nav-icon-img" />
-        </router-link>
+        </a>
 
-        <button @click="handleLogout" class="nav-link logout-btn-wrap" title="로그아웃">
+        <button 
+          v-if="authStore.isAuthenticated"
+          @click="handleLogout" 
+          class="nav-link logout-btn-wrap" 
+          title="로그아웃"
+        >
           <img :src="logoutIcon" alt="로그아웃" class="nav-icon-img" />
         </button>
+        
+        <a 
+          v-else
+          @click.prevent="handleNavClick('/login')"
+          class="nav-link login-btn-wrap" 
+          title="로그인"
+        >
+          <img :src="loginIcon" alt="로그인" class="nav-icon-img" />
+        </a>
       </div>
     </div>
   </nav>
@@ -56,6 +70,7 @@ import pantryIcon from '@/assets/images/pantry-button.png'
 import profileIcon from '@/assets/images/profile-button.png'
 import challengeIcon from '@/assets/images/challenge-nav.png'
 import logoutIcon from '@/assets/images/logout-button.png'
+import loginIcon from '@/assets/images/login-button.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -75,15 +90,33 @@ const isCookingMode = computed(() => {
   return route.name === 'CookingMode'
 })
 
+// 네비게이션 바를 항상 표시 (로그인 페이지, 회원가입 페이지, 쿠킹모드 제외)
 const shouldShowNavbar = computed(() => {
-  if (!authStore.isAuthenticated || isAuthPage.value) {
-    return false
-  }
-  if (isCookingMode.value) {
+  if (isAuthPage.value || isCookingMode.value) {
     return false
   }
   return true
 })
+
+// 네비게이션 클릭 핸들러
+const handleNavClick = (path) => {
+  // 로그인 페이지로 가는 경우는 항상 허용
+  if (path === '/login') {
+    router.push(path)
+    return
+  }
+  
+  // 로그인하지 않은 경우
+  if (!authStore.isAuthenticated) {
+    if (confirm('로그인이 필요한 기능입니다.\n로그인 페이지로 이동하시겠습니까?')) {
+      router.push('/login')
+    }
+    return
+  }
+  
+  // 로그인한 경우 정상 이동
+  router.push(path)
+}
 
 const handleScroll = () => {
   const scrollTop = window.scrollY || document.documentElement.scrollTop

@@ -33,6 +33,7 @@ onMounted(async () => {
     router.push({ name: 'Main' })
   } catch (error) {
     console.error('Kakao login error:', error)
+    alert('카카오 로그인에 실패했습니다. 다시 시도해주세요.')
     router.push({ name: 'Login' })
   }
 })
