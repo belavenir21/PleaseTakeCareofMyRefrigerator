@@ -56,6 +56,15 @@
 
       <!-- 식재료 그리드 (바둑판 배치) -->
       <section class="ingredients-grid auto-grid mt-lg">
+        <!-- 냉장고 채우기 카드 (맨 앞으로 이동!) -->
+        <div class="card add-ingredient-card" @click="$router.push({ name: 'IngredientInput' })">
+          <div class="add-icon">🛒</div>
+          <div class="add-text">
+            <strong>냉장고 채우기</strong>
+            <p>새 재료를 추가해요</p>
+          </div>
+        </div>
+
         <div
           v-for="group in filteredIngredients"
           :key="group.primary.id"
@@ -98,15 +107,6 @@
             <div class="meta-row">
               <span class="exp" :class="{ 'red': group.primary.is_expired }">{{ formatDate(group.primary.expiry_date) }}</span>
             </div>
-          </div>
-        </div>
-
-        <!-- 냉장고 채우기 카드 (마지막에 항상 표시) -->
-        <div class="card add-ingredient-card" @click="$router.push({ name: 'IngredientInput' })">
-          <div class="add-icon">🛒</div>
-          <div class="add-text">
-            <strong>냉장고 채우기</strong>
-            <p>새 재료를 추가해요</p>
           </div>
         </div>
 
@@ -641,7 +641,11 @@ const getFullImageUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
   const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:8000'
-  return `${baseUrl}${path}`
+  // /media/가 이미 있으면 그대로, 없으면 추가
+  if (path.startsWith('/media/')) {
+    return `${baseUrl}${path}`
+  }
+  return `${baseUrl}/media/${path}`
 }
 
 const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
@@ -689,7 +693,7 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
   padding: 0 24px;
 }
 .btn-back { background: none; border: none; cursor: pointer; color: #333; }
-.view-title { font-size: 1.2rem; font-weight: 800; }
+.view-title { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 1.2rem; font-weight: 800; }
 .header-actions { display: flex; gap: 10px; align-items: center; }
 .btn-help {
   background: #f8f9fa;
@@ -843,33 +847,34 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 
 /* 아이템 시각 요소 내부 뱃지 위치 조정 */
 .item-visual { 
+  position: relative; 
   display: flex; 
-  justify-content: center; /* 아이콘 중앙 정렬 */
-  align-items: center;
-  position: relative;
+  align-items: center; 
+  justify-content: center;
   min-height: 60px; /* 아이콘 공간 확보 */
+  margin-top: 10px; /* 위쪽 여백 추가! */
   margin-bottom: 10px;
 }
 
 .icon-wrapper { 
-  width: 60px; 
-  height: 60px; 
+  width: 70px; 
+  height: 70px; 
   display: flex; 
   align-items: center; 
   justify-content: center; 
-  overflow: hidden; 
-  background: #f8f9fa; /* 아이콘 배경 추가해서 깔끔하게 */
-  border-radius: 50%;
+  overflow: visible; /* 잘림 방지 */
+  /* 배경색 제거! */
+  /* border-radius 제거! */
 }
 
 .ingredient-icon-png { 
-  width: 48px; 
-  height: 48px; 
+  width: 70px; /* 더 크게! */
+  height: 70px; 
   object-fit: contain; 
 } 
 
 .emoji { 
-  font-size: 2.8rem; 
+  font-size: 3.5rem; /* 더 크게! */
   line-height: 1;
 }
 
@@ -904,7 +909,7 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 
 .item-info { display: flex; flex-direction: column; gap: 6px; }
 .name-cate-row { display: flex; flex-direction: column; }
-.name { font-size: 1.05rem; font-weight: 700; color: #222; }
+.name { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 1.05rem; font-weight: 700; color: #222; }
 .category { font-size: 0.7rem; color: #adb5bd; font-weight: 600; }
 
 .meta-row { display: flex; justify-content: space-between; gap: 8px; }
@@ -1180,7 +1185,7 @@ const recommendRecipes = () => router.push({ name: 'RecipeList', query: { mode: 
 .trash-item { display: flex; align-items: center; gap: 12px; padding: 10px; background: #f8f9fa; border-radius: 12px; }
 .emoji-sm { font-size: 1.5rem; }
 .trash-info { flex: 1; display: flex; flex-direction: column; }
-.trash-info .name { font-weight: 700; color: #333; font-size: 0.95rem; }
+.trash-info .name { font-family: 'YeogiOttaeJalnan', sans-serif; font-weight: 700; color: #333; font-size: 0.95rem; }
 .trash-info .meta { font-size: 0.8rem; color: #868e96; }
 .trash-actions { display: flex; gap: 8px; }
 .empty-msg-sm { text-align: center; color: #adb5bd; padding: 40px 0; }

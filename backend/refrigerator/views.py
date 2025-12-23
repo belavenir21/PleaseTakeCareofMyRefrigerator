@@ -117,45 +117,78 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def get_ai_correction(self, raw_text):
-        """SSAFY GMS를 사용하여 오타나 불완전한 텍스트 교정"""
+        """SSAFY GMS를 사용하여 오타나 불완전한 텍스트 교정 (GPT-4o mini)"""
         gms_key = getattr(settings, 'GMS_KEY', None)
         if not gms_key:
             return None
             
-        url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
+        # 올바른 GPT-4o mini 엔드포인트!
+        url = "https://gms.ssafy.io/gmsapi/api.openai.com/v1/chat/completions"
         
-        prompt = f"""
-다음은 영수증 OCR 인식 결과입니다. 
-불완전하게 인식되었거나 오타가 있다면 한국에서 판매되는 가장 가능성 높은 식재료명으로 교정해주세요.
+        prompt = f"""다음은 마트 영수증에서 OCR로 읽은 글자입니다: "{raw_text}"
 
-중요한 규칙:
-1. 브랜드명(노브랜드, CJ, 풀무원 등)과 수량/가격 정보는 삭제.
-2. 구체적인 품종이나 종류는 최대한 유지할 것. (중요!)
-   - 예: '애호박' -> '애호박' (O), '호박' (X)
-   - 예: '산딸기' -> '산딸기' (O), '딸기' (X)
-   - 예: '청양고추' -> '청양고추' (O)
-   - 예: '부사 사과' -> '사과' (품종이 너무 구체적이면 일반명으로)
-3. '소스', '양념', '장', '육수', '드레싱'이 포함된 경우 원재료로 착각하지 말 것.
-   - 예: '쌀국수소스' -> '쌀국수' (X), '쌀국수소스' (O) 또는 '소스'
-4. 다른 설명 없이 교정한 식재료명 그 자체만 응답
+이 글자가 어떤 식재료/식품인지 추측해서 교정해주세요.
+
+규칙:
+1. 브랜드명(노브랜드, CJ, 농심, 오뚜기 등) 제거
+2. 숫자, 가격 정보 제거  
+3. 교정된 식재료명만 간단히 응답 (다른 설명 없이)
+
+예시:
+- "노브랜드 곳밀크우" → "우유"
+- "농심 올리브찌파게" → "짜파게티"
 
 입력: {raw_text}
-응답:
-"""
+응답:"""
         
         try:
-            payload = {
-                "contents": [{"parts": [{"text": prompt}]}]
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {gms_key}"  # Bearer 토큰 방식!
             }
-            response = requests.post(url, json=payload, timeout=5)
+            
+            payload = {
+                "model": "gpt-4o-mini",
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 50
+            }
+            
+            print(f"  🤖 AI 요청 중... (GPT-4o mini)")
+            response = requests.post(url, json=payload, headers=headers, timeout=10)
+            print(f"  📡 AI 응답 상태: {response.status_code}")
+            
             if response.status_code == 200:
                 result = response.json()
-                corrected = result['candidates'][0]['content']['parts'][0]['text'].strip()
-                corrected = re.sub(r'["\']', '', corrected).strip()
+                
+                if 'choices' not in result or len(result['choices']) == 0:
+                    print(f"  ⚠️ AI 응답에 choices 없음: {result}")
+                    return None
+                
+                choice = result['choices'][0]
+                if 'message' not in choice or 'content' not in choice['message']:
+                    print(f"  ⚠️ AI 응답에 message.content 없음")
+                    return None
+                
+                corrected = choice['message']['content'].strip()
+                print(f"  ✅ AI 원본 응답: '{corrected}'")
+                
+                corrected = re.sub(r'["`\']', '', corrected).strip()
+                
+                if len(corrected) > 30 or len(corrected) < 2:
+                    print(f"  ⚠️ AI 응답 길이 이상: {len(corrected)}")
+                    return None
+                
                 return corrected
+            else:
+                print(f"  ❌ AI 에러 응답: {response.text[:200]}")
+                return None
+                
         except Exception as e:
-            print(f"  ❌ AI Correction Error: {str(e)}")
-        return None
+            print(f"  ❌ AI 예외: {str(e)}")
+            return None
 
     @action(detail=False, methods=['get'])
     def alerts(self, request):
@@ -305,8 +338,29 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     
                     print(f'  🔍 Searching for: "{item_name}"')
                     
-                    # 불필요한 텍스트 필터링 (가격, 금액, 결제 관련)
-                    skip_keywords = ['금액', '합계', '결제', '카드', '현금', '포인트', '할인', '원', '총', '부가세', '면세', '과세', '대상']
+                    
+                    # 불필요한 텍스트 필터링 (대폭 확장!)
+                    skip_keywords = [
+                        # 금액/결제 관련
+                        '금액', '합계', '결제', '카드', '현금', '포인트', '할인', '원', '총', 
+                        '부가세', '면세', '과세', '대상', '적립', '잔액', '거스름돈',
+                        
+                        # 배송/주문 관련
+                        '배송', '도착', '출발', '완료', '준비', '처리', '접수', '확인',
+                        '주문', '구매', '결제', '취소', '교환', '반품',
+                        
+                        # 쇼핑몰/서비스 관련
+                        '로켓', '프레시', '새벽배송', '샛별배송', '당일배송',
+                        '상품', '내역', '관리', '바로', '선택', '목록',
+                        
+                        # 카테고리/라벨
+                        '신선식품', '냉장', '냉동', '상온', '실온',
+                        '무료배송', '쿠폰', '이벤트',
+                        
+                        # 기타
+                        '영수증', '거래명세서', '전표', '번호', '일시', '매장',
+                    ]
+                    
                     if any(kw in item_name for kw in skip_keywords):
                         print(f'[OCR-DEBUG] ⏭️ 스킵 (불필요 텍스트): "{item_name}"')
                         continue
@@ -314,17 +368,20 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     # 1~4. 개선된 매칭 시도
                     matched_master = find_best_match(item_name, masters)
 
-                    # 5. [NEW] AI 기반 텍스트 교정 (조건 강화)
+                    # 5. [NEW] AI 기반 텍스트 교정 (조건 완화!)
                     # - 길이가 3자 이상이고
-                    # - 한글이 50% 이상이고  
-                    # - 숫자가 50% 미만일 때만
+                    # - 한글이 40% 이상이고 (50%에서 완화!)
+                    # - 숫자가 60% 미만일 때만 (50%에서 완화!)
                     if not matched_master and len(item_name) >= 3:
-                        korean_ratio = len(re.findall(r'[가-힣]', item_name)) / len(item_name)
-                        digit_ratio = len(re.findall(r'\d', item_name)) / len(item_name)
+                        # 숫자/단위 미리 제거해서 AI에게 던지기
+                        cleaned_for_ai = re.sub(r'\d+[a-zA-Z]*/?박스?|g|ml|kg|L', '', item_name).strip()
                         
-                        if korean_ratio >= 0.5 and digit_ratio < 0.5:
-                            print(f'\n[OCR-DEBUG] 🔍 AI 보정 시도: "{item_name}"')
-                            ai_suggested = self.get_ai_correction(item_name)
+                        korean_ratio = len(re.findall(r'[가-힣]', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
+                        digit_ratio = len(re.findall(r'\d', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
+                        
+                        if korean_ratio >= 0.4 and digit_ratio < 0.6 and len(cleaned_for_ai) >= 2:
+                            print(f'\n[OCR-DEBUG] 🔍 AI 보정 시도: "{cleaned_for_ai}"')
+                            ai_suggested = self.get_ai_correction(cleaned_for_ai)
                             if ai_suggested:
                                 print(f'[OCR-DEBUG] 🤖 AI 제안: "{ai_suggested}"')
                                 
@@ -346,6 +403,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     # 6. 설정값 결정
                     final_name = item_name
                     category, storage_method, days, unit, icon = '가공식품', '냉장', 14, '개', '🍴'
+                    needs_user_input = False  # 사용자 입력이 필요한지 플래그
                     
                     if matched_master:
                         final_name = matched_master.name
@@ -373,6 +431,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     base_date = datetime.strptime(purchase_date, '%Y-%m-%d') if purchase_date else datetime.now()
                     expiry_date = (base_date + timedelta(days=days)).strftime('%Y-%m-%d')
                     
+                    # 응답 데이터 구성 (간소화!)
                     all_items.append({
                         'original_text': ' '.join(item_lines[:3]),
                         'name': final_name,
@@ -395,8 +454,46 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                         clean_line = re.sub(r'[\d,\.\*\#\(\)\[\]]', '', line).strip()
                         if len(clean_line) < 2:
                             continue
-                            
+                        
+                        # 불필요한 텍스트 스킵 (Fallback도 동일 필터 적용!)
+                        skip_keywords = [
+                            '금액', '합계', '결제', '카드', '현금', '포인트', '할인', '원', '총',
+                            '부가세', '면세', '과세', '대상', '적립', '잔액', '거스름돈',
+                            '배송', '도착', '출발', '완료', '준비', '처리', '접수', '확인',
+                            '주문', '구매', '취소', '교환', '반품',
+                            '로켓', '프레시', '새벽배송', '샛별배송', '당일배송',
+                            '상품', '내역', '관리', '바로', '선택', '목록',
+                            '신선식품', '냉장', '냉동', '상온', '실온',
+                            '무료배송', '쿠폰', '이벤트',
+                            '영수증', '거래명세서', '전표', '번호', '일시', '매장',
+                        ]
+                        
+                        if any(kw in clean_line for kw in skip_keywords):
+                            continue
+                        
+                        original_line = clean_line
+                        
+                        # 1차: DB 매칭 시도
                         matched_master = find_best_match(clean_line, masters)
+                        
+                        # 2차: DB 매칭 실패 시 AI 교정 시도!
+                        if not matched_master and len(clean_line) >= 3:
+                            # 숫자/단위 제거한 버전으로 AI 호출
+                            cleaned_for_ai = re.sub(r'\d+[a-zA-Z]*/?박스?|g|ml|kg|L', '', clean_line).strip()
+                            
+                            korean_ratio = len(re.findall(r'[가-힣]', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
+                            digit_ratio = len(re.findall(r'\d', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
+                            
+                            if korean_ratio >= 0.4 and digit_ratio < 0.6 and len(cleaned_for_ai) >= 2:
+                                print(f'[FALLBACK] 🔍 AI 보정 시도: "{cleaned_for_ai}"')
+                                ai_suggested = self.get_ai_correction(cleaned_for_ai)
+                                if ai_suggested:
+                                    print(f'[FALLBACK] 🤖 AI 제안: "{ai_suggested}"')
+                                    clean_line = ai_suggested
+                                    matched_master = find_best_match(ai_suggested, masters)
+                                    if matched_master:
+                                        print(f'[FALLBACK] ✅ AI 보정 & DB 매칭 성공: "{original_line}" -> "{matched_master.name}"')
+                        
                         if matched_master and matched_master.name not in seen_names:
                             seen_names.add(matched_master.name)
                             category = matched_master.category
@@ -422,7 +519,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                                 'expiry_date': expiry_date,
                                 'purchase_date': purchase_date,
                             })
-                            print(f'[OCR-DEBUG] 📝 Fallback Added: "{matched_master.name}" from "{line}"')
+                            print(f'[FALLBACK] 📝 Added: "{matched_master.name}" from "{line}"')
                 
                 return Response({
                     'message': f'인식 완료 ({len(all_items)}개)',
@@ -453,10 +550,37 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         import base64
         import json
         from master.models import IngredientMaster
+        from PIL import Image as PILImage
+        from io import BytesIO
         
         try:
-            # 이미지 base64 인코딩
-            image_data = base64.b64encode(image.read()).decode('utf-8')
+            # 이미지 리사이즈 (GMS API 크기 제한 대응)
+            image.seek(0)
+            pil_image = PILImage.open(image)
+            
+            original_width, original_height = pil_image.width, pil_image.height
+            print(f"\n[VISION-DEBUG] 📸 이미지 분석 시작 (Gemini 2.5 Flash)")
+            print(f"[VISION-DEBUG]  - 원본 크기: {original_width}x{original_height}")
+            
+            # RGB 변환 (RGBA나 다른 모드 처리)
+            if pil_image.mode != 'RGB':
+                pil_image = pil_image.convert('RGB')
+            
+            # 최대 크기 제한 (800px)
+            max_size = 800
+            if pil_image.width > max_size or pil_image.height > max_size:
+                pil_image.thumbnail((max_size, max_size), PILImage.Resampling.LANCZOS)
+                print(f"[VISION-DEBUG]  - 압축 후 크기: {pil_image.width}x{pil_image.height} (품질 75%)")
+            else:
+                print(f"[VISION-DEBUG]  - 압축 불필요 (이미 {max_size}px 이하)")
+            
+            # 압축된 JPEG로 변환 (품질 75%)
+            buffer = BytesIO()
+            pil_image.save(buffer, format='JPEG', quality=75, optimize=True)
+            buffer.seek(0)
+            
+            # base64 인코딩
+            image_data = base64.b64encode(buffer.read()).decode('utf-8')
             
             url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
             
@@ -486,16 +610,26 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                 }]
             }
             
-            response = requests.post(url, json=payload, timeout=15)
+            print(f"\n[VISION-DEBUG] 📸 이미지 분석 시작")
+            print(f"[VISION-DEBUG]  - 이미지 크기: {pil_image.width}x{pil_image.height}")
+            print(f"[VISION-DEBUG] 🤖 Gemini Vision API 호출 중...")
+            
+            import requests
+            response = requests.post(url, json=payload, timeout=30)
+            print(f"[VISION-DEBUG] 📡 응답 상태: {response.status_code}")
+            
             if response.status_code != 200:
+                print(f"[VISION-DEBUG] ❌ API 에러: {response.text[:500]}")
                 return Response({'error': f'AI 연동 실패: {response.text}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 
             result = response.json()
             raw_text = result['candidates'][0]['content']['parts'][0]['text'].strip()
+            print(f"[VISION-DEBUG] ✅ AI 응답 받음 (길이: {len(raw_text)} chars)")
             
             # Markdown code block 제거
             clean_json = re.sub(r'```json\s*|\s*```', '', raw_text)
             items_data = json.loads(clean_json)
+            print(f"[VISION-DEBUG] 📦 인식된 아이템 수: {len(items_data)}")
             
             # 마스터 데이터와 매칭하여 상세 정보 보강
             masters = list(IngredientMaster.objects.all())

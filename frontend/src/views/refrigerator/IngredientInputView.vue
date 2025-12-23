@@ -167,6 +167,7 @@
                   v-model="item.name" 
                   type="text" 
                   class="input-field" 
+                  placeholder="재료명 입력"
                   :disabled="!item.selected"
                   @input="handleDetectedItemInput(index)"
                   @focus="item.showAutocomplete = true"
@@ -190,6 +191,14 @@
                 <label>카테고리</label>
                 <select v-model="item.category" class="input-field" :disabled="!item.selected">
                   <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>보관방법</label>
+                <select v-model="item.storage_method" class="input-field" :disabled="!item.selected">
+                  <option value="냉장">냉장</option>
+                  <option value="냉동">냉동</option>
+                  <option value="실온">실온</option>
                 </select>
               </div>
               <div class="form-row">
@@ -231,11 +240,23 @@
       </div>
     </footer>
 
-    <!-- 로딩 오버레이 -->
+    <!-- 로딩 오버레이 - 귀여운 둥둥 캐릭터 버전 -->
     <transition name="fade">
-      <div v-if="loading" class="loading-overlay">
-        <div class="spinner"></div>
-        <p class="loading-msg">{{ loadingMessage }}</p>
+      <div v-if="loading" class="loading-overlay-cute">
+        <div class="loading-content">
+          <!-- 둥둥 떠다니는 캐릭터 -->
+          <div class="floating-character">
+            <img src="@/assets/character.png" alt="Loading..." />
+          </div>
+          <div class="loading-text">
+            <h3>{{ loadingMessage }}</h3>
+            <div class="loading-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
       </div>
     </transition>
 
@@ -418,7 +439,7 @@ const handleReceiptScan = async (event) => {
   const file = event.target.files[0]
   if (!file) return
   loading.value = true
-  loadingMessage.value = '영수증을 읽어오는 중입니다...'
+  loadingMessage.value = '영수증/구매내역 텍스트를 분석하고 있어요'
   try {
     const result = await refrigeratorStore.scanIngredient(file)
     detectedList.value = (result.items || []).map((item, idx) => ({ 
@@ -435,7 +456,7 @@ const handleCameraCapture = async (event) => {
   const file = event.target.files[0]
   if (!file) return
   loading.value = true
-  loadingMessage.value = '이미지를 분석하는 중입니다...'
+  loadingMessage.value = '이미지를 분석하고 있어요'
   try {
     const result = await refrigeratorStore.visionRecognize(file)
     detectedList.value = (result.items || []).map((item, idx) => ({ 
@@ -535,6 +556,7 @@ const getFullImageUrl = (path) => {
 }
 
 .view-title {
+  font-family: 'YeogiOttaeJalnan', sans-serif;
   font-size: 1.2rem;
   font-weight: 800;
   color: var(--text-dark);
@@ -553,8 +575,8 @@ const getFullImageUrl = (path) => {
 
 /* Hero Text */
 .hero-text { margin-bottom: 48px; text-align: center; }
-.hero-text h1 { font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2; }
-.hero-text p { color: var(--text-light); font-size: 1.1rem; }
+.hero-text h1 { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2; }
+.hero-text p { font-family: 'YeogiOttaeJalnan', sans-serif; color: var(--text-light); font-size: 1.1rem; }
 
 /* 🍬 Method Cards - 중앙 카드 레이아웃 */
 .method-grid {
@@ -579,8 +601,8 @@ const getFullImageUrl = (path) => {
 }
 .method-icon { font-size: 3.5rem; margin-bottom: 24px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .method-card:hover .method-icon { transform: scale(1.2) rotate(5deg); }
-.method-info h3 { font-size: 1.4rem; margin-bottom: 8px; }
-.method-info p { font-size: 0.95rem; color: var(--text-light); margin-bottom: 24px; }
+.method-info h3 { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 1.4rem; margin-bottom: 8px; }
+.method-info p { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 0.95rem; color: var(--text-light); margin-bottom: 24px; }
 .action-label { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
 .method-tip { 
   margin-top: 16px; 
@@ -686,5 +708,107 @@ const getFullImageUrl = (path) => {
 .animate-up { animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-.loading-msg { margin-top: 16px; font-weight: 700; color: var(--text-dark); }
+/* 🎀 귀여운 로딩 오버레이 */
+.loading-overlay-cute {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* 둥둥 떠다니는 캐릭터 애니메이션 */
+.floating-character {
+  width: 120px;
+  height: 120px;
+  animation: floatBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(255, 107, 107, 0.3));
+}
+
+.floating-character img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes floatBounce {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(3deg);
+  }
+}
+
+/* 로딩 텍스트 */
+.loading-text {
+  text-align: center;
+}
+
+.loading-text h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 점 3개 로딩 애니메이션 */
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
+  animation: dotBounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fade transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 </style>

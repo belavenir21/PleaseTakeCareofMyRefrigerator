@@ -66,6 +66,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await authAPI.register(userData)
       // 회원가입 후 자동 로그인됨
       user.value = response.user
+
       isAuthenticated.value = true
       await fetchUserProfile()
       return response
@@ -84,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       profile.value = null
       isAuthenticated.value = false
-      localStorage.removeItem('token') // 토큰 삭제
+
     }
   }
 

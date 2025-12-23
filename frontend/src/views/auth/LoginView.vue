@@ -145,7 +145,21 @@ const formData = ref({
 const loading = ref(false)
 const error = ref('')
 
-// ... (기존 handleLogin)
+const handleLogin = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    
+    await authStore.login(formData.value)
+    await router.push({ name: 'Pantry' })
+  } catch (err) {
+    console.error('Login error:', err)
+    error.value = err.response?.data?.error || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'
+  } finally {
+    loading.value = false
+  }
+}
+
 </script>
 
 <style scoped>

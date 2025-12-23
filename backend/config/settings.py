@@ -52,6 +52,12 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+# Authentication Backends (필수!)
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # 기본 Django 인증
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth 소셜 로그인
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

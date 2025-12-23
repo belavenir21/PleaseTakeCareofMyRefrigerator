@@ -240,7 +240,7 @@ const startApp = (page) => {
 
 /* 🍮 스크롤 힌트 - 귀엽고 사랑스러운 스타일 (스티커 느낌) */
 .scroll-hint {
-  font-family: 'Jua', sans-serif; /* 구글 폰트 Jua 사용 */
+  font-family: 'YeogiOttaeJalnan', sans-serif; /* 여기어때 잘난체 */
   font-size: 1.8rem; /* 폰트가 잘 보이게 키움 */
   color: #FF8E99; 
   background: none;

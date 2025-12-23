@@ -1,16 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Pretendard:wght@300;400;500;600;700&display=swap');
 
-/* 🎮 게임 스타일 폰트 - 배민 주아체 (구글 폰트 사용) */
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+/* 🎮 게임 스타일 폰트 - 여기어때 잘난체 */
+@font-face {
+  font-family: 'YeogiOttaeJalnan';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Jalnan';
-  src: local('Jalnan'), url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+  src: local('Jalnan'), url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
-/* Jalnan 대신 Jua 사용 (거의 같은 느낌) */
 
 /* 🎀 Cafe24 써라운드에어 - 메인 UI용 (둥글고 부드러움) */
 @font-face {
@@ -122,26 +126,19 @@ body::before {
   }
 }
 
-/* Typography - 잘난체 + 게임 스타일 (전역) */
+/* Typography - 여기어때 잘난체 (전역) */
 h1,
 h2,
 h3 {
-  font-family: 'Jalnan', 'BMJua', 'Outfit', sans-serif;
+  font-family: 'YeogiOttaeJalnan', 'Jalnan', 'BMJua', sans-serif;
   font-weight: normal;
   letter-spacing: 0.01em;
   color: var(--text-dark);
-  -webkit-text-stroke: 1px white;
-  paint-order: stroke fill;
-  text-shadow:
-    1px 1px 0 white,
-    -1px -1px 0 white,
-    1px -1px 0 white,
-    -1px 1px 0 white;
 }
 
-/* 🎮 게임 스타일 헤더 - 잘난체 + 픽셀화 효과 */
+/* 🎮 게임 스타일 헤더 - 여기어때 잘난체 + 픽셀화 효과 */
 .game-title {
-  font-family: 'Jalnan', 'BMJua', sans-serif;
+  font-family: 'YeogiOttaeJalnan', 'Jalnan', 'BMJua', sans-serif;
   font-weight: normal;
   color: var(--hot-pink);
   -webkit-text-stroke: 2px white;
