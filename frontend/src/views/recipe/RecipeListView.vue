@@ -1,14 +1,14 @@
 <template>
   <div class="recipe-list-view">
     <header class="header-premium">
-      <div class="container header-inner">
-        <button @click="$router.push({ name: 'Pantry' })" class="btn-back">
+      <div class="container header-inner" style="position: relative; justify-content: center;">
+        <button @click="$router.push({ name: 'Pantry' })" class="btn-back-header">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">{{ showRecommendations ? '냉장고 추천 요리' : '레시피 검색' }}</h2>
         
-        <!-- 스위치 토글 -->
-        <div class="mode-toggle-wrapper">
+        <!-- 스위치 토글 (우측 배치) -->
+        <div class="mode-toggle-wrapper" style="position: absolute; right: 20px;">
           <div class="toggle-container">
             <span class="label-side left" :class="{ active: !showRecommendations }">검색</span>
             <div class="toggle-switch" @click="toggleMode">
@@ -69,7 +69,13 @@
               <span class="num">{{ Math.round(recipe.match_ratio) }}%</span>
               <span class="txt">매칭</span>
             </div>
+
+            <!-- 스크랩(찜하기) 버튼 -->
+            <button class="btn-scrap" :class="{ active: recipe.is_scraped }" @click.stop="toggleScrap(recipe)">
+              {{ recipe.is_scraped ? '💖' : '🤍' }}
+            </button>
           </div>
+
 
           <div class="body-box">
             <h4 class="title">{{ recipe.title }}</h4>
@@ -428,6 +434,18 @@ watch(searchQuery, (newVal) => {
     }
   }, 300)
 })
+
+// 스크랩 토글
+const toggleScrap = async (recipe) => {
+  try {
+    const response = await recipeAPI.toggleScrap(recipe.id)
+    recipe.is_scraped = response.scraped
+    // 애니메이션 효과 등을 원하면 여기서 처리
+  } catch (e) {
+    console.error('스크랩 실패:', e)
+    alert('스크랩 처리에 실패했습니다.')
+  }
+}
 
 onMounted(async () => {
   // 보관함 재료 미리 불러오기 (카운트 보정용)
@@ -883,6 +901,31 @@ const submitManualRecipe = async () => {
 .badge-ratio { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); color: white; padding: 12px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 .badge-ratio .num { font-size: 1.3rem; font-weight: 900; color: #FF6B6B; line-height: 1; }
 .badge-ratio .txt { font-size: 0.65rem; font-weight: 800; margin-top: 4px; opacity: 0.8; }
+
+/* 스크랩 버튼 */
+.btn-scrap {
+  position: absolute;
+  bottom: 10px; right: 10px; /* 우측 하단 */
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.btn-scrap:hover {
+  transform: scale(1.1);
+  background: white;
+}
+.btn-scrap.active {
+  background: white;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
 
 .body-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; font-family: var(--font-button); }
 .title { font-size: 1.2rem; font-weight: 800; color: #6D4C41; margin: 0; line-height: 1.3; font-family: var(--font-body); }
@@ -1392,5 +1435,13 @@ const submitManualRecipe = async () => {
   padding: 2px 6px;
   border-radius: 6px;
   margin-left: 6px;
+}
+.btn-back-header {
+  position: absolute;
+  left: 20px;
+  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333;
+  padding: 5px;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
 }
 </style>

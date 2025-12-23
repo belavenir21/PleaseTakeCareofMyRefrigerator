@@ -65,7 +65,7 @@ const handleDeleteAccount = () => {
 .settings-view {
   min-height: 100vh;
   background: var(--bg-main);
-  padding-top: 56px;
+  padding-top: 70px;
 }
 
 .header {
@@ -76,7 +76,7 @@ const handleDeleteAccount = () => {
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 56px;
+  top: 70px;
   z-index: 100;
 }
 

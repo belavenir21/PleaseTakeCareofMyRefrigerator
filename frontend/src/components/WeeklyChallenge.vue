@@ -64,6 +64,14 @@
           <span class="stat-value">{{ stats.expired }}</span>
           <span class="stat-label">만료된 재료</span>
         </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ stats.createdRecipes }}</span>
+          <span class="stat-label">등록한 레시피</span>
+        </div>
+        <div class="stat-card highlight-card">
+          <span class="stat-value">{{ stats.healthScore }}점</span>
+          <span class="stat-label">냉장고 건강 점수 🌿</span>
+        </div>
       </div>
     </div>
   </div>
@@ -72,8 +80,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { useRecipeStore } from '@/store/recipe'
+import axios from '@/api'
 
 const refrigeratorStore = useRefrigeratorStore()
+const recipeStore = useRecipeStore()
 
 // 이번 주 범위 계산
 const getWeekRange = () => {
@@ -97,7 +108,9 @@ const stats = ref({
   registered: 0,
   cooked: 0,
   usedBeforeExpiry: 0,
-  expired: 0
+  expired: 0,
+  createdRecipes: 0,
+  healthScore: 100
 })
 
 // 미션 목록
@@ -152,7 +165,25 @@ onMounted(async () => {
   stats.value.registered = ings.length
   stats.value.expired = ings.filter(i => i.is_expired).length
   stats.value.usedBeforeExpiry = Math.max(0, stats.value.registered - stats.value.expired)
-  stats.value.cooked = Math.floor(Math.random() * 3) // 시뮬레이션 (실제로는 요리 기록에서)
+  stats.value.cooked = Math.floor(Math.random() * 3) // 시뮬레이션
+  
+  // 내 레시피 개수 가져오기
+  try {
+      const res = await axios.get('/recipes/', { params: { author: 'me' } })
+      stats.value.createdRecipes = res.data.count || (res.data.results ? res.data.results.length : 0)
+  } catch (e) {
+      console.error('Failed to fetch my recipes count', e)
+  }
+  
+  // 냉장고 건강 점수 계산 (신선도 기반)
+  const total = stats.value.registered
+  if (total > 0) {
+      // 만료된 재료 감점, 임박 재료 약간 감점
+      const freshScore = Math.max(0, 100 - (stats.value.expired * 20) - (ings.filter(i => i.is_expiring_soon && !i.is_expired).length * 5))
+      stats.value.healthScore = freshScore
+  } else {
+      stats.value.healthScore = 0
+  }
 })
 </script>
 
@@ -321,14 +352,26 @@ onMounted(async () => {
 .weekly-stats h4 { margin: 0 0 15px; font-size: 1.1rem; }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* 모바일: 2열 */
   gap: 12px;
+}
+@media (min-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3개씩 2줄 */
+  }
 }
 .stat-card {
   background: #f8f9fa;
   border-radius: 12px;
   padding: 15px;
   text-align: center;
+}
+.highlight-card {
+  background: #fff9db;
+  border: 1px dashed #ffd43b;
+}
+.highlight-card .stat-value {
+  color: #f08c00;
 }
 .stat-value {
   display: block;

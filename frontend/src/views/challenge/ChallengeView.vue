@@ -21,6 +21,31 @@ import WeeklyChallenge from '@/components/WeeklyChallenge.vue'
 </script>
 
 <style scoped>
+
+/* 배경을 위한 가상 요소 (움직임 방지 & 블러 처리) */
+.challenge-view::before {
+  content: '';
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
+  background: url('/images/pantry-bg.png') no-repeat center center;
+  background-size: cover;
+  z-index: -1;
+  /* 움직임 방지 및 블러 처리 */
+  transform: scale(1.05); /* 블러 테두리 방지 */
+  filter: blur(8px);
+}
+
+.challenge-view {
+  min-height: 100vh;
+  /* 배경 제거 (가상요소로 대체) */
+  background: none;
+  padding-bottom: 80px;
+  position: relative;
+  overflow-x: hidden;
+}
 .header-premium {
   position: sticky;
   top: 0;

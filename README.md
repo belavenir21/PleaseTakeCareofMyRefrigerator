@@ -397,3 +397,37 @@ npm run dev
 
 *   카카오 이메일 동의항목은 **비즈앱 전환** 후 사용 가능 (현재는 닉네임만 수집)
 *   앱 초기 로드 시 `/api/users/me/` 401 에러는 정상 동작 (로그인 상태 확인용)
+
+---
+
+## 📅 2025.12.23 (오후) 업데이트: UI/UX 마무리 및 통계 기능
+
+### 1. 🎨 UI/UX 완전 정복 (Polishing)
+*   **헤더 디자인 통일**: 
+    - 들쑥날쑥하던 헤더 위치와 스타일을 `header-premium`으로 전면 통일.
+    - 모든 페이지 (`Pantry`, `Profile`, `RecipeList`, `RecipeDetail`)의 '뒤로가기' 버튼을 좌측 상단으로 고정하여 사용자 경험(UX) 일관성 확보.
+*   **Pantry UI 수정**: 
+    - '부분 삭제 / 전체 삭제' 모달의 CSS가 `Teleport`로 인해 깨지는 현상을 `!important`와 전역 스타일로 완벽하게 복구.
+    - 관련 레시피(Related Recipe) 로딩 시 `undefined` 에러 방지 및 이미지가 없을 경우 깨진 아이콘 대신 예쁜 기본 아이콘(🍲) 표시.
+
+### 2. 📸 레시피 이미지 업로드
+*   **Frontend**: 
+    - 레시피 상세 페이지에서 **내가 작성한 레시피**인 경우에만 📷 카메라 아이콘 노출.
+    - 클릭 시 즉시 파일 탐색기가 열리고 이미지를 업로드 가능.
+*   **Backend**: 
+    - `RecipeViewSet`을 `ReadOnlyModelViewSet`에서 **`ModelViewSet`**으로 업그레이드 (생성/수정/삭제 가능).
+    - `MultiPartParser`를 추가하여 이미지 파일(`multipart/form-data`) 업로드 완벽 지원.
+    - Serializer 수정: 업로드된 이미지가 있으면 우선 표시하도록 로직 개선.
+
+### 3. 📊 통계 기능 고도화
+*   **주간 챌린지 업데이트**: 
+    - **'등록한 레시피'**: 내가 직접 만든 레시피 개수를 통계 카드로 추가.
+    - **'냉장고 건강 점수'**: 막연한 '절약 금액' 대신, 실제 데이터(유통기한 상태)를 기반으로 한 건강 점수(100점 만점) 시스템 신설.
+    - 중복 Import 및 불필요한 코드를 정리하여 안정성 향상.
+
+### 4. 📁 수정된 파일 목록
+*   `views/refrigerator/PantryView.vue` - 헤더 수정, 모달 CSS 복구
+*   `views/recipe/RecipeDetailView.vue` - 이미지 업로드 버튼, 헤더 통일
+*   `components/WeeklyChallenge.vue` - 통계 항목 추가 (레시피 수, 건강 점수)
+*   `backend/recipes/views.py` - Image Upload 지원 (Parser 추가)
+*   `backend/recipes/serializers.py` - Image Field 지원

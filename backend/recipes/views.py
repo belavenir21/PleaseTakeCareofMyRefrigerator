@@ -23,15 +23,35 @@ class RecipeFilter(django_filters.FilterSet):
 
 from config.authentication import CsrfExemptSessionAuthentication
 
-class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
-    """레시피 ViewSet"""
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    """레시피 ViewSet (조회, 생성, 수정, 삭제 가능)"""
     queryset = Recipe.objects.all()
     authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser] # 이미지 업로드를 위해 필요
     filterset_class = RecipeFilter
     filter_backends = [django_filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'ingredients__name']
     ordering_fields = ['cooking_time_minutes', 'created_at']
+    
+    def get_queryset(self):
+        """쿼리셋 필터링 (내 레시피, 스크랩한 레시피)"""
+        queryset = super().get_queryset()
+        user = self.request.user
+        
+        # ?author=me : 내가 작성한 레시피
+        author_param = self.request.query_params.get('author')
+        if author_param == 'me' and user.is_authenticated:
+            queryset = queryset.filter(author=user)
+            
+        # ?scraped=true : 내가 스크랩한 레시피
+        scraped_param = self.request.query_params.get('scraped')
+        if scraped_param == 'true' and user.is_authenticated:
+            queryset = queryset.filter(scraped_by=user)
+            
+        return queryset
     
     def get_serializer_class(self):
         if self.action == 'list':
@@ -53,7 +73,27 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
             'total_time': recipe.cooking_time_minutes,
             'steps': serializer.data
         })
-    
+
+        
+    @action(detail=True, methods=['post'])
+    def scrap(self, request, pk=None):
+        """레시피 스크랩 토글"""
+        recipe = self.get_object()
+        user = request.user
+        
+        if recipe.scraped_by.filter(id=user.id).exists():
+            recipe.scraped_by.remove(user)
+            scraped = False
+            msg = "스크랩이 취소되었습니다."
+        else:
+            recipe.scraped_by.add(user)
+            scraped = True
+            msg = "레시피를 스크랩했습니다!"
+            
+        return Response({
+            'scraped': scraped,
+            'message': msg
+        })
     @action(detail=True, methods=['post'])
     def complete_cooking(self, request, pk=None):
         """요리 완료 후 사용한 재료 자동 차감"""

@@ -1,13 +1,18 @@
 <template>
   <div class="pantry-view">
     <header class="header-premium">
-      <div class="container header-inner">
-        <button @click="goBack" class="btn-back">
+      <div class="container header-inner" style="justify-content: center; position: relative;">
+        <!-- 뒤로가기 버튼 (절대 위치로 왼쪽 고정) -->
+        <button @click="$router.push({ name: 'Home' })" class="btn-back-header" style="position: absolute; left: 20px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
+        
         <h2 class="view-title">보관함</h2>
-        <div class="placeholder"></div>
+        
+        <!-- 우측 도움말 버튼 (절대 위치로 우측 고정) -->
+        <button class="btn-help" @click="showHelp = true" style="position: absolute; right: 20px;">?</button>
       </div>
+
       <!-- 뷰 모드 탭 -->
       <div class="view-tabs">
         <button :class="['tab-btn', { active: viewMode === 'list' }]" @click="viewMode = 'list'">
@@ -146,7 +151,7 @@
                   <strong>{{ discardItem?.name }}</strong>을(를) 얼마나 버릴까요?<br>
                   <span style="font-size:0.9rem; color:#888;">현재 수량: {{ discardItem?.quantity }}{{ discardItem?.unit }}</span>
               </p>
-              <div class="quantity-control" style="justify-content:center; margin-bottom: 20px; display:flex; align-items:center; gap:10px;">
+              <div class="quantity-control">
                   <button class="btn-qty" @click="decreaseAmount">-</button>
                   <input type="number" v-model.number="discardAmount" class="qty-input" />
                   <span style="font-size:1rem; font-weight:bold;">{{ discardItem?.unit }}</span>
@@ -170,7 +175,7 @@
       <div v-if="showTrashModal" class="modal-overlay" @click="showTrashModal = false">
         <div class="modal-content" @click.stop>
           <div class="modal-header">
-            <h3>♻️ 휴지통</h3>
+            <h3>휴지통</h3>
             <button class="close-btn" @click="showTrashModal = false">✕</button>
           </div>
           <div class="modal-body trash-list">
@@ -182,8 +187,8 @@
                       <span class="meta">{{ item.quantity }}{{ item.unit }} · {{ formatDate(item.expiry_date) }} 삭제됨</span>
                   </div>
                   <div class="trash-actions">
-                      <button @click="restoreItem(item.id)" class="btn-restore" title="복구">♻️</button>
-                      <button @click="permanentDelete(item.id)" class="btn-danger-sm" title="영구 삭제">🔥</button>
+                      <button @click="restoreItem(item.id)" class="btn-restore" title="복구">복구</button>
+                      <button @click="permanentDelete(item.id)" class="btn-danger-sm" title="영구 삭제">삭제</button>
                   </div>
               </div>
           </div>
@@ -203,20 +208,20 @@
       <!-- 만료 비우기 (작고 깔끔하게) -->
       <transition name="pop">
         <button v-if="viewMode === 'list' && expiredCount > 0" class="fab-btn fab-alert" @click="handleClearExpired" title="만료 재료 비우기">
-          <span class="fab-icon">🚨</span>
+          <img :src="expireIcon" class="fab-img-icon" alt="만료" />
           <span class="alert-badge">{{ expiredCount }}</span>
         </button>
       </transition>
       
       <!-- 휴지통 (목록 뷰 전용) -->
       <button v-if="viewMode === 'list'" class="fab-btn fab-trash" @click="openTrash" title="휴지통">
-         <span class="fab-icon">🗑️</span>
+          <img :src="trashIcon" class="fab-img-icon" alt="휴지통" />
       </button>
       
       <!-- 도움말 (물음표) -->
       <div class="help-wrapper" @mouseenter="showHelpTooltip = true" @mouseleave="showHelpTooltip = false">
         <button class="fab-btn fab-help" @click="showHelp = true">
-           <span class="fab-icon-text">?</span>
+           <img :src="noticeIcon" class="fab-img-icon" alt="도움말" />
         </button>
         
         <transition name="fade">
@@ -228,7 +233,7 @@
       
       <!-- 챌린지 바로가기 (FAB 추가) -->
       <button class="fab-btn fab-challenge" @click="$router.push({ name: 'Challenge' })" title="주간 챌린지">
-         <span class="fab-icon">🏆</span>
+         <img :src="challengeIcon" class="fab-img-icon" alt="챌린지" />
       </button>
     </div>
 
@@ -240,32 +245,67 @@
           <button class="close-btn" @click="showHelp = false">✕</button>
         </div>
         <div class="modal-body help-content">
-          <div class="help-item">
-            <span class="help-icon">☑️</span>
-            <div>
-              <strong>[선택하기] 버튼</strong>
-              <p>여러 재료를 콕콕 선택해서 <strong>한 번에 싹- 🗑️휴지통</strong>으로 보낼 때 사용해요.</p>
+          <!-- 목록 뷰 도움말 -->
+          <div v-if="viewMode === 'list'" class="help-section">
+            <div class="help-item">
+              <span class="help-icon">✏️</span>
+              <div>
+                <strong>[편집] 버튼</strong>
+                <p><strong>다중 선택 모드</strong>를 켜서 여러 재료를 한 번에 선택하고 휴지통으로 보낼 수 있어요.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <span class="help-icon">👆</span>
+              <div>
+                <strong>재료 카드 클릭</strong>
+                <p>재료의 상세 정보를 수정하거나, <strong>일부 수량만 덜어서 버리기(부분 버리기)</strong>를 할 수 있어요.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <span class="help-icon">🔍</span>
+              <div>
+                <strong>필터 및 정렬</strong>
+                <p>상단 필터로 카테고리별 재료를 모아보거나, 유통기한/이름순으로 정렬할 수 있어요.</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <span class="help-icon">🚨</span>
+              <div>
+                <strong>만료 재료 비우기</strong>
+                <p>유통기한이 지난 재료가 있으면 🚨버튼이 떠요. 눌러서 한 번에 싹 정리하세요!</p>
+              </div>
+            </div>
+            <div class="help-item">
+              <span class="help-icon">🏆</span>
+              <div>
+                <strong>주간 챌린지</strong>
+                <p>매주 새로운 요리 미션에 도전해보세요! 우측 하단 🏆버튼을 눌러 확인하세요.</p>
+              </div>
             </div>
           </div>
-          <div class="help-item">
-            <span class="help-icon">👆</span>
-            <div>
-              <strong>재료 카드 누르기</strong>
-              <p>재료의 상세 정보를 확인하고 <strong>✏️내용을 수정</strong>하거나, <strong>원하는 만큼만 🗑️덜어서 버릴 때</strong> 사용해요.</p>
+
+          <!-- 달력 뷰 도움말 -->
+          <div v-else-if="viewMode === 'calendar'" class="help-section">
+             <div class="help-item">
+              <span class="help-icon">🔴</span>
+              <div>
+                <strong>만료 예정일 확인</strong>
+                <p>달력 날짜 아래에 있는 <strong>빨간 점(🔴)</strong>은 그날 만료되는 재료가 있다는 뜻이에요.</p>
+              </div>
             </div>
-          </div>
-          <div class="help-item">
-            <span class="help-icon">📅</span>
-            <div>
-              <strong>유통기한 배지</strong>
-              <p>표시된 날짜를 보고 신선도를 챙기세요. 같은 재료가 여러 개면 하나로 묶여서 보여요.</p>
+            <div class="help-item">
+              <span class="help-icon">📅</span>
+              <div>
+                <strong>날짜 클릭</strong>
+                <p>날짜를 누르면 해당 날짜에 만료되는 재료 목록이 아래에 표시됩니다.</p>
+              </div>
             </div>
-          </div>
-          <div class="help-item">
-            <span class="help-icon">🗑️</span>
-            <div>
-              <strong>만료 재료 비우기</strong>
-              <p>유통기한이 지난 재료를 한번에 정리할 수 있어요</p>
+            <div class="help-item">
+              <span class="help-icon">🍳</span>
+              <div>
+                <strong>요리하기</strong>
+                <p>재료가 충분하다면 [요리하기] 버튼을 눌러 레시피를 추천받아 보세요!</p>
+              </div>
             </div>
           </div>
         </div>
@@ -281,7 +321,28 @@
         </div>
         <div class="modal-body">
           <p class="modal-subtitle">유통기한이 다른 상품 {{ selectedGroup.count }}개</p>
-          <div class="date-cards">
+
+        <!-- 관련 레시피 섹션 -->
+        <div v-if="relatedRecipes.length > 0" class="related-recipes-section">
+          <h4>🥘 '{{ selectedGroup.primary.name }}' 추천 요리</h4>
+          <div class="mini-recipe-list">
+             <div v-for="recipe in relatedRecipes" :key="recipe.id" class="mini-recipe-card" @click="goToRecipeDetail(recipe.id)" title="레시피 보기">
+                <div class="mini-img-wrapper">
+                  <img 
+                    v-if="recipe.image_url" 
+                    :src="recipe.image_url" 
+                    class="mini-recipe-img" 
+                    alt="recipe" 
+                    @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
+                  />
+                  <span class="mini-placeholder" :style="{ display: recipe.image_url ? 'none' : 'flex' }">🍲</span>
+                </div>
+                <span class="mini-title">{{ recipe.title }}</span>
+             </div>
+          </div>
+        </div>
+
+        <div class="date-cards">
             <div 
               v-for="(item, idx) in selectedGroup.all" 
               :key="item.id"
@@ -372,8 +433,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import axios from '@/api' // axios 추가
 import CalendarView from '@/components/CalendarView.vue'
 import WeeklyChallenge from '@/components/WeeklyChallenge.vue'
+
+import expireIcon from '@/assets/images/expire.png'
+import trashIcon from '@/assets/images/trashcan.png'
+import noticeIcon from '@/assets/images/notice.png'
+import challengeIcon from '@/assets/images/challenge.png'
 
 const router = useRouter()
 const refrigeratorStore = useRefrigeratorStore()
@@ -401,6 +468,26 @@ const editForm = ref({
 const showDateModal = (group) => {
   selectedGroup.value = group
   editingId.value = null
+  fetchRelatedRecipes(group.primary.name)
+}
+
+const relatedRecipes = ref([])
+const fetchRelatedRecipes = async (name) => {
+    relatedRecipes.value = []
+    if(!name) return
+    console.log(`Fetching recipes for: ${name}`) 
+    try {
+        const response = await axios.get('/recipes/', { params: { search: name.trim() } })
+        // 인터셉터가 response.data를 반환하므로 response 자체가 데이터임
+        const results = response.results || response || []
+        relatedRecipes.value = Array.isArray(results) ? results.slice(0, 4) : []
+    } catch (e) {
+        console.error("Related recipe fetch error", e)
+    }
+}
+
+const goToRecipeDetail = (id) => {
+    router.push({ name: 'RecipeDetail', params: { id } })
 }
 
 const startEdit = (item) => {
@@ -734,8 +821,16 @@ onMounted(() => {
   margin: 0 auto;
   display: flex; 
   align-items: center; 
-  justify-content: space-between;
-  padding: 0 24px;
+  justify-content: center; /* 제목 중앙 정렬 */
+  padding: 0 50px; /* 좌우 버튼 공간 확보 */
+  position: relative;
+}
+.btn-back-header {
+  position: absolute;
+  left: 20px;
+  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333;
+  padding: 5px;
+  display: flex; align-items: center; justify-content: center;
 }
 .btn-back { background: none; border: none; cursor: pointer; color: #333; }
 .view-title { font-family: 'YeogiOttaeJalnan', sans-serif; font-size: 1.2rem; font-weight: 800; }
@@ -1244,8 +1339,10 @@ onMounted(() => {
 }
 .card-actions {
   display: flex;
-  gap: 6px;
-  flex-direction: column;
+  gap: 8px;
+  flex-direction: row; /* 세로에서 가로로 변경 */
+  justify-content: flex-end; /* 우측 정렬 */
+  margin-top: 10px;
 }
 .btn-edit,
 .btn-save,
@@ -1340,15 +1437,12 @@ onMounted(() => {
 .trash-actions { display: flex; gap: 8px; }
 .empty-msg-sm { text-align: center; color: #adb5bd; padding: 40px 0; }
 
-.btn-restore { background: #e7f5ff; color: #1971c2; border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+.btn-restore { background: #e7f5ff; color: #1971c2; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: background 0.2s; }
 .btn-restore:hover { background: #d0ebff; }
-.btn-trash-view { background: #fff; border: 1px solid #dee2e6; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: 700; color: #495057; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.btn-trash-view:hover { background: #f8f9fa; }
-
-.btn-delete-card {
-  background: white; border: 1px solid #fa5252; color: #fa5252;
-  border-radius: 6px; padding: 4px 8px; font-size: 0.85rem; cursor: pointer;
+.btn-danger-sm {
+    background: #ffe3e3; color: #e03131; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: background 0.2s;
 }
+.btn-danger-sm:hover { background: #ffc9c9; }
 .discard-overlay { z-index: 9999 !important; background: rgba(0,0,0,0.8); }
 .qty-input { width: 80px; text-align: center; font-size: 1.2rem; font-weight: bold; padding: 5px; border: 1px solid #ddd; border-radius: 8px; }
 
@@ -1358,8 +1452,167 @@ onMounted(() => {
 .unit-chip:hover { background: #e9ecef; }
 .unit-chip.active { background: #e7f5ff; color: #1c7ed6; border-color: #1c7ed6; font-weight: 700; }
 
+/* 부분 삭제 모달 수량 조절 */
+.quantity-control {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.btn-qty {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid #dee2e6;
+  background: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #495057;
+  transition: all 0.2s;
+}
+.btn-qty:hover { background: #e9ecef; }
+.btn-max {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #fff0f6;
+  color: #d63384;
+  border: 1px solid #fcc2d7;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.btn-delete-card {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  background: #ffe3e3; 
+  color: #e03131;
+}
+.btn-delete-card:hover { background: #ffc9c9; }
+
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* 관련 레시피 */
+.related-recipes-section {
+  margin: 0 20px 20px;
+  background: #FFF9DB;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px dashed #FFD43B;
+}
+.related-recipes-section h4 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: #495057;
+}
+.mini-recipe-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+.mini-recipe-card {
+  min-width: 80px;
+  width: 80px;
+  cursor: pointer;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.mini-img-wrapper {
+  width: 80px; height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #FFE066;
+  display: flex; align-items: center; justify-content: center;
+}
+.mini-recipe-img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.mini-placeholder {
+  font-size: 2rem;
+}
+.mini-title {
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: #495057;
+  font-weight: 600;
+}
+</style>
+
+<!-- 전역 스타일 (모달용) -->
+<style>
+/* btn-danger 스타일 정의 (확실하게 적용) */
+.btn-danger {
+  background: #ff6b6b !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+.btn-danger:hover {
+  background: #fa5252 !important;
+}
+
+/* 부분 삭제 모달 수량 조절 (Teleport 대응) */
+.quantity-control {
+  background: #f8f9fa !important;
+  padding: 15px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important;
+  margin-bottom: 20px !important;
+}
+.btn-qty {
+  width: 36px !important; height: 36px !important;
+  border-radius: 50% !important;
+  border: 1px solid #dee2e6 !important;
+  background: white !important;
+  font-size: 1.2rem !important;
+  cursor: pointer !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  color: #495057 !important;
+  transition: all 0.2s !important;
+}
+.btn-qty:hover { background: #e9ecef !important; }
+.btn-max {
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  background: #fff0f6 !important;
+  color: #d63384 !important;
+  border: 1px solid #fcc2d7 !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+}
+.btn-delete-card {
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  background: #ffe3e3 !important;
+  color: #e03131 !important;
+}
+.btn-delete-card:hover { background: #ffc9c9 !important; }
+
 
 /* 냉장고 채우기 카드 */
 .add-ingredient-card {
@@ -1589,22 +1842,36 @@ onMounted(() => {
 }
 
 .fab-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 64px; /* 크기 조금 더 키워봄 */
+  height: 64px;
   border: none;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  overflow: visible;
+  /* 둥실둥실 애니메이션 */
+  animation: fab-float 3s ease-in-out infinite;
 }
+
+@keyframes fab-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 순차적 애니메이션 */
+.fab-group > *:nth-child(1) .fab-btn { animation-delay: 0s; }
+.fab-group > *:nth-child(2) .fab-btn { animation-delay: 0.3s; }
+.fab-group > *:nth-child(3) .fab-btn { animation-delay: 0.6s; }
+.fab-group > *:nth-child(4) .fab-btn { animation-delay: 0.9s; }
+
 .fab-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transform: scale(1.15) rotate(5deg);
+  animation-play-state: paused; /* 호버 시 멈춤 */
 }
 .fab-icon {
   font-size: 1.2rem; /* 이모지 크기 적당하게 */
@@ -1617,50 +1884,32 @@ onMounted(() => {
   font-family: 'Fredoka One', cursive, sans-serif; /* 귀여운 폰트 */
 }
 
-/* 도움말 버튼 (물음표) */
-.fab-help {
-  background: linear-gradient(135deg, #A5D8FF 0%, #74C0FC 100%); /* 파스텔 블루 */
+/* FAB 이미지 아이콘 - 그림자 효과 추가 */
+.fab-img-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); /* 아이콘 자체 그림자 */
+  transition: filter 0.2s;
+}
+.fab-btn:hover .fab-img-icon {
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
 }
 
-/* 챌린지 FAB */
-.fab-challenge {
-  background: white;
-  border: 2px solid #FFD43B; /* 노랑 */
-}
-.fab-challenge:hover {
-  background: #FFF9DB;
-}
-
-/* 만료 경고 */
-.fab-alert {
-  background: #FFF5F5;
-  border: 2px solid #FF8787;
-}
-.alert-badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background: #FF6B6B;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 800;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  padding: 0 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-}
-
-/* 휴지통 */
+/* 개별 버튼의 배경색/테두리 제거 (이미지만 뜨게) */
+.fab-help,
+.fab-challenge,
+.fab-alert,
 .fab-trash {
-  background: #F8F9FA;
-  color: #495057;
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: visible;
 }
+
+.fab-challenge:hover,
 .fab-trash:hover {
-  background: #FFE3E3;
+  background: transparent;
 }
 
 /* 말풍선 툴팁 (물음표 옆) */

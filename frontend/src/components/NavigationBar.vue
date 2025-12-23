@@ -30,6 +30,15 @@
         >
           <img :src="pantryIcon" alt="보관함" class="nav-icon-img" />
         </router-link>
+
+        <router-link 
+          to="/challenge" 
+          class="nav-link"
+          :class="{ active: $route.path === '/challenge' }"
+          title="챌린지"
+        >
+          <img :src="challengeIcon" alt="챌린지" class="nav-icon-img" />
+        </router-link>
         
         <router-link 
           to="/profile" 
@@ -55,6 +64,7 @@ import { useAuthStore } from '@/store/auth'
 import homeIcon from '@/assets/images/home-button.png'
 import pantryIcon from '@/assets/images/pantry-button.png'
 import profileIcon from '@/assets/images/profile-button.png'
+import challengeIcon from '@/assets/images/challenge-nav.png'
 import logoutIcon from '@/assets/images/logout-button.png'
 
 const route = useRoute()
@@ -261,6 +271,11 @@ onUnmounted(() => {
   
   .logo-img {
     height: 1.7rem;
+    max-width: 1.7rem;
+  }
+
+  .title-img {
+    height: 1.5rem; /* 모바일에서 타이틀 이미지 축소 */
   }
   
   .brand-text {
@@ -303,6 +318,10 @@ onUnmounted(() => {
 
   .nav-icon-img {
     width: 2.2rem; /* 초소형 기기 대응 */
+  }
+
+  .title-img {
+    height: 1.2rem; /* 더 작은 화면에서 더 축소 */
   }
 }
 </style>

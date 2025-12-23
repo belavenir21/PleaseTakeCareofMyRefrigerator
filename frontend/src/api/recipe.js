@@ -43,6 +43,11 @@ export const recipeAPI = {
   generateRecipe(recipeName) {
     return api.post('/recipes/generate_recipe/', { recipe_name: recipeName })
   },
+
+  // 스크랩 토글
+  toggleScrap(id) {
+    return api.post(`/recipes/${id}/scrap/`)
+  },
 }
 
 export const masterAPI = {

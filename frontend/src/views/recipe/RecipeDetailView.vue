@@ -1,9 +1,12 @@
 <template>
   <div class="recipe-detail-view">
-    <header class="header">
-      <button @click="$router.back()" class="btn-back">⬅</button>
-      <h2>레시피 상세</h2>
-      <div style="width: 24px"></div>
+    <header class="header-premium">
+      <div class="header-inner">
+        <button @click="$router.back()" class="btn-back-header">
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 class="view-title">레시피 상세</h2>
+      </div>
     </header>
 
     <div v-if="loading" class="loading">
@@ -20,6 +23,18 @@
           @error="imageError = true"
         />
         <div v-else class="recipe-placeholder">🍽️</div>
+
+        <!-- 이미지 업로드 버튼 (작성자용) -->
+        <button v-if="isAuthor" class="btn-upload-image" @click="triggerFileUpload" :disabled="isUploading">
+          {{ isUploading ? '⏳' : '📷' }}
+        </button>
+        <input 
+          type="file" 
+          ref="fileInput" 
+          class="hidden-input" 
+          accept="image/*" 
+          @change="handleImageUpload"
+        />
       </div>
 
       <!-- 레시피 정보 -->
@@ -107,13 +122,18 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecipeStore } from '@/store/recipe'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { useAuthStore } from '@/store/auth'
+import axios from '@/api'
 
 const route = useRoute()
 const router = useRouter()
 const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
+const authStore = useAuthStore()
 
 const imageError = ref(false)
+const fileInput = ref(null)
+const isUploading = ref(false)
 
 const loading = computed(() => recipeStore.loading)
 const recipe = computed(() => recipeStore.currentRecipe)
@@ -222,6 +242,71 @@ const cleanDescription = (desc) => {
   // "1.", "1) ", "Step 1:", "조리단계 1." 등의 패턴 제거
   return desc.replace(/^(\d+[\.\)\s\-]+|Step\s*\d+[:\s\-]*|단계\s*\d+[:\s\-]*)/i, '').trim();
 };
+
+// 작성자 여부 확인
+const isAuthor = computed(() => {
+    if (!recipe.value) return false
+    const user = authStore.user
+    if (!user) return false
+    
+    // 1. 내가 작성한 레시피 (author 닉네임 비교는 부정확할 수 있으나 현재는 ID 비교 필드가 없음)
+    // -> 백엔드에서 author_id를 주지 않는다면 닉네임으로 비교해야 함. 
+    // -> 하지만 가장 확실한 건 api_source가 'user'이고 내가 만든 것일 때.
+    // -> 일단 닉네임 비교 + api_source 체크
+    
+    // 만약 recipe.author가 내 닉네임과 같다면 true
+    if (recipe.value.author === user.nickname || recipe.value.author === user.username) return true
+    
+    // 혹은 api_source가 user인데 author 정보가 없을 때 (혹시나)
+    if (recipe.value.api_source === 'user' && !recipe.value.author) return true
+    
+    return false
+})
+
+const triggerFileUpload = () => {
+    fileInput.value.click()
+}
+
+const handleImageUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+    
+    // 유효성 검사 (이미지 형식, 크기 등)
+    if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.')
+        return
+    }
+    
+    try {
+        isUploading.value = true
+        const formData = new FormData()
+        formData.append('image', file)
+        
+        // PATCH 요청으로 이미지 업데이트
+        const res = await axios.patch(`/recipes/${recipe.value.id}/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        
+        // 성공 시 데이터 갱신
+        // recipeStore update
+        if(res.data) {
+             // Store 업데이트 (이미지 URL 반영)
+             // recipe.value.image_url = res.data.image_url // 반응형 갱신
+             await recipeStore.fetchRecipe(recipe.value.id)
+             imageError.value = false // 에러 상태 초기화
+             alert('레시피 이미지가 등록되었습니다! 📸')
+        }
+    } catch (e) {
+        console.error('Image upload failed:', e)
+        alert('이미지 업로드에 실패했습니다.')
+    } finally {
+        isUploading.value = false
+        // value 초기화 (같은 파일 다시 선택 가능하게)
+        event.target.value = null
+    }
+}
 </script>
 
 <style scoped>
@@ -230,30 +315,41 @@ const cleanDescription = (desc) => {
   background: #f8f9fa;
 }
 
-.header {
+.header-premium {
   background: white;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-bottom: 1px solid #f1f3f5;
   position: sticky;
   top: 0;
   z-index: 100;
 }
-
-.btn-back {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0;
+.header-inner {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 20px;
+}
+.btn-back-header {
+  position: absolute;
+  left: 20px;
+  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333;
+  padding: 5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.view-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: 'YeogiOttaeJalnan', sans-serif;
   color: #333;
 }
+
+
 
 .recipe-image {
   height: 300px;
   background: #f1f3f5;
+  position: relative; /* 버튼 위치 잡기 위해 */
 }
 
 .recipe-image img {
@@ -656,5 +752,26 @@ const cleanDescription = (desc) => {
 .modal-fade-enter-from .modal-content,
 .modal-fade-leave-to .modal-content {
   transform: scale(0.9);
+}
+
+.hidden-input { display: none; }
+.btn-upload-image {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: 2px solid white;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.btn-upload-image:hover {
+  background: rgba(0,0,0,0.8);
+  transform: scale(1.1);
 }
 </style>
