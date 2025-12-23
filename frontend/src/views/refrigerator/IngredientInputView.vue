@@ -521,16 +521,15 @@ const getFullImageUrl = (path) => {
   min-height: 100vh; 
   background: var(--bg-main);
   padding-bottom: 120px; 
-  padding-top: 56px; /* 네비게이션 바 높이 */
+  padding-top: 70px; /* 네비게이션 바 높이 70px */
 }
 
 /* 🌸 Header - 네비게이션 바에 붙이기 */
 .header-glass {
   background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
   border-bottom: 2px solid rgba(255, 179, 217, 0.3);
-  position: sticky;
-  top: 56px; /* 네비게이션 바 바로 아래 */
-  z-index: 999;
+  position: relative;
+  z-index: 998;
   box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
 }
 .header-inner { 

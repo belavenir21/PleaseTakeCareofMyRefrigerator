@@ -344,21 +344,23 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                         # 금액/결제 관련
                         '금액', '합계', '결제', '카드', '현금', '포인트', '할인', '원', '총', 
                         '부가세', '면세', '과세', '대상', '적립', '잔액', '거스름돈',
+                        '단가', '수량', '가액', '거스름', '공급', '세액', '매가',
                         
                         # 배송/주문 관련
                         '배송', '도착', '출발', '완료', '준비', '처리', '접수', '확인',
-                        '주문', '구매', '결제', '취소', '교환', '반품',
+                        '주문', '구매', '취소', '교환', '반품',
                         
                         # 쇼핑몰/서비스 관련
                         '로켓', '프레시', '새벽배송', '샛별배송', '당일배송',
-                        '상품', '내역', '관리', '바로', '선택', '목록',
+                        '상품', '내역', '관리', '바로', '선택', '목록', '품목',
                         
                         # 카테고리/라벨
                         '신선식품', '냉장', '냉동', '상온', '실온',
                         '무료배송', '쿠폰', '이벤트',
                         
-                        # 기타
-                        '영수증', '거래명세서', '전표', '번호', '일시', '매장',
+                        # 기타 영수증 정보
+                        '영수증', '거래명세서', '전표', '번호', '일시', '매장', '사업자',
+                        '대표', '전화', '주소', '영업', '승인', '매출', '점포', '지점',
                     ]
                     
                     if any(kw in item_name for kw in skip_keywords):
@@ -369,41 +371,21 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     matched_master = find_best_match(item_name, masters)
 
                     # 5. [NEW] AI 기반 텍스트 교정 (조건 완화!)
-                    # - 길이가 3자 이상이고
-                    # - 한글이 40% 이상이고 (50%에서 완화!)
-                    # - 숫자가 60% 미만일 때만 (50%에서 완화!)
                     if not matched_master and len(item_name) >= 3:
-                        # 숫자/단위 미리 제거해서 AI에게 던지기
                         cleaned_for_ai = re.sub(r'\d+[a-zA-Z]*/?박스?|g|ml|kg|L', '', item_name).strip()
                         
                         korean_ratio = len(re.findall(r'[가-힣]', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
                         digit_ratio = len(re.findall(r'\d', cleaned_for_ai)) / len(cleaned_for_ai) if len(cleaned_for_ai) > 0 else 0
                         
                         if korean_ratio >= 0.4 and digit_ratio < 0.6 and len(cleaned_for_ai) >= 2:
-                            print(f'\n[OCR-DEBUG] 🔍 AI 보정 시도: "{cleaned_for_ai}"')
                             ai_suggested = self.get_ai_correction(cleaned_for_ai)
                             if ai_suggested:
-                                print(f'[OCR-DEBUG] 🤖 AI 제안: "{ai_suggested}"')
-                                
-                                # AI 제안이 있으면 일단 반영
                                 item_name = ai_suggested
-                                
-                                # AI 제안값으로 다시 한 번 정밀 매칭
                                 matched_master = find_best_match(ai_suggested, masters)
-                                
-                                if matched_master:
-                                    print(f'[OCR-DEBUG] ✅ AI 보정 & DB 매칭 성공: "{original_name}" -> "{matched_master.name}"')
-                                else:
-                                    print(f'[OCR-DEBUG] ⚠️ AI 보정 적용 (DB 미존재): "{original_name}" -> "{item_name}"')
-                            else:
-                                print(f'[OCR-DEBUG] ❓ AI 보정 제안 없음')
-                        else:
-                            print(f'[OCR-DEBUG] ⏭️ AI 스킵 (한글:{korean_ratio:.1%}, 숫자:{digit_ratio:.1%})')
-
+                    
                     # 6. 설정값 결정
                     final_name = item_name
                     category, storage_method, days, unit, icon = '가공식품', '냉장', 14, '개', '🍴'
-                    needs_user_input = False  # 사용자 입력이 필요한지 플래그
                     
                     if matched_master:
                         final_name = matched_master.name
@@ -417,8 +399,6 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                         }
                         storage_method, days = storage_settings.get(category, ('냉장', 14))
                     
-                    print(f'[OCR-DEBUG] 🏁 최종 결정 항목: "{final_name}" ({category})\n')
-
                     # 수량 파싱
                     quantity = 1
                     for line in item_lines[1:]:
@@ -431,19 +411,30 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                     base_date = datetime.strptime(purchase_date, '%Y-%m-%d') if purchase_date else datetime.now()
                     expiry_date = (base_date + timedelta(days=days)).strftime('%Y-%m-%d')
                     
-                    # 응답 데이터 구성 (간소화!)
-                    all_items.append({
-                        'original_text': ' '.join(item_lines[:3]),
-                        'name': final_name,
-                        'category': category,
-                        'quantity': quantity,
-                        'unit': unit,
-                        'icon': icon,
-                        'storage_method': storage_method,
-                        'expiry_date': expiry_date,
-                        'purchase_date': purchase_date,
-                    })
-                    print(f'[OCR-DEBUG] 📝 Added to Response: "{final_name}"')
+                    # 중복 병합 로직: 이름, 카테고리, 유통기한이 같으면 수량 합산
+                    is_duplicate = False
+                    for existing_item in all_items:
+                        if (existing_item['name'] == final_name and 
+                            existing_item['category'] == category and 
+                            existing_item['expiry_date'] == expiry_date):
+                            existing_item['quantity'] += quantity
+                            is_duplicate = True
+                            print(f'[OCR-DEBUG] 🔄 중복 항목 병합: "{final_name}" 수량 {existing_item["quantity"]}로 증가')
+                            break
+                    
+                    if not is_duplicate:
+                        all_items.append({
+                            'original_text': ' '.join(item_lines[:3]),
+                            'name': final_name,
+                            'category': category,
+                            'quantity': quantity,
+                            'unit': unit,
+                            'icon': icon,
+                            'storage_method': storage_method,
+                            'expiry_date': expiry_date,
+                            'purchase_date': purchase_date,
+                        })
+                        print(f'[OCR-DEBUG] 📝 Added to Response: "{final_name}"')
                 
                 # [FALLBACK] 번호 패턴이 없는 경우 - 모든 라인을 마스터와 직접 매칭 시도
                 if len(all_items) == 0 and len(all_lines) > 0:

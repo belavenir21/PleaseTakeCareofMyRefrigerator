@@ -101,8 +101,8 @@
         </button>
       </div>
 
-      <!-- AI 챗봇 제안 (추천 모드일 때 항상 표시) -->
-      <div v-if="showRecommendations && !loading" class="ai-chat-section">
+      <!-- AI 챗봇 제안 (추천 모드이면서 레시피가 있을 때만 표시) -->
+      <div v-if="showRecommendations && !loading && displayRecipes.length > 0" class="ai-chat-section">
         <div class="ai-chat-card">
           <div class="ai-icon">
             <img src="@/assets/character-head.png" alt="AI Chef" class="ai-char-img" />
@@ -135,17 +135,22 @@
       </div>
 
       <!-- 결과가 없는 경우 / 레시피 추가 제안 -->
-      <div v-if="!loading && displayRecipes.length === 0" class="empty-state">
-        <div v-if="!showAddRecipeForm">
-          <div class="empty-icon">🥺</div>
+      <div v-if="!loading && displayRecipes.length === 0" class="empty-state animate-up">
+        <div v-if="!showAddRecipeForm" class="empty-card">
+          <div class="empty-icon">🍳</div>
           <p v-if="searchQuery">「{{ searchQuery }}」에 대한 레시피가 없어요</p>
-          <p v-else>보관함 재료로 만들 수 있는 요리가 없어요. 🧊</p>
-          <p class="sub-text">AI 셰프에게 레시피를 물어보거나, 직접 추가해보세요!</p>
+          <p v-else-if="showRecommendations && serverRecs.length > 0">
+            현재 식재료와 <strong>80% 이상</strong> 일치하는 요리가 없네요.
+          </p>
+          <p v-else>보관함 재료로 만들 수 있는 요리가 아직 없어요. 🧊</p>
+          <p class="sub-text">
+            {{ (showRecommendations && serverRecs.length > 0) ? '아래에서 "더 많은 레시피 보기"를 누르거나, AI 셰프에게 물어보세요!' : 'AI 셰프에게 레시피를 물어보거나, 직접 추가해보세요!' }}
+          </p>
           
           <div class="empty-actions">
             <button @click="openAIChat" class="btn-primary">🤖 AI에게 물어보기</button>
             <button @click="showAddRecipeForm = true" class="btn-secondary">✏️ 레시피 추가하기</button>
-            <button v-if="!showRecommendations" @click="toggleMode" class="btn-tertiary">🍳 추천모드로</button>
+            <button v-if="showRecommendations && nextTierInfo" @click="lowerAccuracy" class="btn-tertiary">🔓 {{ nextTierInfo.label }} 레시피 보기</button>
           </div>
         </div>
         
@@ -244,18 +249,37 @@
 
     <!-- AI 챗봇 모달 -->
     <RecipeChatModal v-if="showChatModal" @close="showChatModal = false" />
+
+    <!-- AI 레시피 생성 로딩 오버레이 -->
+    <Transition name="fade">
+      <div v-if="generatingRecipe" class="ai-loading-overlay">
+        <div class="ai-loading-content">
+          <div class="ai-avatar-bounce">
+            <img src="@/assets/character-head.png" alt="AI Chef" />
+          </div>
+          <h3>AI 셰프가 요리법을 연구 중이에요!</h3>
+          <p>잠시만 기다려 주시면 맛있는 레시피를 완성해 드릴게요. ✨</p>
+          <div class="progress-steps">
+            <span class="step-dot active"></span>
+            <span class="step-dot active"></span>
+            <span class="step-dot"></span>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useRecipeStore } from '@/store/recipe'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 import { recipeAPI } from '@/api/recipe'
 import RecipeChatModal from '@/components/RecipeChatModal.vue'
 
 const router = useRouter()
+const route = useRoute()
 const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 
@@ -364,10 +388,17 @@ onMounted(async () => {
     refrigeratorStore.fetchIngredients()
   }
 
-  const mode = router.currentRoute.value.query.mode
+  // 쿼리 파라미터에서 mode 읽기
+  const mode = route.query.mode
+  
   if (mode === 'recommend') {
     showRecommendations.value = true
     await recipeStore.fetchRecommendations()
+    
+    // 만약 80% 이상의 레시피가 하나도 없다면 자동으로 정확도를 낮춤
+    if (serverRecs.value.length > 0 && filteredRecommendations.value.length === 0) {
+      accuracyThreshold.value = 60
+    }
   } else {
     await recipeStore.fetchRecipes()
   }
@@ -495,7 +526,7 @@ const submitManualRecipe = async () => {
   min-height: 100vh; 
   position: relative;
   padding-bottom: 100px; 
-  padding-top: 56px; 
+  padding-top: 70px; /* 네비게이션 바 높이 70px */
 }
 
 /* 🌫️ 블러 배경 추가 */
@@ -515,9 +546,8 @@ const submitManualRecipe = async () => {
 .header-premium { 
   background: linear-gradient(135deg, #FFD4E5 0%, #F8E8FF 100%);
   border-bottom: 2px solid rgba(255, 179, 217, 0.3);
-  position: sticky; 
-  top: 56px; 
-  z-index: 999;
+  position: relative;
+  z-index: 998;
   box-shadow: 0 2px 8px rgba(255, 179, 217, 0.15);
 }
 .header-inner { 
@@ -564,50 +594,58 @@ const submitManualRecipe = async () => {
 
 /* 🎀 Hero sections - 중앙 정렬 */
 .rec-hero { 
-  background: linear-gradient(135deg, #FFB3D9 0%, #FF8EC9 100%);
+  background: linear-gradient(135deg, #FF85C1 0%, #FF6B9D 100%);
   padding: 40px 24px; 
   border-radius: var(--radius-xl);
   margin: 20px auto 30px; /* 하단 여백 30px 추가! */
   max-width: 1200px;
   color: white; 
   box-shadow: var(--shadow-premium);
-  border: 3px solid rgba(255, 255, 255, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.6);
 }
 .hero-tag { 
-  background: rgba(255,255,255,0.3); 
-  padding: 4px 12px; 
+  background: rgba(255,255,255,0.95); 
+  padding: 6px 16px; 
   border-radius: 20px; 
-  font-size: 0.75rem; 
-  font-weight: 800; 
+  font-size: 0.85rem; 
+  font-weight: 900; 
   text-transform: uppercase; 
-  letter-spacing: 1px; 
+  letter-spacing: 1.5px; 
+  color: #FF1493;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 /* 🎮 게임 스타일 제목 */
 .hero-content h1.game-title { 
   font-size: 2rem; 
   margin-top: 15px; 
   line-height: 1.4;
-  color: #FF69B4;
-  -webkit-text-stroke: 2px white;
-  paint-order: stroke fill;
+  color: #FFFFFF;
+  font-weight: 900;
   text-shadow: 
-    2px 2px 0 white,
-    -1px -1px 0 white,
-    1px -1px 0 white,
-    -1px 1px 0 white,
-    0 0 10px rgba(255,255,255,0.5);
+    3px 3px 0 #FF1493,
+    -2px -2px 0 #FF1493,
+    2px -2px 0 #FF1493,
+    -2px 2px 0 #FF1493,
+    0 0 20px rgba(255,20,147,0.8),
+    0 4px 8px rgba(0,0,0,0.3);
 }
 .hero-content h1.game-title strong { 
   font-size: 2.8rem; 
   vertical-align: middle;
-  color: #FF1493;
+  color: #FFEB3B;
+  text-shadow: 
+    3px 3px 0 #FF1493,
+    -2px -2px 0 #FF1493,
+    2px -2px 0 #FF1493,
+    -2px 2px 0 #FF1493,
+    0 0 20px rgba(255,235,59,0.8);
 }
 .hero-content p { 
   margin-top: 12px; 
-  opacity: 0.95; 
-  font-weight: 600;
-  text-shadow: none;
+  font-weight: 700;
+  font-size: 1.1rem;
   color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .search-hero { 
@@ -1044,5 +1082,84 @@ const submitManualRecipe = async () => {
 .btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+/* AI 로딩 오버레이 */
+.ai-loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ai-loading-content h3 {
+  font-family: 'YeogiOttaeJalnan', sans-serif;
+  color: var(--primary-dark);
+  font-size: 1.5rem;
+  margin: 20px 0 10px;
+}
+
+.ai-loading-content p {
+  color: #888;
+  font-size: 1rem;
+}
+
+.ai-avatar-bounce {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.ai-avatar-bounce img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.step-dot {
+  width: 10px;
+  height: 10px;
+  background: #eee;
+  border-radius: 50%;
+}
+
+.step-dot.active {
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.empty-card {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: var(--shadow-premium);
+  border: 3px dashed #FFE5F0;
 }
 </style>

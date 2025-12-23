@@ -1,9 +1,14 @@
 <template>
   <div class="home-view">
     <!-- 배경 이미지 -->
-    <div id="bg-container" :class="{ open: isFridgeOpen }">
-      <div class="bg-layer bg-closed" :style="{ backgroundImage: `url(${closedImage})` }"></div>
-      <div class="bg-layer bg-open" :style="{ backgroundImage: `url(${openImage})` }"></div>
+    <div id="bg-container" :class="{ dimmed: introActive }">
+      <!-- 기본 월페이퍼 배경 (가장 아래 레이어) -->
+      <div class="base-bg"></div>
+      
+      <!-- 냉장고 레이어 (월페이퍼 위에 위치) -->
+      <div class="bg-layer" :class="{ visible: fridgeState === 'closed' }" :style="{ backgroundImage: `url(${closedImage})` }"></div>
+      <div class="bg-layer" :class="{ visible: fridgeState === 'mid' }" :style="{ backgroundImage: `url(${midImage})` }"></div>
+      <div class="bg-layer" :class="{ visible: fridgeState === 'open' }" :style="{ backgroundImage: `url(${openImage})` }"></div>
     </div>
 
     <!-- 인트로 화면 -->
@@ -19,8 +24,12 @@
           <div class="scroll-arrow"></div>
         </div>
         <div id="main-section" class="intro-btns" :class="{ active: introActive }">
-          <button class="btn fill" @click="startApp('input')">냉장고 정리하기</button>
-          <button class="btn outline" @click="startApp('recipes')">레시피 찾기</button>
+          <div class="btn-img-wrapper" @click="startApp('input')">
+            <img :src="inputBtnImg" alt="냉장고 정리하기" class="nav-btn-img" />
+          </div>
+          <div class="btn-img-wrapper" @click="startApp('recipes')">
+            <img :src="recipeBtnImg" alt="레시피 찾기" class="nav-btn-img" />
+          </div>
         </div>
       </div>
     </div>
@@ -28,9 +37,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import mainTitle from '@/assets/main-title.png'
+import closedFridgeImg from '@/assets/images/refrigerator-closed.png'
+import midFridgeImg from '@/assets/images/refrigerator-mid.png'
+import openFridgeImg from '@/assets/images/refrigerator-open.png'
+import inputBtnImg from '@/assets/images/input-button.png'
+import recipeBtnImg from '@/assets/images/recipe-button.png'
 
 const router = useRouter()
 const route = useRoute()
@@ -70,11 +84,12 @@ onMounted(() => {
 const showIntro = ref(true)
 const introActive = ref(false)
 const introOpacity = ref(1)
-const isFridgeOpen = ref(false)
+const fridgeState = ref('closed') // 'closed', 'mid', 'open'
 
-// 배경 이미지 (실제 이미지 경로로 변경 필요)
-const closedImage = ref('/images/login-bg.png') // wallpaper 이미지 적용
-const openImage = ref('/assets/images/fridge-open.png')
+// 배경 이미지
+const closedImage = ref(closedFridgeImg)
+const midImage = ref(midFridgeImg)
+const openImage = ref(openFridgeImg)
 
 // 스크롤 이벤트 핸들러
 const onScroll = (e) => {
@@ -82,12 +97,18 @@ const onScroll = (e) => {
   // 타이틀만 흐려지게 (배경은 유지)
   introOpacity.value = Math.max(0, 1 - y / 300)
   
-  if (y > 200) {
+  // 🔥 네비게이션 바를 위해 스크롤 상태를 window에 알림
+  window.dispatchEvent(new CustomEvent('homeScroll', { detail: { scrollTop: y } }))
+  
+  if (y > 1000) {
     introActive.value = true
-    // isFridgeOpen.value = true // 냉장고 열리는 효과 비활성화 (배경 유지 위해)
+    fridgeState.value = 'open'
+  } else if (y > 400) {
+    introActive.value = false
+    fridgeState.value = 'mid'
   } else {
     introActive.value = false
-    // isFridgeOpen.value = false
+    fridgeState.value = 'closed'
   }
 }
 
@@ -120,30 +141,50 @@ const startApp = (page) => {
   z-index: -1;
 }
 
-.bg-layer {
+/* 기본 월페이퍼 레이어 */
+.base-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  background-image: url('/images/login-bg.png');
   background-size: cover;
   background-position: center;
-  transition: opacity 0.8s;
+  z-index: -2; /* 냉장고 레이어보다 밑에 */
 }
 
-.bg-closed {
+.bg-layer {
+  position: absolute;
+  top: 55%; /* 살짝 밑으로 내림 */
+  left: 50%;
+  /* 크기를 적당히 조절 (1.2 -> 1.1) */
+  transform: translate(-50%, -50%) scale(1.1); 
+  width: 95%; /* 좌우로 충분히 크게 */
+  height: 85%;
+  background-size: contain; /* 너무 잘리지 않게 다시 contain으로 변경 */
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.8s ease-in-out, filter 0.8s ease-in-out, transform 1.2s ease-out;
+  opacity: 0;
+}
+
+/* 상태별 애니메이션 최적화 */
+.bg-layer.visible {
   opacity: 1;
+  transform: translate(-50%, -50%) scale(1.12);
 }
 
-.bg-open {
-  opacity: 0;
+.bg-layer.visible.bg-open {
+  transform: translate(-50%, -50%) scale(1.15);
 }
 
-#bg-container.open .bg-closed {
-  opacity: 0;
+/* 냉장고가 열리고 버튼이 보일 때 배경을 살짝 어둡게 해서 버튼을 강조 */
+#bg-container.dimmed .bg-layer {
+  filter: brightness(0.8) contrast(1.1);
 }
 
-#bg-container.open .bg-open {
+.bg-layer.visible {
   opacity: 1;
 }
 
@@ -155,7 +196,7 @@ const startApp = (page) => {
 }
 
 .spacer {
-  height: 150vh;
+  height: 300vh; /* 스크롤 길이를 대폭 늘림 (150vh -> 300vh) */
 }
 
 .intro-box {
@@ -288,44 +329,98 @@ const startApp = (page) => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 300px;
+  max-width: 400px;
   opacity: 0;
   transition: 0.5s;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  pointer-events: none; /* 핵심: 투명할 땐 클릭 안 되게 막음! */
+  gap: 20px;
+  pointer-events: none;
 }
 
 .intro-btns.active {
   opacity: 1;
   top: 50%;
-  pointer-events: auto; /* 나타나면 클릭 가능하게 복구 */
+  pointer-events: auto;
+}
+
+.btn-img-wrapper {
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-img-wrapper:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.nav-btn-img {
+  width: 100%;
+  height: auto;
+  /* 버튼이 묻히지 않도록 그림자 대폭 강화 + 흰색 외곽 글로우 효과 추가 */
+  filter: 
+    drop-shadow(0 8px 15px rgba(0,0,0,0.4)) 
+    drop-shadow(0 0 5px rgba(255,255,255,0.3));
+  transition: filter 0.2s;
+}
+
+.btn-img-wrapper:hover .nav-btn-img {
+  filter: 
+    drop-shadow(0 12px 25px rgba(0,0,0,0.5)) 
+    drop-shadow(0 0 10px rgba(255,255,255,0.5));
 }
 
 .btn {
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.fill {
-  background: #FF6B6B;
-  color: white;
-}
-
-.outline {
-  background: white;
-  border: 2px solid #FF6B6B;
-  color: #FF6B6B;
+  display: none; /* 기존 버튼 숨김 */
 }
 
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+@media (max-width: 768px) {
+  /* 배경 월페이퍼 모바일 전용 이미지로 교체 */
+  .base-bg {
+    background-image: url('/images/mobile-bg.png');
+    background-size: cover;
+  }
+
+  /* 냉장고 크기는 유저 요청대로 다시 시원하게 복구 */
+  .bg-layer {
+    transform: translate(-50%, -50%) scale(1.1); 
+    width: 100%;
+    height: 85%;
+  }
+  
+  .bg-layer.visible {
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+
+  .bg-layer.visible.bg-open {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+
+  .intro-btns {
+    max-width: 260px; /* 모바일에서는 버튼 너비 축소 */
+    gap: 15px;
+  }
+  
+  .title-wrapper {
+    max-width: 350px; /* 타이틀 이미지도 축소 */
+  }
+  
+  .scroll-hint {
+    font-size: 1.4rem; /* 힌트 텍스트 축소 */
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-btns {
+    max-width: 220px; /* 더 작은 화면 대응 */
+  }
+  
+  .title-wrapper {
+    max-width: 280px;
+  }
 }
 </style>
