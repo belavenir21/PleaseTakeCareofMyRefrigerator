@@ -11,6 +11,8 @@ django-allauth==65.13.1
 PyJWT==2.8.0
 python-jose==3.5.0
 cryptography==46.0.3
+cffi==2.0.0
+pycparser==2.23
 ecdsa==0.19.1
 
 # Google APIs (필수!)
