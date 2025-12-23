@@ -120,11 +120,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { GoogleLogin } from 'vue3-google-login'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_API_KEY || ''
@@ -133,6 +134,13 @@ onMounted(() => {
   if (window.Kakao && !window.Kakao.isInitialized() && KAKAO_API_KEY) {
     window.Kakao.init(KAKAO_API_KEY)
     console.log('Kakao Initialized')
+  }
+  
+  // URL query parameter에서 에러 메시지 확인
+  if (route.query.error) {
+    error.value = route.query.error
+    // URL에서 query parameter 제거 (깔끔하게)
+    router.replace({ name: 'Login' })
   }
 })
 
