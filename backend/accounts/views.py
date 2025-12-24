@@ -45,36 +45,17 @@ def login_view(request):
         
         print(f"DEBUG: Login attempt for username: '{username}'") # 로그 추가
         
-        # Railway PostgreSQL에서 authenticate()가 작동하지 않는 문제 해결
-        # 직접 DB에서 유저 조회 및 비밀번호 확인
-        try:
-            user = User.objects.get(username=username)
-            print(f"DEBUG: User found: {user.username}, Active: {user.is_active}") # 로그 추가
-            
-            if user.check_password(password):
-                print(f"DEBUG: Password correct for {username}") # 로그 추가
-                
-                if user.is_active:
-                    # 백엔드 속성 설정 (multiple authentication backends 에러 해결)
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
-                    login(request, user)
-                    return Response({
-                        'message': '로그인 성공',
-                        'user': UserSerializer(user).data
-                    })
-                else:
-                    print(f"DEBUG: User {username} is not active") # 로그 추가
-                    return Response({
-                        'error': '비활성화된 계정입니다.'
-                    }, status=status.HTTP_401_UNAUTHORIZED)
-            else:
-                print(f"DEBUG: Password incorrect for {username}") # 로그 추가
-                return Response({
-                    'error': '아이디 또는 비밀번호가 올바르지 않습니다.'
-                }, status=status.HTTP_401_UNAUTHORIZED)
-                
-        except User.DoesNotExist:
-            print(f"DEBUG: User {username} not found in DB") # 로그 추가
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            print(f"DEBUG: Login success for {username}") # 로그 추가
+            login(request, user)
+            return Response({
+                'message': '로그인 성공',
+                'user': UserSerializer(user).data
+            })
+        else:
+            print(f"DEBUG: Login failed for {username}. User found? {User.objects.filter(username=username).exists()}") # 로그 추가
             return Response({
                 'error': '아이디 또는 비밀번호가 올바르지 않습니다.'
             }, status=status.HTTP_401_UNAUTHORIZED)
