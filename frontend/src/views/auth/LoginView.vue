@@ -339,6 +339,13 @@ const handleLogin = async () => {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* 모바일에서는 홈 버튼 숨김 (스와이프로 뒤로가기 가능) */
+@media (max-width: 768px) {
+  .back-button {
+    display: none;
+  }
+}
+
 .login-container {
   background: white;
   padding: 40px;

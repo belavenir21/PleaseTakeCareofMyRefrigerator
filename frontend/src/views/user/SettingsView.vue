@@ -41,8 +41,10 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useToastStore } from '@/stores/toast'
 
 const router = useRouter()
+const toast = useToastStore()
 
 const goBack = () => {
   if (window.history.state && window.history.state.back) {
@@ -54,12 +56,12 @@ const goBack = () => {
 }
 
 const handlePasswordChange = () => {
-  alert('비밀번호 변경 기능은 준비 중입니다.')
+  toast.info('비밀번호 변경 기능은 준비 중입니다.')
 }
 
 const handleDeleteAccount = () => {
   if (confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-    alert('탈퇴 처리가 완료되지 않았습니다. (준비 중)')
+    toast.warning('탈퇴 처리 기능은 준비 중입니다.')
   }
 }
 </script>
