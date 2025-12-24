@@ -55,6 +55,8 @@ def login_view(request):
                 print(f"DEBUG: Password correct for {username}") # 로그 추가
                 
                 if user.is_active:
+                    # 백엔드 속성 설정 (multiple authentication backends 에러 해결)
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
                     login(request, user)
                     return Response({
                         'message': '로그인 성공',
