@@ -176,24 +176,16 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ========== CORS 설정 (Railway 배포 필수!) ==========
-# 환경변수에서 허용 도메인 읽기
-cors_origins_env = config('CORS_ALLOWED_ORIGINS', default='')
-if cors_origins_env:
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
-    CORS_ALLOW_ALL_ORIGINS = False
-else:
-    # 개발 환경 또는 환경변수 없을 때는 모두 허용
-    CORS_ALLOW_ALL_ORIGINS = True
-    CORS_ALLOWED_ORIGINS = []
-
+# ========== CORS 설정 (단순화 - 무조건 허용!) ==========
+CORS_ALLOW_ALL_ORIGINS = True  # 프로덕션에서도 모두 허용
 CORS_ALLOW_CREDENTIALS = True
 
-# 허용할 헤더 명시 (Authorization 필수)
+# 허용할 헤더
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "authorization",
     "content-type",
+    "x-csrftoken",
 ]
 
 # 허용할 메서드
