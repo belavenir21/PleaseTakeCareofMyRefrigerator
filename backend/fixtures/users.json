@@ -1,0 +1,82 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin1",
+      "password": "pbkdf2_sha256$1000000$vdjYFQgdtbrrQunPl97WaA$lZo+F8eYKAOesHJ2qXpp8SlEh/zP3guuI0uKjxtP/DE=",
+      "email": "admin1@gmail.com",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-12-19T01:59:48.852082+00:00",
+      "last_login": "2025-12-24T02:34:03.425997+00:00"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "yushi",
+      "password": "pbkdf2_sha256$1000000$G4hQw9BOK4aGf4X6gve9YU$Eoom5wcWRo4Pc09BifiYaUoGc9lmmwYF1aWwe4rANw4=",
+      "email": "yushi@nct.com",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-12-20T16:15:46.474780+00:00",
+      "last_login": "2025-12-24T02:27:47.318246+00:00"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "belavenir21",
+      "password": "!zIaTo0QrFFVDG1ub1qsnIm4uQPa0cYY2CnFZerFe",
+      "email": "belavenir21@gmail.com",
+      "first_name": "서영",
+      "last_name": "손",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-12-22T16:39:55.983962+00:00",
+      "last_login": "2025-12-24T02:42:38.152613+00:00"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "username": "손서영",
+      "password": "!5pJVLfgOsofd1hbnzcqE5rjKlcjQ6gbfLCxeBBZ5",
+      "email": "bbaaaaaamm@kakao.com",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-12-22T17:20:32.216973+00:00",
+      "last_login": "2025-12-24T00:21:46.802970+00:00"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "username": "saehyun",
+      "password": "pbkdf2_sha256$1000000$XLXRbim1Kj5IfZTVBLI9Aa$IN+vPyoKmyhseywMyGqC/qZvZ4c9lgHJfqhoFow3pqY=",
+      "email": "saehyun@naver.com",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-12-24T00:41:27.128775+00:00",
+      "last_login": null
+    }
+  }
+]
