@@ -76,7 +76,7 @@ class RecipeChatbotView(APIView):
             }],
             "generationConfig": {
                 "temperature": 1.0,
-                "maxOutputTokens": 2048
+                "maxOutputTokens": 4096  # 2048 → 4096으로 증가 (긴 답변 가능)
             }
         }
         
