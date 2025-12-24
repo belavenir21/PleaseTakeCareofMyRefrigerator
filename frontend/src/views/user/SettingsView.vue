@@ -21,15 +21,15 @@
         </div>
       </div>
 
-      <div class="card settings-card danger-zone">
-        <h3>⚠️ 위험 구역</h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <span class="label text-danger">회원 탈퇴</span>
-            <p class="desc">계정과 모든 데이터를 삭제합니다. 이 작업은 되돌릴 수 없습니다.</p>
+      <!-- 회원 탈퇴 버튼 (독립 섹션) -->
+      <div class="delete-account-section">
+        <button class="btn-delete-account" @click="handleDeleteAccount">
+          <span class="icon">⚠️</span>
+          <div class="text">
+            <span class="title">회원 탈퇴</span>
+            <span class="subtitle">계정과 모든 데이터가 영구 삭제됩니다</span>
           </div>
-          <button class="btn-danger" @click="handleDeleteAccount">탈퇴</button>
-        </div>
+        </button>
       </div>
       
       <p class="info-text">
@@ -158,8 +158,54 @@ const handleDeleteAccount = () => {
   background: #fa5252;
 }
 
-.danger-zone {
-  border: 1px solid #ffe3e3;
+/* 회원 탈퇴 독립 섹션 */
+.delete-account-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px dashed #ffe3e3;
+}
+
+.btn-delete-account {
+  width: 100%;
+  background: #fff5f5;
+  border: 2px solid #ffe3e3;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.btn-delete-account:hover {
+  background: #ffe3e3;
+  border-color: #ff6b6b;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15);
+}
+
+.btn-delete-account .icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.btn-delete-account .text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn-delete-account .title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ff6b6b;
+}
+
+.btn-delete-account .subtitle {
+  font-size: 0.85rem;
+  color: #868e96;
 }
 
 .info-text {
