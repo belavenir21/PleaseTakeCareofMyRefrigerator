@@ -5,7 +5,7 @@
       <div class="fab-icon-wrap">
         <img src="@/assets/character-head.png" alt="AI" class="fab-char-img" />
       </div>
-      <span class="fab-label">AI 셰프</span>
+      <span class="fab-label">쿠킹 미미</span>
     </button>
 
     <!-- 채팅창 -->
@@ -15,7 +15,7 @@
           <div class="header-info">
             <img src="@/assets/character-head.png" alt="AI" class="header-char-img" />
             <div>
-              <h3>AI 레시피 셰프</h3>
+              <h3>쿠킹 미미</h3>
               <p class="subtitle">무엇이든 물어보세요!</p>
             </div>
           </div>
@@ -28,7 +28,7 @@
             <div class="welcome-icon-wrap">
               <img src="@/assets/character-head.png" alt="AI" class="welcome-char-img" />
             </div>
-            <h4>안녕하세요! AI 셰프입니다</h4>
+            <h4>안녕하세요! 쿠킹 미미에요</h4>
             <p>레시피, 요리 팁, 재료 활용법 등<br/>무엇이든 물어보세요!</p>
           </div>
 
@@ -69,12 +69,15 @@
               <span>내 재료 포함</span>
             </label>
             <div class="input-wrap">
-              <input 
+              <textarea 
+                ref="inputElement"
                 v-model="userInput"
-                @keyup.enter="sendMessage"
-                type="text"
+                @keydown.enter.exact.prevent="sendMessage"
+                @input="autoResize"
                 placeholder="레시피에 대해 물어보세요..."
                 :disabled="loading"
+                rows="1"
+                style="resize: none; overflow-y: hidden; min-height: 40px; max-height: 120px; border-radius: 25px; padding: 14px 18px; border: 1px solid #e9ecef; font-size: 0.9rem; font-family: inherit; outline: none; flex: 1;"
               />
               <button @click="sendMessage" :disabled="loading || !userInput.trim()" class="btn-send">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -99,6 +102,7 @@ const userInput = ref('')
 const loading = ref(false)
 const useMyIngredients = ref(true)
 const chatBody = ref(null)
+const inputElement = ref(null)
 const usedQuickActionIds = ref(new Set())
 
 // 빠른 질문 목록
@@ -118,6 +122,18 @@ const availableQuickActions = computed(() => {
 
 const toggleChat = () => {
   isOpen.value = !isOpen.value
+  if (isOpen.value) {
+    nextTick(() => scrollToBottom())
+  }
+}
+
+// 입력칸 자동 높이 조절
+const autoResize = () => {
+  const textarea = inputElement.value
+  if (!textarea) return
+  
+  textarea.style.height = 'auto'
+  textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'
 }
 
 const formatMessage = (text) => {
