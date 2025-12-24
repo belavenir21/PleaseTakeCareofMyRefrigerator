@@ -266,10 +266,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { useToastStore } from '@/stores/toast'
 
 const router = useRouter()
 const route = useRoute()
 const refrigeratorStore = useRefrigeratorStore()
+const toast = useToastStore()
 
 const isManualMode = ref(false)
 const showDetectedList = ref(false)
@@ -445,7 +447,7 @@ const handleReceiptScan = async (event) => {
       autocompleteResults: [] 
     }))
     showDetectedList.value = true
-  } catch (err) { alert('인식 실패') } finally { loading.value = false }
+  } catch (err) { toast.error('인식 실패') } finally { loading.value = false }
 }
 
 const handleCameraCapture = async (event) => {
@@ -462,7 +464,7 @@ const handleCameraCapture = async (event) => {
       autocompleteResults: [] 
     }))
     showDetectedList.value = true
-  } catch (err) { alert('분석 실패') } finally { loading.value = false }
+  } catch (err) { toast.error('분석 실패') } finally { loading.value = false }
 }
 
 const removeDetectedItem = (idx) => {
@@ -499,7 +501,7 @@ const submitAll = async () => {
     // 명시적으로 보관함 데이터를 새로고침하도록 요청 (store 내부에서 fetchIngredients 호출이 보장되어야 함)
     await refrigeratorStore.fetchIngredients() 
     router.push({ name: 'Pantry' })
-  } catch (err) { alert('저장 실패') } finally { loading.value = false }
+  } catch (err) { toast.error('저장 실패') } finally { loading.value = false }
 }
 
 const getFullImageUrl = (path) => {
