@@ -41,7 +41,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" :disabled="loading">
-          {{ loading ? '로그인 중...' : '로그인' }}
+          <img src="@/assets/images/login-button.png" alt="Login" class="login-btn-img" />
         </button>
         
         <div class="social-login">
