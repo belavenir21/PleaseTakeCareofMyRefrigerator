@@ -152,7 +152,7 @@
         </div>
         <div class="recipe-grid">
             <!-- 레시피 추가 카드 추가 -->
-            <div class="recipe-card add-card" @click="router.push({ name: 'RecipeList', query: { showForm: 'true' } })">
+            <div class="recipe-card add-card" @click="router.push({ name: 'RecipeCreate' })">
                 <div class="recipe-thumb add-thumb">
                     <span class="plus-icon">+</span>
                 </div>

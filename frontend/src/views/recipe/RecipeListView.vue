@@ -289,7 +289,7 @@
             <h4>✨ 새로운 레시피 등록</h4>
             <p>나만의 특별한 레시피를 등록하거나 AI로 만들어보세요!</p>
           </div>
-          <button @click="showAddRecipeForm = true" class="btn-ai-chat secondary">
+          <button @click="router.push({ name: 'RecipeCreate' })" class="btn-ai-chat secondary">
             레시피 추가하기
           </button>
         </div>
@@ -489,7 +489,8 @@ onMounted(async () => {
   const showForm = route.query.showForm
   
   if (showForm === 'true') {
-    showAddRecipeForm.value = true
+    router.replace({ name: 'RecipeCreate' })
+    return
   }
 
   if (mode === 'recommend') {

@@ -75,7 +75,7 @@ class RecipeChatbotView(APIView):
                 "parts": [{"text": full_prompt}]
             }],
             "generationConfig": {
-                "temperature": 0.8,
+                "temperature": 1.0,
                 "maxOutputTokens": 2048
             }
         }

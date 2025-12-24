@@ -43,6 +43,12 @@ const routes = [
     // 비로그인 사용자도 레시피 구경 가능
   },
   {
+    path: '/recipes/create',
+    name: 'RecipeCreate',
+    component: () => import('@/views/recipe/RecipeCreateView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/recipes/:id',
     name: 'RecipeDetail',
     component: () => import('@/views/recipe/RecipeDetailView.vue'),

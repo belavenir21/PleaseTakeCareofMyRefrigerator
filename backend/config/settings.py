@@ -176,9 +176,16 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings
-CORS_ALLOW_ALL_ORIGINS = True # 일단 모든 접속 허용
-CORS_ALLOW_CREDENTIALS = True
+# ========== CORS 설정 (Railway 배포 필수!) ==========
+# 환경변수에서 허용 도메인 읽기
+cors_origins_env = config('CORS_ALLOWED_ORIGINS', default='')
+if cors_origins_env:
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
+    CORS_ALLOW_ALL_ORIGINS = False
+else:
+    # 개발 환경 또는 환경변수 없을 때는 모두 허용
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = []
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -186,6 +193,17 @@ CORS_ALLOW_CREDENTIALS = True
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "authorization",
+    "content-type",
+]
+
+# 허용할 메서드
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 # CSRF Settings
@@ -284,16 +302,28 @@ GMS_KEY = config('GMS_KEY', default='')
 GOOGLE_GEMINI_API_KEY = config('GOOGLE_GEMINI_API_KEY', default='')
 
 # --- RAILWAY DEPLOY FIX SECTION ---
-if not DEBUG:
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOW_ALL_ORIGINS = True
-    CORS_ALLOW_CREDENTIALS = True
-    SECURE_SSL_REDIRECT = False
+# 프로덕션 환경 감지 (Railway는 자동으로 DATABASE_URL 설정)
+IS_PRODUCTION = 'DATABASE_URL' in os.environ or not DEBUG
+
+if IS_PRODUCTION:
+    ALLOWED_HOSTS = ['*']  # Railway는 동적 도메인 사용하므로 전체 허용
+    SECURE_SSL_REDIRECT = False  # Railway 자체적으로 SSL 처리
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    
+    # CSRF 신뢰 도메인 (Railway + Netlify)
     CSRF_TRUSTED_ORIGINS = [
         "https://myfreezydjango.netlify.app",
         "https://*.railway.app",
     ]
+    
+    # 환경변수에서 추가 도메인 로드
+    csrf_trusted_origins_env = config('CSRF_TRUSTED_ORIGINS', default='')
+    if csrf_trusted_origins_env:
+        CSRF_TRUSTED_ORIGINS.extend([origin.strip() for origin in csrf_trusted_origins_env.split(',') if origin.strip()])
+
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Railway는 정적 파일을 Whitenoise로 서빙
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # --- END FIX ---

@@ -693,26 +693,60 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         
         from master.models import IngredientMaster
         created_ingredients = []
+        failed_items = []
         
         for data in ingredients_data:
-            # 신규 마스터 등록
-            name = data.get('name')
-            if not IngredientMaster.objects.filter(name=name).exists():
-                IngredientMaster.objects.create(
-                    name=name, category=data.get('category', '가공식품'),
-                    default_unit=data.get('unit', '개'), icon=data.get('icon', '🍴'),
-                    api_source='UserScan'
-                )
-            
-            # 보관함용 데이터 정제
-            clean_data = {k: v for k, v in data.items() if k not in ['id', 'original_text', 'original_name', 'selected', 'matched', 'icon', 'purchase_date']}
-            
-            serializer = UserIngredientSerializer(data=clean_data, context={'request': request})
-            if serializer.is_valid():
-                serializer.save()
-                created_ingredients.append(serializer.data)
+            try:
+                # 신규 마스터 등록
+                name = data.get('name')
+                if name and not IngredientMaster.objects.filter(name=name).exists():
+                    IngredientMaster.objects.create(
+                        name=name, category=data.get('category', '가공식품'),
+                        default_unit=data.get('unit', '개'), icon=data.get('icon', '🍴'),
+                        api_source='UserScan'
+                    )
+                
+                # 보관함용 데이터 정제
+                # 제외할 키 목록 (frontend state 관리용 키들)
+                exclude_keys = ['id', 'original_text', 'original_name', 'selected', 'matched', 
+                                'icon', 'purchase_date', 'showAutocomplete', 'autocompleteResults', 'isComposing']
+                clean_data = {k: v for k, v in data.items() if k not in exclude_keys}
+                
+                # 빈 값 처리 (수량이 없으면 1)
+                if 'quantity' not in clean_data or clean_data['quantity'] == '':
+                    clean_data['quantity'] = 1
+                
+                serializer = UserIngredientSerializer(data=clean_data, context={'request': request})
+                if serializer.is_valid():
+                    serializer.save()
+                    created_ingredients.append(serializer.data)
+                else:
+                    print(f"❌ [Batch Create Error] Item: {name}")
+                    print(f"❌ [Batch Create Error] Validation: {serializer.errors}")
+                    failed_items.append({
+                        'name': name,
+                        'errors': serializer.errors
+                    })
+            except Exception as e:
+                print(f"❌ [Batch Create Exception] Item: {data.get('name')} - {str(e)}")
+                failed_items.append({
+                    'name': data.get('name', 'Unknown'),
+                    'errors': str(e)
+                })
         
-        return Response({'message': f'{len(created_ingredients)}개 저장 완료'}, status=status.HTTP_201_CREATED)
+        response_data = {
+            'message': f'{len(created_ingredients)}개 저장 완료, {len(failed_items)}개 실패',
+            'created': created_ingredients,
+            'failed': failed_items
+        }
+        
+        status_code = status.HTTP_201_CREATED
+        if len(failed_items) > 0 and len(created_ingredients) == 0:
+            status_code = status.HTTP_400_BAD_REQUEST
+        elif len(failed_items) > 0:
+            status_code = status.HTTP_206_PARTIAL_CONTENT  # or 207 Multi-Status if supported, but 206/201 is safer for basic clients
+            
+        return Response(response_data, status=status_code)
 
     @action(detail=True, methods=['post'])
     def consume(self, request, pk=None):
