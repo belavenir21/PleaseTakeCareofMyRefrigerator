@@ -295,7 +295,7 @@ GOOGLE_GEMINI_API_KEY = config('GOOGLE_GEMINI_API_KEY', default='')
 
 # --- RAILWAY DEPLOY FIX SECTION ---
 # 프로덕션 환경 감지 (Railway는 자동으로 DATABASE_URL 설정)
-IS_PRODUCTION = 'DATABASE_URL' in os.environ or not DEBUG
+IS_PRODUCTION = 'DATABASE_URL' in os.environ  # Railway 환경만 감지
 
 if IS_PRODUCTION:
     ALLOWED_HOSTS = ['*']  # Railway는 동적 도메인 사용하므로 전체 허용
