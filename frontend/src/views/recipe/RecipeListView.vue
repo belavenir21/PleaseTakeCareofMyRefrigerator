@@ -495,10 +495,16 @@ onMounted(async () => {
 
   if (mode === 'recommend') {
     showRecommendations.value = true
-    await recipeStore.fetchRecommendations()
     
-    // 만약 80% 이상의 레시피가 하나도 없다면 자동으로 정확도를 낮춤
-    checkAutoExpand()
+    // 쿼리 파라미터에서 특정 재료 정보 추출
+    const params = {}
+    if (route.query.ingredients) {
+      params.ingredients = route.query.ingredients
+      // 특정 재료 활용 시에는 임계치 조절을 하지 않고 백엔드에 맡깁니다.
+      accuracyThreshold.value = 0 // 모든 매칭 허용 (백엔드에서 strict filtering 수행)
+    }
+    
+    await recipeStore.fetchRecommendations(params)
   } else {
     await recipeStore.fetchRecipes()
   }
@@ -510,26 +516,19 @@ const toggleMode = async () => {
   searchResults.value = []
   accuracyThreshold.value = 80 // 정확도 리셋 (80%부터 시작)
   if (showRecommendations.value) {
-    await recipeStore.fetchRecommendations()
-    checkAutoExpand()
+    const params = {}
+    if (route.query.ingredients) {
+      params.ingredients = route.query.ingredients
+    }
+    await recipeStore.fetchRecommendations(params)
   }
   else if (allRecipes.value.length === 0) await recipeStore.fetchRecipes()
 }
 
 const showAutoExpandMessage = ref(false)
 
-const checkAutoExpand = () => {
-  // 80% 결과가 없으면 자동으로 60%로 낮춤
-  if (showRecommendations.value && serverRecs.value.length > 0 && filteredRecommendations.value.length === 0) {
-    // 60% 이상 결과가 있는지 확인
-    const hasLowerMatch = serverRecs.value.some(r => r.match_ratio >= 60)
-    if (hasLowerMatch) {
-      accuracyThreshold.value = 60
-      showAutoExpandMessage.value = true
-      setTimeout(() => showAutoExpandMessage.value = false, 4000)
-    }
-  }
-}
+// 자동 확장 로직 제거 (사용자 요청)
+const checkAutoExpand = () => {}
 
 const formatMissingIngredient = (ing) => {
   if (!ing.quantity || ing.quantity.includes('적당량')) return ing.name

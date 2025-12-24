@@ -39,10 +39,10 @@ export const useRecipeStore = defineStore('recipe', () => {
   }
 
   // 레시피 추천 조회
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = async (params = {}) => {
     loading.value = true
     try {
-      const response = await recipeAPI.getRecommendations()
+      const response = await recipeAPI.getRecommendations(params)
       recommendations.value = response.recipes || []
       userIngredientCount.value = response.user_ingredient_count || 0
       return response

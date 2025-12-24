@@ -134,9 +134,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { recipeAPI } from '@/api/recipe'
 import { useRecipeStore } from '@/store/recipe'
+import { useToastStore } from '@/stores/toast'
 
 const router = useRouter()
 const recipeStore = useRecipeStore()
+const toast = useToastStore()
 
 const mode = ref('select') // select, ai, manual
 const generating = ref(false)
@@ -150,7 +152,7 @@ const generateWithAI = async () => {
   generating.value = true
   try {
     const response = await recipeAPI.generateRecipe(aiRecipeName.value)
-    alert(response.message || 'AI가 레시피를 생성했습니다!')
+    toast.success(response.message || 'AI가 레시피를 생성했습니다!')
     
     // 생성된 레시피로 이동
     if (response.recipe?.id) {
@@ -160,7 +162,7 @@ const generateWithAI = async () => {
     }
   } catch (e) {
     console.error('AI 레시피 생성 실패:', e)
-    alert(e.response?.data?.error || 'AI 레시피 생성에 실패했습니다.')
+    toast.error(e.response?.data?.error || 'AI 레시피 생성에 실패했습니다.')
   } finally {
     generating.value = false
   }
@@ -207,7 +209,7 @@ const submitManualRecipe = async () => {
     }
     
     const response = await recipeAPI.createRecipe(recipeData)
-    alert(response.message || '레시피가 등록되었습니다!')
+    toast.success(response.message || '레시피가 등록되었습니다!')
     
     if (response.recipe?.id) {
       router.push({ name: 'RecipeDetail', params: { id: response.recipe.id } })
@@ -216,7 +218,7 @@ const submitManualRecipe = async () => {
     }
   } catch (e) {
     console.error('레시피 등록 실패:', e)
-    alert(e.response?.data?.error || '레시피 등록에 실패했습니다.')
+    toast.error(e.response?.data?.error || '레시피 등록에 실패했습니다.')
   } finally {
     generating.value = false
   }

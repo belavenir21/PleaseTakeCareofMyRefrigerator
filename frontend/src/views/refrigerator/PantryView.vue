@@ -479,6 +479,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { useToastStore } from '@/stores/toast'
 import axios from '@/api' // axios 추가
 import CalendarView from '@/components/CalendarView.vue'
 import WeeklyChallenge from '@/components/WeeklyChallenge.vue'
@@ -490,6 +491,7 @@ import challengeIcon from '@/assets/images/challenge.png'
 
 const router = useRouter()
 const refrigeratorStore = useRefrigeratorStore()
+const toast = useToastStore()
 
 const viewMode = ref('list') // 'list' or 'calendar'
 const categories = [
@@ -562,7 +564,7 @@ const saveEdit = async () => {
     editingId.value = null
     await refrigeratorStore.fetchIngredients()
   } catch (error) {
-    alert('수정 실패: ' + (error.message || '알 수 없는 오류'))
+    toast.error('수정 실패: ' + (error.message || '알 수 없는 오류'))
   }
 }
 
@@ -681,7 +683,7 @@ const handleClearExpiredClick = () => {
     showExpireConfirm.value = true
   } else {
     console.log('[PantryView] ⚠️ No expired ingredients')
-    alert("현재 만료된 재료가 없어요! 👏")
+    toast.info("현재 만료된 재료가 없어요! 👏")
   }
 }
 
@@ -696,7 +698,7 @@ const confirmClearExpired = async () => {
         console.log('[PantryView] 🔄 Ingredients refreshed')
     } catch (e) {
         console.error('[PantryView] ❌ Failed to clear expired:', e)
-        alert('만료 재료 정리에 실패했어요.')
+        toast.error('만료 재료 정리에 실패했어요.')
     }
 }
 

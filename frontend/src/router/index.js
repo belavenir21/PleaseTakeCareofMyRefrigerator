@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
+import { useToastStore } from '@/stores/toast'
 
 const routes = [
   {
@@ -100,7 +101,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    // 로그인이 필요한 페이지 -> 로그인 페이지로
+    // 로그인이 필요한 페이지 -> 토스트 알림 후 로그인 페이지로
+    const toastStore = useToastStore()
+    toastStore.warning('로그인이 필요한 기능입니다. 로그인 후 이용해주세요.')
     next({ name: 'Login' })
   } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
     // 이미 로그인한 상태로 로그인/가입 페이지 접근 시 -> 보관함으로

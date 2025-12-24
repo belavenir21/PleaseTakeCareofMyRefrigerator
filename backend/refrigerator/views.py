@@ -750,16 +750,19 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def consume(self, request, pk=None):
-        """재료 소진 - 수량 차감"""
+        """재료 소진 - 수량 차감 및 단위 업데이트"""
         ingredient = self.get_object()
         quantity = float(request.data.get('quantity', 0))
+        unit = request.data.get('unit') # 사용자가 차감 시 단위를 바꿨다면 업데이트
         
-        if quantity <= 0:
+        if quantity < 0:
             return Response({'error': '차감할 수량이 올바르지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
         
+        # 단위 변경 요청이 있으면 반영 (사용자 요청)
+        if unit:
+            ingredient.unit = unit
+            
         if quantity >= ingredient.quantity:
-            # 전체 소진 (소진은 휴지통 안감? or 소진 기록? 일단 사용자 요구는 '버리기'만 휴지통)
-            # 소비는 실제로 먹어서 없어진 거라 삭제가 맞음 (또는 소비 로그 기록)
             ingredient.delete() 
             return Response({
                 'message': '재료가 모두 소진되었습니다.',
@@ -774,6 +777,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         return Response({
             'message': f'{quantity}{ingredient.unit} 차감되었습니다.',
             'remaining_quantity': ingredient.quantity,
+            'unit': ingredient.unit,
             'deleted': False
         })
 

@@ -58,8 +58,8 @@
           <div class="confetti-effect"></div>
         </div>
         <div class="finish-celebration">✨ 요리 완성! 고생하셨어요 ✨</div>
-        <button @click="openAdjustModal" class="btn-finish-premium">
-          요리 완료 & 재료 차감하기
+        <button @click="openAdjustModal" class="btn-finish">
+          🎉 요리 완료 & 재료 차감하기
         </button>
       </div>
     </div>
@@ -76,10 +76,18 @@
             <div v-for="item in adjustableIngredients" :key="item.id" 
                  :class="['adjust-item', { 'no-stock': !item.hasInPantry }]">
               <span class="adjust-name">{{ item.name }}</span>
-              <div v-if="item.hasInPantry" class="adjust-controls">
-                <button @click="decreaseAmount(item)" class="btn-adjust" :disabled="item.usedAmount <= 0">−</button>
-                <span class="adjust-value">{{ item.usedAmount }}{{ item.unit }}</span>
-                <button @click="increaseAmount(item)" class="btn-adjust" :disabled="item.usedAmount >= item.currentStock">+</button>
+              <div v-if="item.hasInPantry" class="adjust-controls slider-mode">
+                <input 
+                  type="range" 
+                  v-model.number="item.usedAmount" 
+                  :min="0" 
+                  :max="item.currentStock" 
+                  :step="getAdjustStep(item.unit)"
+                  class="adjust-range"
+                />
+                <div class="adjust-value-box">
+                  <span class="adjust-value">{{ item.usedAmount }}{{ item.unit }}</span>
+                </div>
               </div>
               <div v-else class="adjust-controls disabled">
                 <span class="adjust-value-disabled">차감 불가</span>
@@ -642,6 +650,32 @@ const exitCooking = () => {
   margin: 0 0 20px;
 }
 
+/* 요리 완료 버튼 복구 및 강화 */
+.btn-finish {
+  background: var(--primary-gradient);
+  color: white;
+  border: 3px solid #FFE5F0;
+  padding: 16px 32px;
+  border-radius: 40px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-pixel);
+  transition: all 0.2s;
+  font-family: var(--font-title);
+  margin-top: 10px;
+}
+
+.btn-finish:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 15px rgba(255, 179, 217, 0.4);
+}
+
+.btn-finish:active {
+  transform: translateY(1px);
+}
+
 .ingredient-adjust-list {
   max-height: 300px;
   overflow-y: auto;
@@ -737,6 +771,36 @@ const exitCooking = () => {
   color: #adb5bd;
   font-size: 0.85rem;
   font-weight: 500;
+}
+/* 슬라이더 스타일 */
+.adjust-controls.slider-mode {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  min-width: 140px;
+}
+.adjust-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  outline: none;
+  margin: 10px 0;
+}
+.adjust-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: var(--primary);
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.adjust-value-box {
+  text-align: right;
 }
 .btn-adjust:disabled {
   opacity: 0.4;

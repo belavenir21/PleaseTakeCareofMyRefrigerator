@@ -13,32 +13,32 @@
       </div>
       
       <div class="nav-menu">
-        <a 
-          @click.prevent="handleNavClick('/pantry')"
-          class="nav-link"
-          :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
-          title="내 보관함"
-        >
-          <img :src="pantryIcon" alt="보관함" class="nav-icon-img" />
-        </a>
-
-        <a 
-          @click.prevent="handleNavClick('/challenge')"
+        <router-link 
+          to="/challenge"
           class="nav-link"
           :class="{ active: $route.path === '/challenge' }"
           title="챌린지"
         >
           <img :src="challengeIcon" alt="챌린지" class="nav-icon-img" />
-        </a>
-        
-        <a 
-          @click.prevent="handleNavClick('/profile')"
+        </router-link>
+
+        <router-link 
+          to="/pantry"
           class="nav-link"
-          :class="{ active: $route.path === '/profile' }"
+          :class="{ active: $route.path === '/pantry' || $route.path.startsWith('/ingredient') }"
+          title="내 보관함"
+        >
+          <img :src="pantryIcon" alt="보관함" class="nav-icon-img" />
+        </router-link>
+        
+        <router-link 
+          to="/profile"
+          class="nav-link profile-link"
+          :class="{ active: $route.path.startsWith('/profile') || $route.path === '/settings' }"
           title="내 프로필"
         >
           <img :src="profileIcon" alt="프로필" class="nav-icon-img" />
-        </a>
+        </router-link>
 
         <button 
           v-if="authStore.isAuthenticated"
@@ -49,14 +49,14 @@
           <img :src="logoutIcon" alt="로그아웃" class="nav-icon-img" />
         </button>
         
-        <a 
+        <router-link 
           v-else
-          @click.prevent="handleNavClick('/login')"
+          to="/login"
           class="nav-link login-btn-wrap" 
           title="로그인"
         >
           <img :src="loginIcon" alt="로그인" class="nav-icon-img" />
-        </a>
+        </router-link>
       </div>
     </div>
   </nav>
@@ -98,25 +98,6 @@ const shouldShowNavbar = computed(() => {
   return true
 })
 
-// 네비게이션 클릭 핸들러
-const handleNavClick = (path) => {
-  // 로그인 페이지로 가는 경우는 항상 허용
-  if (path === '/login') {
-    router.push(path)
-    return
-  }
-  
-  // 로그인하지 않은 경우
-  if (!authStore.isAuthenticated) {
-    if (confirm('로그인이 필요한 기능입니다.\n로그인 페이지로 이동하시겠습니까?')) {
-      router.push('/login')
-    }
-    return
-  }
-  
-  // 로그인한 경우 정상 이동
-  router.push(path)
-}
 
 const handleScroll = () => {
   const scrollTop = window.scrollY || document.documentElement.scrollTop
@@ -126,6 +107,13 @@ const handleScroll = () => {
 // 🔥 HomeView의 intro 스크롤 감지 (버튼이 보일 때 함께 나타나기)
 const handleHomeScroll = (e) => {
   isScrolled.value = e.detail.scrollTop > 1000  // 버튼이 보일 때 (y > 1000)
+}
+
+const goToProfile = () => {
+  console.log('Navigating to Profile')
+  router.push('/profile').catch(err => {
+    console.error('Profile navigation failed:', err)
+  })
 }
 
 const handleLogout = async () => {
@@ -157,7 +145,7 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 30000;
   background: linear-gradient(135deg, #FFD4E5 0%, #FFB3D9 50%, #A8D8FF 100%);
   box-shadow: 0 2px 8px rgba(255, 179, 217, 0.25);
   border-bottom: 2px solid rgba(255, 179, 217, 0.4);
@@ -235,7 +223,7 @@ onUnmounted(() => {
   gap: 0.8rem;
   align-items: center;
   position: relative;
-  z-index: 10;
+  z-index: 10000; /* 전체 메뉴 z-index 상향 */
 }
 
 /* ✨ 박스 없이 이미지 아이콘 - 그림자로 클릭 효과 */

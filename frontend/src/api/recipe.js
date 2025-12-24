@@ -12,8 +12,8 @@ export const recipeAPI = {
   },
 
   // 레시피 추천
-  getRecommendations() {
-    return api.get('/recipes/recommendations/')
+  getRecommendations(params = {}) {
+    return api.get('/recipes/recommendations/', { params })
   },
 
   // 레시피 조리 단계 조회

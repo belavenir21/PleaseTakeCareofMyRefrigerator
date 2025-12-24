@@ -95,9 +95,9 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
   }
 
   // 식재료 소진
-  const consumeIngredient = async (id, quantity) => {
+  const consumeIngredient = async (id, quantity, unit = null) => {
     try {
-      const response = await refrigeratorAPI.consumeIngredient(id, quantity)
+      const response = await refrigeratorAPI.consumeIngredient(id, quantity, unit)
 
       // 재료 업데이트 또는 제거
       const index = ingredients.value.findIndex(item => item.id === id)

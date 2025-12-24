@@ -245,6 +245,8 @@ import { useAuthStore } from '@/store/auth'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 import axios from '@/api'
 import { recipeAPI } from '@/api/recipe'
+import { userAPI } from '@/api/auth'
+import { useToastStore } from '@/stores/toast'
 import heartIcon from '@/assets/images/heart.png'
 import panIcon from '@/assets/images/pan.png'
 import potIcon from '@/assets/images/pot.png'
@@ -252,6 +254,7 @@ import potIcon from '@/assets/images/pot.png'
 const router = useRouter()
 const authStore = useAuthStore()
 const refrigeratorStore = useRefrigeratorStore()
+const toast = useToastStore()
 
 const loading = ref(false)
 const activeTab = ref('info')
@@ -336,7 +339,7 @@ const toggleScrap = async (recipe) => {
     console.log('[ProfileView] 🔄 Profile refreshed')
   } catch (e) {
     console.error('[ProfileView] ❌ 스크랩 실패:', e)
-    alert('스크랩 처리에 실패했습니다.')
+    toast.error('스크랩 처리에 실패했습니다.')
   }
 }
 
@@ -383,25 +386,25 @@ const handleImageUpload = async (event) => {
   try {
     const response = await userAPI.updateProfile(formData)
     authStore.profile = response.profile
-    alert('프로필 사진이 업데이트되었습니다!')
+    toast.success('프로필 사진이 업데이트되었습니다!')
   } catch (error) {
     console.error('이미지 업로드 실패:', error)
-    alert('이미지 업로드에 실패했습니다.')
+    toast.error('이미지 업로드에 실패했습니다.')
   }
 }
 
 const handleSubmit = async () => {
   if (!formData.value.nickname || formData.value.nickname.trim() === '') {
-    alert('닉네임은 필수 입력 항목입니다.')
+    toast.warning('닉네임은 필수 입력 항목입니다.')
     return
   }
   loading.value = true
   try {
     formData.value.diet_goals = tags.value.join(' ')
     await authStore.updateProfile(formData.value)
-    alert('프로필이 수정되었습니다.')
+    toast.success('프로필이 수정되었습니다.')
   } catch (error) {
-    alert('수정에 실패했습니다.')
+    toast.error('수정에 실패했습니다.')
   } finally {
     loading.value = false
   }
@@ -427,7 +430,7 @@ const goToPantry = () => {
 const showExpiringModal = ref(false)
 const openExpiringModal = () => {
   if (expiringCount.value === 0) {
-    alert("유통기한 임박 재료가 없습니다! 👏")
+    toast.info("유통기한 임박 재료가 없습니다! 👏")
     return
   }
   showExpiringModal.value = true

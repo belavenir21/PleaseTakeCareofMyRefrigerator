@@ -105,11 +105,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """요리 완료 후 사용한 재료 자동 차감"""
         recipe = self.get_object()
         user = request.user
+        recipe = self.get_object()
         recipe_ingredients = recipe.ingredients.all()
         
         consumed_items = []
         not_found_items = []
         
+        def parse_num(s):
+            """문자열에서 숫자 추출 (분수 포함)"""
+            if not s: return 1.0
+            s = s.replace(" ", "")
+            # 분수 형태 (1/2) 처리
+            match_frac = re.search(r'(\d+)/(\d+)', s)
+            if match_frac:
+                return float(match_frac.group(1)) / float(match_frac.group(2))
+            # 소수점 포함 숫자 추출
+            match_num = re.search(r'(\d+\.\d+|\d+)', s)
+            return float(match_num.group(1)) if match_num else 1.0
+
+        def get_standard_val(val, unit):
+            """단위에 따른 가중치 적용 (표준화)"""
+            u = unit.lower()
+            if u in ['kg', 'l', '리터', '킬로']: return val * 1000
+            return val
+
         from refrigerator.models import UserIngredient
         
         for ring in recipe_ingredients:
@@ -127,52 +146,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     break
             
             if target_ing:
-                # 수량 및 단위 파싱
-                recipe_qty_str = ring.quantity
-                decrement = 1.0
-                unit_matched = False
+                # 수량 차감 로직 개선
+                req_val = parse_num(ring.quantity)
                 
-                # 1. 단위 매칭 확인 (g, ml, 개 등)
-                if target_ing.unit in recipe_qty_str:
-                    unit_matched = True
+                # 단위 보정 (레시피 단위가 kg/L인데 보관된게 g/ml이면 맞춰줌)
+                # 반대로 보관된게 kg/L인데 레시피가 g/ml이면 그것도 맞춰줌
+                req_std = get_standard_val(req_val, ring.quantity)
+                inv_std = get_standard_val(target_ing.quantity, target_ing.unit)
                 
-                # 2. 숫자 추출 (분수 포함: 1/2, 0.5 등)
-                try:
-                    # '1/2' 형태 처리
-                    fraction_match = re.search(r'(\d+)\s*/\s*(\d+)', recipe_qty_str)
-                    if fraction_match:
-                        decrement = float(fraction_match.group(1)) / float(fraction_match.group(2))
-                    else:
-                        # 일반 숫자 추출
-                        num_match = re.search(r'(\d+\.?\d*)', recipe_qty_str)
-                        if num_match:
-                            decrement = float(num_match.group(1))
-                except:
-                    decrement = 1.0
-                
-                # 단위가 다르면 (예: 레시피는 g, 나는 개) 
-                # 정교한 환산 대신 일단 1개(단위)만 차감하거나 기본값 유지
-                if not unit_matched:
-                    # 무게 단위인데 개수 단위인 경우 등은 1로 고정 (안전빵)
-                    if any(u in recipe_qty_str for u in ['g', 'ml', 'kg']) and target_ing.unit in ['개', '봉', '팩']:
-                        decrement = 1.0
-                
-                if target_ing.quantity <= decrement:
+                if inv_std <= req_std:
                     actual_consumed = target_ing.quantity
                     target_ing.delete()
                     consumed_items.append({
                         'name': target_ing.name,
-                        'consumed_quantity': f"{actual_consumed}{target_ing.unit}",
+                        'consumed_quantity': f"{int(actual_consumed) if actual_consumed == int(actual_consumed) else actual_consumed}{target_ing.unit}",
                         'status': 'finished'
                     })
                 else:
-                    target_ing.quantity -= decrement
+                    # 차감 후 저장 (표준화 단위 기준 차이 계산)
+                    remain_std = inv_std - req_std
+                    # 원래 단위로 복구
+                    if target_ing.unit.lower() in ['kg', 'l', '리터', '킬로']:
+                        target_ing.quantity = remain_std / 1000
+                    else:
+                        target_ing.quantity = remain_std
+                    
                     target_ing.save()
                     consumed_items.append({
                         'name': target_ing.name,
-                        'consumed_quantity': f"{decrement}{target_ing.unit}",
+                        'consumed_quantity': ring.quantity,
                         'status': 'reduced',
-                        'remaining': f"{target_ing.quantity}{target_ing.unit}"
+                        'remaining': f"{int(target_ing.quantity) if target_ing.quantity == int(target_ing.quantity) else target_ing.quantity}{target_ing.unit}"
                     })
             else:
                 not_found_items.append(ring.name)
@@ -192,6 +196,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         
         # 필터 정보
         min_ratio = float(request.query_params.get('min_ratio', 0.1)) # 기본값 10%로 완화
+        filter_ingredients_raw = request.query_params.get('ingredients', '')
+        filter_ingredients = filter_ingredients_raw.split(',') if filter_ingredients_raw else []
         
         # 알레르기 정보 가져오기
         user_allergy_names = []
@@ -245,49 +251,91 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 continue
                 
             match_count = 0
+            actual_match_count = 0
             matched_list = []
             recipe_ingredients_names = []
             
+            # 레시피 재료 유니크 세트 생성 (중복 제거 및 정규화)
+            unique_recipe_ings = set(ring.name.replace(" ", "") for ring in recipe_ingredients_objs)
+            total_kinds_count = len(unique_recipe_ings)
+            
+            # 동의어 및 정규화 처리 함수 (루프 밖으로 이동)
+            def get_variants(name):
+                name = name.replace(" ", "")
+                variants = [name]
+                syns = {
+                    '달걀': '계란', '계란': '달걀', 
+                    '소고기': '쇠고기', '쇠고기': '소고기', 
+                    '닭고기': '닭', '돼지고기': '돼지',
+                    '대파': '파', '파': '대파',
+                    '다진마늘': '마늘', '마늘': '다진마늘',
+                    '양파': '생양파', '고춧가루': '고추가루',
+                    '참기름': '들기름', '식용유': '오일',
+                    '간장': '진간장', '진간장': '간장'
+                }
+                for k, v in syns.items():
+                    if k in name:
+                        variants.append(name.replace(k, v))
+                return variants
+
             for ring in recipe_ingredients_objs:
+
                 recipe_ingredients_names.append(ring.name)
                 clean_ring_name = ring.name.replace(" ", "")
                 
-                # 동의어 및 정규화 처리
-                def get_variants(name):
-                    name = name.replace(" ", "")
-                    variants = [name]
-                    syns = {'달걀': '계란', '계란': '달걀', '소고기': '쇠고기', '쇠고기': '소고기', '닭고기': '닭', '돼지고기': '돼지'}
-                    for k, v in syns.items():
-                        if k in name: variants.append(name.replace(k, v))
-                    return variants
-
                 name_variants = get_variants(clean_ring_name)
                 
                 found = False
-                for uing in user_ingredients_list:
+                for uing in user_unique_names: # 중복 제거된 종류 리스트 사용
+                    if not uing: continue # 빈 이름 방지
+                    
                     # uing 도 정규화된 상태 (공백 제거됨)
-                    if any(uing in v or v in uing for v in name_variants):
-                        match_count += 1
+                    if any((uing and (uing in v or v in uing)) for v in name_variants):
+                        actual_match_count += 1
                         matched_list.append(ring.name)
-                        if any(uing in esn for esn in expiring_soon_names):
-                            match_count += 0.5
                         found = True
                         break
             
-            total_count = len(recipe_ingredients_names)
-            # 순수 매칭 개수
-            actual_match_count = len(matched_list)
+            # 매칭 로직 정밀화: 레시피의 각 재료 종류가 사용자 재료 중 하나라도 매칭되는지 체크
+            matched_kinds = []
+            for ring in unique_recipe_ings:
+                # ring (레시피 재료)이 사용자 재료(uing) 중 하나와 매칭되는지 확인 (`get_variants` 활용)
+                is_matched = False
+                
+                # 레시피 재료의 이명(동의어) 구하기
+                ring_variants = get_variants(ring) # ring은 이미 공백제거된 상태
+                
+                for uing in user_unique_names:
+                    # uing: 사용자 재료 (공백제거됨)
+                    if any((uing in v or v in uing) for v in ring_variants):
+                        is_matched = True
+                        break
+                
+                if is_matched:
+                    matched_kinds.append(ring)
             
-            # 가산점이 포함된 매칭 점수 (정렬용)
-            # 재료 개수 비중을 높이고, 유통기한 임박은 보너스 점수로 처리
-            # 예: 10개 중 4개 매칭이면 40점 + 보너스
-            weighted_score = actual_match_count
-            for m in matched_list:
-                if m.replace(" ","") in expiring_soon_names:
-                    weighted_score += 0.1 # 보너스 점수를 작게 조정하여 비율을 해치지 않게 함
+            actual_match_count = len(matched_kinds)
+            display_match_ratio = actual_match_count / total_kinds_count if total_kinds_count > 0 else 0
             
-            # 실제 화면에 보여줄 매칭 비율 (수학적으로 정확하게)
-            display_match_ratio = actual_match_count / total_count if total_count > 0 else 0
+            # 특정 재료 필터링 (활용하기 등에서 넘어온 경우)
+            # 해당 재료들이 포함된 레시피에 대해 가중 점수 부여
+            extra_weight = 0
+            if filter_ingredients:
+                matches_filter = [f for f in filter_ingredients if any(f.replace(" ","") in m.replace(" ","") for m in matched_kinds)]
+                if matches_filter:
+                    # 필터링된 재료가 하나라도 포함되면 우선순위 상승
+                    extra_weight = 1.0 + (len(matches_filter) * 0.1)
+                else:
+                    # 필터링된 재료가 하나도 없으면 추천에서 후순위로 (또는 제외)
+                    # 여기서는 후순위로 밀기 위해 가산점 없음
+                    pass
+            
+            # 유통기한 임박 재료 매칭 개수 별도 계산
+            expiring_match_count = sum(1 for m in matched_list if m.replace(" ","") in expiring_soon_names)
+            
+            # 가산점이 포함된 정렬용 점수 (내부적으로만 사용)
+            # 순수 매칭률 + 임박 재료 가산점 + 특정 필터 가산점
+            weighted_score = display_match_ratio + (expiring_match_count * 0.05) + extra_weight
             
             missing_ingredients = [name for name in recipe_ingredients_names if name not in matched_list]
             missing_ingredients_detailed = [
@@ -309,42 +357,51 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     has_allergy = True; break
             if has_allergy: continue
             
-            # 최소 1개라도 매칭되거나, 다이어트용 샐러드인 경우 추천
-            # 조건 완화: 매칭이 0개여도 일단 목록에 추가 (정렬로 우선순위 결정)
             # 매칭 결과 결정
             match_status = 'none'
             if actual_match_count > 0:
                 match_status = 'partial'
-                if display_match_ratio >= 0.8: match_status = 'full'
+                if display_match_ratio >= 0.99: match_status = 'full'
                 elif display_match_ratio >= 0.5: match_status = 'high'
             elif is_diet and '샐러드' in (getattr(recipe, 'category', '') or ''):
                 match_status = 'diet'
-                
-            # 유통기한 임박 재료 매칭 개수 별도 계산
-            expiring_match_count = sum(1 for m in matched_list if m.replace(" ","") in expiring_soon_names)
             
+            # 특정 재료 필터링 (활용하기 등에서 넘어온 경우) - 사용자의 강력한 요청: 검색처럼 작동하게!
+            if filter_ingredients:
+                # 필터 재료들이 모두 matched_kinds 에 포함되어 있는지 확인
+                # (부분 일치 허용: '계란' 필터인데 '계란지단' 매칭된 경우 등)
+                all_filter_matched = True
+                for f in filter_ingredients:
+                    f_clean = f.replace(" ","")
+                    if not any(f_clean in m.replace(" ","") or m.replace(" ","") in f_clean for m in matched_kinds):
+                        all_filter_matched = False
+                        break
+                
+                if not all_filter_matched:
+                    continue # 필터 재료가 하나라도 없으면 과감히 탈락
+                else:
+                    # 모두 포함되었다면 점수 대폭 상승 (최상단 노출)
+                    weighted_score += 10.0
+
             recommended_recipes.append({
                 'recipe': recipe,
-                'weighted_score': weighted_score,
+                'weighted_score': weighted_score, # 가산점 포함된 점수 사용
                 'display_ratio': display_match_ratio,
                 'match_count': actual_match_count,
-                'expiring_match_count': expiring_match_count,  # 추가
+                'expiring_match_count': expiring_match_count,
                 'matched_ingredients': matched_list,
                 'missing_ingredients': missing_ingredients,
                 'missing_ingredients_detailed': missing_ingredients_detailed,
-                'total_ingredients': total_count,
+                'total_ingredients': total_kinds_count, # 종류 개수로 변경
                 'match_status': match_status
             })
         
         # 필터링: 사용자가 요청한 최소 비율 이상인 것만
         recommended_recipes = [r for r in recommended_recipes if r['display_ratio'] >= min_ratio or r['match_status'] == 'diet']
         
-        # 정렬 우선순위 변경:
-        # 1. 유통기한 임박 재료 매칭 개수 (가장 중요!)
-        # 2. 전체 매칭 개수
-        # 3. 매칭 비율
-        recommended_recipes.sort(key=lambda x: (x['expiring_match_count'], x['match_count'], x['display_ratio']), reverse=True)
-        # 최대 100개까지 반환 (사용자가 더 많이 보길 원하므로 늘림)
+        # 정렬 우선순위: weighted_score (필터 매칭된 것이 10점 높으므로 최상단)
+        recommended_recipes.sort(key=lambda x: (x['weighted_score']), reverse=True)
+        # 최대 100개까지 반환
         recommended_recipes = recommended_recipes[:100]
         
         recipes_data = []

@@ -20,6 +20,41 @@ class UserIngredientSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'category': {'required': False, 'allow_null': True, 'allow_blank': True}
         }
+
+    def validate_name(self, value):
+        """마스터 DB에 있는 재료인지 검증"""
+        from master.models import IngredientMaster
+        name = value.strip()
+        
+        # 동의어 매핑 (검증용)
+        synonyms = {
+            "계란": "달걀", "삼겹살": "돼지고기", "스팸": "햄", "참치캔": "참치",
+            "무": "달랑무", "애호박": "호박", "방울토마토": "토마토", "공기밥": "국밥",
+            "파": "대파", "마늘": "다진마늘"
+        }
+        
+        if name in synonyms:
+            name = synonyms[name]
+
+        # 1. 완전 일치
+        if IngredientMaster.objects.filter(name=name).exists():
+            return name
+        
+        # 2. 대소문자 무시
+        master = IngredientMaster.objects.filter(name__iexact=name).first()
+        if master:
+            return master.name
+            
+        # 3. 포함 관계 (주방 -> 주방용품 차단 등을 위해 신중히)
+        # 하지만 사용자가 "국산 양파"라고 입력했을 때 "양파"로 매칭해주면 좋음
+        masters = IngredientMaster.objects.all()
+        for m in masters:
+            if m.name in name: # "양파" in "국산양파"
+                return m.name
+            if name in m.name: # "양파" in "빨간양파" (일부 가능)
+                return m.name
+
+        raise serializers.ValidationError(f"'{value}'은(는) 등록되지 않은 식재료입니다. 검색 가능한 재료명을 입력해주세요.")
     
     def get_icon(self, obj):
         """재료의 아이콘을 반환 (개선된 매칭)"""
@@ -76,7 +111,8 @@ class UserIngredientSerializer(serializers.ModelSerializer):
         # 동의어 매핑
         synonyms = {
             "계란": "달걀", "삼겹살": "돼지고기", "스팸": "햄", "참치캔": "참치",
-            "무": "달랑무", "애호박": "호박", "방울토마토": "토마토"
+            "무": "달랑무", "애호박": "호박", "방울토마토": "토마토", "파": "대파",
+            "마늘": "다진마늘", "공기밥": "국밥"
         }
         
         search_name = obj.name
@@ -85,6 +121,9 @@ class UserIngredientSerializer(serializers.ModelSerializer):
             
         master = IngredientMaster.objects.filter(name=search_name).first()
         if not master:
+            master = IngredientMaster.objects.filter(name__iexact=search_name).first()
+        if not master:
+            # 부분 일치 검색 (이미지 URL을 찾기 위함)
             master = IngredientMaster.objects.filter(name__icontains=search_name).first()
             
         if master and master.image_url:

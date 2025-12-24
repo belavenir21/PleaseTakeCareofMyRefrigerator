@@ -607,6 +607,70 @@ npm run dev
 
 ---
 
+## 📅 2025.12.24 (오후) 업데이트: 추천 로직 강화 & UI 완성도 향상
+
+### 1. 🧠 레시피 추천 로직 고도화 (Backend)
+*   **동의어 처리 함수 구조 개선**:
+    - `get_variants` 함수를 반복문 외부로 이동하여 스코프 문제 해결 및 성능 최적화
+    - 계란↔달걀, 소고기↔쇠고기, 대파↔파 등 15가지 주요 식재료 동의어 매칭
+*   **엄격한 필터링 로직**:
+    - "활용하기" 기능 사용 시 선택된 재료가 **모두 포함된 레시피만** 추천
+    - `filter_ingredients` 파라미터 기반 엄격한 검색 동작 구현
+    - 필터 매칭 레시피는 `weighted_score`에 10.0 가산점 부여 → 최상단 노출
+*   **매칭 정확도 향상**:
+    - 부분 일치 허용하되 동의어 처리를 활용한 정교한 매칭
+    - 매칭되지 않은 재료가 있을 때 100%로 잘못 표시되던 버그 수정
+
+### 2. 🎨 Kawaii Pastel Pixel Art UI 테마 복원 (Frontend)
+*   **RecipeListView 테마 완전 복원**:
+    - [🔍 검색 | ✨ 추천] 슬라이딩 필(pill) 스타일 모드 토글 복구
+    - 히어로 섹션: 파스텔 그라디언트 배경 + 픽셀화된 그림자
+    - 레시피 카드: `card-recipe-kawaii` 클래스로 부드러운 디자인 적용
+    - 자동 임계치 조절 로직(`checkAutoExpand`) 완전 제거
+*   **CookingModeView 개선**:
+    - "완료" 버튼 CSS 복구 (테마 일관성 유지)
+    - 재료 수량 조절: +/- 버튼 → 슬라이더(Slider)로 교체
+    - 슬라이더 스타일링 추가 (눈금, 라벨 표시)
+
+### 3. 🔧 네비게이션 및 프로필 버그 수정
+*   **프로필 버튼 라우팅 문제 해결**:
+    - `NavigationBar.vue`: 프로필 버튼을 `router-link`로 교체하여 정상 라우팅 구현
+    - 불필요한 `@click` 핸들러 및 인라인 스타일 제거
+    - `z-index: 30000`으로 상향하여 클릭 우선순위 보장
+*   **ProfileView import 오류 수정**:
+    - `userAPI`를 `@/api/recipe` 대신 올바른 경로 `@/api/auth`에서 import
+    - 모듈 로드 실패로 인한 페이지 렌더링 오류 해결
+    - 프로필 조회·수정 기능 정상화
+
+### 4. 📐 UI/UX 세부 개선
+*   **Vue 템플릿 파싱 에러 수정**:
+    - `@click="if(condition) func()"` → `showRecommendations && toggleMode()` 형태로 수정
+    - Vue 권장 문법 준수
+*   **매개변수 전달 정교화**:
+    - 추천 API 호출 시 `ingredients` 쿼리 파라미터 정확히 전달
+    - `accuracyThreshold` 초기값 0으로 설정하여 백엔드에 필터링 위임
+*   **CSS 클래스명 정리**:
+    - `header-premium` → `header-kawaii` 로 변경
+    - 프리미엄 관련 불필요한 스타일 클래스 제거
+
+### 5. 📁 수정된 핵심 파일
+**Frontend:**
+*   `frontend/src/views/recipe/RecipeListView.vue` - UI 테마 복원, 로직 개선
+*   `frontend/src/views/recipe/CookingModeView.vue` - 완료 버튼, 슬라이더
+*   `frontend/src/views/user/ProfileView.vue` - import 경로 수정
+*   `frontend/src/components/NavigationBar.vue` - 프로필 라우팅 수정
+
+**Backend:**
+*   `backend/recipes/views.py` - 추천 로직 정밀화, 동의어 처리 개선
+
+### 6. 🎯 달성한 결과
+*   ✅ 레시피 추천 정확도 대폭 향상 (동의어 매칭 + 엄격한 필터링)
+*   ✅ UI 테마 일관성 100% 달성 (Kawaii Pastel Pixel Art)
+*   ✅ 네비게이션 라우팅 안정화 (프로필 페이지 정상 접근)
+*   ✅ 사용자 경험(UX) 개선 (슬라이더, 매칭률 표시 정확도)
+
+---
+
 ## 📸 주요 기능 스크린샷
 
 ### 레시피 배지 (Before vs After)

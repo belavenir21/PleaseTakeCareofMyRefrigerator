@@ -9,10 +9,12 @@
     </button>
 
     <div class="login-container">
-      <h1>냉장고를 부탁해</h1>
+      <h1 class="login-logo" @click="goToHome" style="cursor: pointer;">
+        <img src="@/assets/titlelogo.png" alt="냉장고를 부탁해" />
+      </h1>
       
       <form @submit.prevent="handleLogin" class="login-form">
-        <div v-if="error" class="alert alert-error">
+        <div v-if="error" class="error-banner">
           {{ error }}
         </div>
 
@@ -41,7 +43,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" :disabled="loading">
-          <img src="@/assets/images/login-button.png" alt="Login" class="login-btn-img" />
+          {{ loading ? '로그인 중...' : '로그인' }}
         </button>
         
         <div class="social-login">
@@ -69,10 +71,9 @@
           </button>
         </div>
 
-        <div class="text-center">
-          <router-link to="/register" class="link-button">
-            아직 회원이 아니신가요? <strong>회원가입</strong>
-          </router-link>
+        <div class="register-guide">
+          아직 회원이 아니신가요? 
+          <strong @click="router.push('/register')">회원가입</strong>
         </div>
         
         <div class="divider-line"></div>
@@ -89,28 +90,48 @@
       <Teleport to="body">
         <!-- 아이디 찾기 모달 -->
         <div v-if="showFindIdModal" class="modal-overlay modal-center" @click.self="closeFindModal">
-          <div class="modal-content">
-            <h3>아이디 찾기</h3>
-            <p class="desc">가입 시 등록한 이메일을 입력해주세요.</p>
-            <input v-model="findIdEmail" type="email" class="input mb-2" placeholder="example@email.com" />
-            <button class="btn btn-primary full-width" @click="handleFindId" :disabled="findLoading">
-              {{ findLoading ? '확인 중...' : '아이디 찾기' }}
-            </button>
-            <button class="btn btn-text full-width mt-2" @click="closeFindModal">닫기</button>
+          <div class="modal-content find-modal">
+            <div class="modal-header">
+              <h3>🔍 아이디 찾기</h3>
+              <p class="desc">가입 시 등록한 이메일을 입력하시면<br/>아이디를 알려드립니다.</p>
+            </div>
+            <div class="modal-body">
+              <div class="input-group">
+                <input v-model="findIdEmail" type="email" class="input" placeholder="example@email.com" />
+              </div>
+              <button class="btn btn-primary full-width mt-4" @click="handleFindId" :disabled="findLoading">
+                {{ findLoading ? '조회 중...' : '아이디 찾기' }}
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-text-only" @click="closeFindModal">돌아가기</button>
+            </div>
           </div>
         </div>
 
-        <!-- 비밀번호 변경 안내 모달 -->
+        <!-- 비밀번호 찾기(이메일 전송) 모달 -->
         <div v-if="showFindPwModal" class="modal-overlay modal-center" @click.self="closeFindModal">
-          <div class="modal-content">
-            <h3>비밀번호 변경</h3>
-            <p class="desc">보안을 위해 관리자에게 문의하여 비밀번호를 변경하실 수 있습니다.</p>
-            <div class="alert alert-info">
-              <strong>📧 관리자 이메일:</strong> admin@ssafy.com<br/>
-              <strong>📞 연락처:</strong> 02-1234-5678
+          <div class="modal-content find-modal">
+            <div class="modal-header">
+              <h3>🔒 비밀번호 재설정</h3>
+              <p class="desc">아이디와 이메일을 입력하시면<br/>임시 비밀번호를 메일로 보내드려요.</p>
             </div>
-            <p class="warning-text">⚠️ 본인 확인 후 비밀번호가 초기화됩니다.</p>
-            <button class="btn btn-primary full-width" @click="closeFindModal">확인</button>
+            <div class="modal-body">
+              <div class="input-group">
+                <label>아이디</label>
+                <input v-model="findPwId" type="text" class="input" placeholder="아이디" />
+              </div>
+              <div class="input-group mt-3">
+                <label>이메일</label>
+                <input v-model="findPwEmail" type="email" class="input" placeholder="example@email.com" />
+              </div>
+              <button class="btn btn-primary full-width mt-4" @click="handleFindPw" :disabled="findLoading">
+                {{ findLoading ? '전송 중...' : '임시 비밀번호 발송' }}
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-text-only" @click="closeFindModal">돌아가기</button>
+            </div>
           </div>
         </div>
       </Teleport>
@@ -358,11 +379,16 @@ const handleLogin = async () => {
   max-width: 400px;
 }
 
-h1 {
+.login-logo {
   text-align: center;
-  color: var(--primary);
   margin-bottom: 30px;
-  font-size: 2rem;
+}
+
+.login-logo img {
+  max-width: 100%;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
 }
 
 .login-form {
@@ -394,10 +420,21 @@ h1 {
   background: white;
 }
 
+.error-banner {
+  padding: 12px;
+  background-color: #FFF0F1;
+  color: #FF4D4F;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid #FFCCC7;
+}
+
 .input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.1);
+  border-color: #FFB6C1;
+  box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
 }
 
 .alert {
@@ -410,6 +447,30 @@ h1 {
   background: #fee;
   color: #c33;
   border: 1px solid #fcc;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* 소셜 로그인 */
@@ -477,143 +538,92 @@ h1 {
   font-size: 0.9rem;
 }
 
-/* 모달 오버레이 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
-  display: flex;
-  align-items: flex-end; /* 기본: 하단 */
-  justify-content: center;
+/* 소셜 로그인 버튼 컨테이너 강제 정렬 */
+.social-login > * {
+  width: 100%;
 }
 
-.modal-content {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-/* 모달 중앙 배치 */
-.modal-center {
-  display: flex !important;
-  align-items: center !important; /* 중앙 정렬 강제 */
-  justify-content: center !important;
-}
-
-.modal-center .modal-content {
-  margin: 0;
-  animation: modalSlideUp 0.3s ease;
-}
-
-@keyframes modalSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.alert-info {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1px solid #90caf9;
-  padding: 16px;
-  border-radius: 8px;
-  margin: 16px 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.warning-text {
-  color: #f57c00;
-  font-size: 0.85rem;
-  margin-top: 12px;
-}
-
-.modal-content .desc {
-  color: #666;
-  font-size: 0.95rem;
-  margin-bottom: 16px;
-}
-
-.btn-google {
+.btn-google, .btn-kakao {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 14px;
   font-size: 1rem;
-  color: #333;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border: none;
+}
+
+.btn-google {
+  background: white;
+  border: 1px solid #e0e0e0;
+  color: #333;
 }
 
 .btn-google:hover {
   background: #f8f9fa;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
 }
 
 .btn-kakao {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   background: #FEE500;
-  border: none;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 1rem;
-  color: #000000;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  color: #000;
 }
 
 .btn-kakao:hover {
   background: #FFD600;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
 }
 
-.text-center {
+/* 회원가입 문구 */
+.register-guide {
+  margin-top: 24px;
   text-align: center;
-  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #666;
 }
 
-.link-button {
-  display: inline-block;
-  color: #666;
-  text-decoration: none;
-  font-size: 0.95rem;
-  padding: 8px 0;
+.register-guide strong {
+  color: var(--primary);
+  margin-left: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* 아이디/비밀번호 찾기 영역 */
+.find-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.find-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.85rem;
+  cursor: pointer;
   transition: color 0.2s;
 }
 
-.link-button strong {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.link-button:hover {
+.find-btn:hover {
   color: #333;
 }
 
-.link-button:hover strong {
-  text-decoration: underline;
+.separator {
+  color: #eee;
 }
+
+.mt-4 { margin-top: 1.5rem; }
+.mt-3 { margin-top: 1rem; }
+
+.full-width { width: 100%; }
 </style>

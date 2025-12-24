@@ -57,8 +57,8 @@ export const refrigeratorAPI = {
   },
 
   // 식재료 소진
-  consumeIngredient(id, quantity) {
-    return api.post(`/refrigerator/ingredients/${id}/consume/`, { quantity })
+  consumeIngredient(id, quantity, unit = null) {
+    return api.post(`/refrigerator/ingredients/${id}/consume/`, { quantity, unit })
   },
 
   // 여러 식재료 일괄 삭제 (NEW!)

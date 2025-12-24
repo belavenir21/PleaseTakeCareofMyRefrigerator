@@ -222,7 +222,7 @@ def find_id_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def find_password_view(request):
-    """비밀번호 찾기 (아이디와 이메일 일치 확인)"""
+    """비밀번호 찾기 (아이디와 이메일 일치 확인 후 임시 비밀번호 발송)"""
     username = request.data.get('username')
     email = request.data.get('email')
     
@@ -231,10 +231,34 @@ def find_password_view(request):
         
     try:
         user = User.objects.get(username=username, email=email)
-        # 실제 서비스라면: 임시 비밀번호 생성 후 이메일 발송
-        # 현재 데모 환경에서는 성공 메시지만 반환
-        return Response({
-            'message': '확인되었습니다. (이메일 발송 시스템이 연동되지 않아, 관리자에게 비밀번호 초기화를 요청해주세요.)'
-        })
+        
+        # 1. 임시 비밀번호 생성 (8자리 랜덤)
+        import secrets
+        import string
+        alphabet = string.ascii_letters + string.digits
+        temp_pw = ''.join(secrets.choice(alphabet) for i in range(8))
+        
+        # 2. 유저 비밀번호 변경
+        user.set_password(temp_pw)
+        user.save()
+        
+        # 3. 이메일 발송 (현재는 콘솔 출력 설정)
+        from django.core.mail import send_mail
+        subject = '[냉장고를 부탁해] 임시 비밀번호가 발급되었습니다.'
+        message = f'안녕하세요, {user.username}님.\n\n회원님의 임시 비밀번호는 [{temp_pw}] 입니다.\n로그인 후 반드시 비밀번호를 변경해주세요.'
+        from_email = 'admin@pleasebox.com'
+        
+        try:
+            send_mail(subject, message, from_email, [email])
+            return Response({
+                'message': '가입하신 이메일로 임시 비밀번호가 발송되었습니다.'
+            })
+        except Exception as e:
+            # 이메일 발송 실패 시에도 비밀번호는 변경되었으므로 사용자에게 알림 (개발용)
+            print(f"DEBUG: Email sending failed: {str(e)}")
+            return Response({
+                'message': f'이메일 발송에 실패했지만 임시 비밀번호가 생성되었습니다: [{temp_pw}] (개발 확인용)'
+            })
+            
     except User.DoesNotExist:
         return Response({'error': '정보가 일치하는 회원을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)

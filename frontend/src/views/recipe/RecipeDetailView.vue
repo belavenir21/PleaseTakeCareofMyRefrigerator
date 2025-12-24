@@ -82,7 +82,6 @@
               :class="{ 'have-ingredient': hasIngredient(ingredient.name), 'need-ingredient': !hasIngredient(ingredient.name) }">
             <span class="ingredient-status-icon">{{ hasIngredient(ingredient.name) ? '✓' : '✗' }}</span>
             <span class="ingredient-name">{{ ingredient.name }}</span>
-            <span v-if="!isAbstractQuantity(ingredient.quantity)" class="ingredient-qty">{{ ingredient.quantity }}</span>
           </li>
         </ul>
       </div>
@@ -141,6 +140,7 @@ import { useRefrigeratorStore } from '@/store/refrigerator'
 import { useAuthStore } from '@/store/auth'
 import axios from '@/api'
 import { recipeAPI } from '@/api/recipe'
+import { useToastStore } from '@/stores/toast'
 import potIcon from '@/assets/images/pot.png'
 
 const route = useRoute()
@@ -148,6 +148,7 @@ const router = useRouter()
 const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
 const authStore = useAuthStore()
+const toast = useToastStore()
 
 const imageError = ref(false)
 const fileInput = ref(null)
@@ -301,7 +302,7 @@ const handleImageUpload = async (event) => {
     
     // 유효성 검사 (이미지 형식, 크기 등)
     if (!file.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드 가능합니다.')
+        toast.warning('이미지 파일만 업로드 가능합니다.')
         return
     }
     
@@ -324,11 +325,11 @@ const handleImageUpload = async (event) => {
              // recipe.value.image_url = res.data.image_url // 반응형 갱신
              await recipeStore.fetchRecipe(recipe.value.id)
              imageError.value = false // 에러 상태 초기화
-             alert('레시피 이미지가 등록되었습니다! 📸')
+             toast.success('레시피 이미지가 등록되었습니다! 📸')
         }
     } catch (e) {
         console.error('Image upload failed:', e)
-        alert('이미지 업로드에 실패했습니다.')
+        toast.error('이미지 업로드에 실패했습니다.')
     } finally {
         isUploading.value = false
         // value 초기화 (같은 파일 다시 선택 가능하게)
@@ -343,7 +344,7 @@ const toggleScrap = async () => {
   console.log('[RecipeDetail] 📌 Current scrap status:', recipe.value?.is_scraped)
   
   if (!authStore.isAuthenticated) {
-    alert('로그인이 필요한 기능입니다.')
+    toast.warning('로그인이 필요한 기능입니다.')
     router.push({ name: 'Login' })
     return
   }
@@ -371,10 +372,10 @@ const toggleScrap = async () => {
   } catch (e) {
     console.error('[RecipeDetail] ❌ 스크랩 실패:', e)
     if (e.response?.status === 401) {
-      alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
+      toast.error('로그인이 만료되었습니다. 다시 로그인해주세요.')
       router.push({ name: 'Login' })
     } else {
-      alert('스크랩 처리에 실패했습니다.')
+      toast.error('스크랩 처리에 실패했습니다.')
     }
   }
 }

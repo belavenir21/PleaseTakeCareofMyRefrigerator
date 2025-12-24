@@ -5,7 +5,7 @@
       <div class="fab-icon-wrap">
         <img src="@/assets/character-head.png" alt="AI" class="fab-char-img" />
       </div>
-      <span class="fab-label">쿠킹 미미</span>
+      <span class="fab-label">AI 셰프 쿠킹 미미</span>
     </button>
 
     <!-- 채팅창 -->
@@ -15,7 +15,7 @@
           <div class="header-info">
             <img src="@/assets/character-head.png" alt="AI" class="header-char-img" />
             <div>
-              <h3>쿠킹 미미</h3>
+              <h3>AI 셰프 쿠킹 미미</h3>
               <p class="subtitle">무엇이든 물어보세요!</p>
             </div>
           </div>
@@ -28,14 +28,17 @@
             <div class="welcome-icon-wrap">
               <img src="@/assets/character-head.png" alt="AI" class="welcome-char-img" />
             </div>
-            <h4>안녕하세요! 쿠킹 미미에요</h4>
+            <h3>안녕하세요! AI 셰프 쿠킹 미미에요</h3>
             <p>레시피, 요리 팁, 재료 활용법 등<br/>무엇이든 물어보세요!</p>
           </div>
 
           <!-- 메시지 목록 -->
           <div v-for="(msg, idx) in messages" :key="idx" 
                :class="['message', msg.role]">
-            <div class="message-content" v-html="formatMessage(msg.content)"></div>
+            <div class="message-content">
+              <span v-html="formatMessage(msg.content)"></span>
+              <span v-if="msg.isTyping" class="typing-cursor">|</span>
+            </div>
             <span class="message-time">{{ msg.time }}</span>
           </div>
 
@@ -93,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, reactive } from 'vue'
 import { recipeAPI } from '@/api/recipe'
 
 const isOpen = ref(false)
@@ -137,6 +140,7 @@ const autoResize = () => {
 }
 
 const formatMessage = (text) => {
+  if (!text) return ''
   return text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br/>')
@@ -163,6 +167,31 @@ const sendQuickMessage = (message, includeIngredients, actionId = null) => {
   sendMessage()
 }
 
+const typeMessage = async (fullText) => {
+  if (!fullText) return
+
+  const index = messages.value.length
+  messages.value.push({
+    role: 'assistant',
+    content: '',
+    time: getCurrentTime(),
+    isTyping: true
+  })
+  
+  const chars = Array.from(fullText)
+  let currentContent = ''
+  
+  for (let i = 0; i < chars.length; i++) {
+    currentContent += chars[i]
+    messages.value[index].content = currentContent
+    if (i % 3 === 0) scrollToBottom()
+    await new Promise(resolve => setTimeout(resolve, 30))
+  }
+  
+  messages.value[index].isTyping = false
+  scrollToBottom()
+}
+
 const sendMessage = async () => {
   const message = userInput.value.trim()
   if (!message || loading.value) return
@@ -180,13 +209,10 @@ const sendMessage = async () => {
 
   try {
     const response = await recipeAPI.sendChatMessage(message, useMyIngredients.value)
-    
-    messages.value.push({
-      role: 'assistant',
-      content: response.message,
-      time: getCurrentTime()
-    })
+    loading.value = false // 타이핑 시작 전 점 세개 로딩 제거
+    await typeMessage(response.message)
   } catch (error) {
+    loading.value = false
     messages.value.push({
       role: 'assistant',
       content: '죄송합니다, 오류가 발생했습니다. 다시 시도해주세요. 😅',
@@ -347,7 +373,7 @@ const sendMessage = async () => {
   object-fit: contain;
   animation: bounce 2s infinite;
 }
-.welcome-section h4 {
+.welcome-section h3 {
   margin: 0 0 10px;
   font-size: 1.2rem;
   color: #6D4C41;
@@ -383,8 +409,16 @@ const sendMessage = async () => {
 
 /* 메시지 */
 .message {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.message.user {
+  align-items: flex-end;
+}
+.message.assistant {
+  align-items: flex-start;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -393,22 +427,26 @@ const sendMessage = async () => {
 
 .message.user .message-content {
   background: linear-gradient(135deg, #FFB6C1 0%, #FFC1CC 100%);
-  color: white; /* 갈색은 잘 안 보일 수 있으니 흰색 */
-  margin-left: 40px;
+  color: white; 
   border-radius: 18px 18px 4px 18px;
   box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3);
+  align-self: flex-end; /* 우측 정렬 강제 */
 }
 .message.assistant .message-content {
   background: white;
   color: #6D4C41;
-  margin-right: 40px;
   border-radius: 18px 18px 18px 4px;
   border: 1px solid #e9ecef;
+  align-self: flex-start; /* 좌측 정렬 강제 */
 }
 .message-content {
-  padding: 14px 18px;
+  padding: 12px 16px;
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.5;
+  width: auto; /* width: fit-content 대신 auto와 flex-self 조합 */
+  max-width: 85%;
+  word-break: break-all;
+  display: inline-block;
 }
 .message-time {
   display: block;
@@ -549,5 +587,20 @@ const sendMessage = async () => {
   background: #FFF0F6;
   border-color: #FF8E99;
   transform: scale(1.02);
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
 }
 </style>

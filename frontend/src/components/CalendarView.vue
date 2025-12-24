@@ -220,8 +220,16 @@ const handleDateCleanup = async (dateObj) => {
 
 // 해당 재료로 레시피 찾기
 const useIngredientsForRecipes = () => {
+  const names = selectedDate.value.ingredients.map(i => i.name).join(',')
   closeModal()
-  router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
+  router.push({ 
+    name: 'RecipeList', 
+    query: { 
+      mode: 'recommend', 
+      ingredients: names,
+      source: 'calendar'
+    } 
+  })
 }
 
 // 이미지 URL 처리 (백엔드 URL 결합)
@@ -357,7 +365,15 @@ const nextMonth = () => {
 }
 
 const goToRecipes = () => {
-  router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
+  const names = expiringIngredients.value.map(i => i.name).join(',')
+  router.push({ 
+    name: 'RecipeList', 
+    query: { 
+      mode: 'recommend', 
+      ingredients: names,
+      source: 'calendar'
+    } 
+  })
 }
 </script>
 
