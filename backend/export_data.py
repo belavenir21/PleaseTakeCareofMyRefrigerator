@@ -61,7 +61,7 @@ def export_recipes():
                 'category': recipe.category or '',
                 'image_url': recipe.image_url or '',
                 'tags': recipe.tags if recipe.tags else [],
-                'author': recipe.author_id if recipe.author else None,
+                'author': None,  # 배포 환경에서는 author 없음 (외래키 문제 방지)
                 'api_source': recipe.api_source or '',
                 'api_id': recipe.api_id or '',
                 'created_at': recipe.created_at.isoformat() if recipe.created_at else None,

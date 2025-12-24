@@ -1,0 +1,9 @@
+[
+{
+  "model": "master.ingredientmaster",
+  "pk": 1712,
+  "fields": {
+    "name": "두유",
+    "category": "유제품",
+    "default_unit": "개",
+    "icon": 
