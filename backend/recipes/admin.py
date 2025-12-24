@@ -18,7 +18,7 @@ class RecipeAdmin(admin.ModelAdmin):
     
 @admin.register(RecipeIngredient)
 class RecipeIngredientAdmin(admin.ModelAdmin):
-    list_display = ['recipe', 'name', 'quantity']
+    list_display = ['recipe', 'name']  # quantity 필드 제거됨
     search_fields = ['recipe__title', 'name']
 
 @admin.register(CookingStep)

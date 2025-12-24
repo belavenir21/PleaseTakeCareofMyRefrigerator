@@ -185,16 +185,12 @@ const submitManualRecipe = async () => {
   
   generating.value = true
   try {
-    // 재료 파싱 (줄바꿈으로 구분)
+    // 재료 파싱 (quantity 필드 제거: 이름만 저장)
     const ingredients = ingredientsText.value.split('\n')
       .filter(line => line.trim())
       .map(line => {
-        // "양파 1개" 형태 파싱
-        const match = line.trim().match(/^(.+?)\s*([\d\/\.]+\s*(?:g|ml|개|큰술|작은술|컵|봉|팩|마리|조각|장|근|모|줄기|송이)?.*)$/i)
-        if (match) {
-          return { name: match[1].trim(), quantity: match[2].trim() || '' }
-        }
-        return { name: line.trim(), quantity: '' }
+        // 이름만 추출 (\"1개\", \"200g\" 같은 수량 정보 무시)
+        return { name: line.trim() }
       })
     
     // 조리 단계 파싱

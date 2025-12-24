@@ -146,38 +146,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     break
             
             if target_ing:
-                # 수량 차감 로직 개선
-                req_val = parse_num(ring.quantity)
-                
-                # 단위 보정 (레시피 단위가 kg/L인데 보관된게 g/ml이면 맞춰줌)
-                # 반대로 보관된게 kg/L인데 레시피가 g/ml이면 그것도 맞춰줌
-                req_std = get_standard_val(req_val, ring.quantity)
-                inv_std = get_standard_val(target_ing.quantity, target_ing.unit)
-                
-                if inv_std <= req_std:
-                    actual_consumed = target_ing.quantity
-                    target_ing.delete()
-                    consumed_items.append({
-                        'name': target_ing.name,
-                        'consumed_quantity': f"{int(actual_consumed) if actual_consumed == int(actual_consumed) else actual_consumed}{target_ing.unit}",
-                        'status': 'finished'
-                    })
-                else:
-                    # 차감 후 저장 (표준화 단위 기준 차이 계산)
-                    remain_std = inv_std - req_std
-                    # 원래 단위로 복구
-                    if target_ing.unit.lower() in ['kg', 'l', '리터', '킬로']:
-                        target_ing.quantity = remain_std / 1000
-                    else:
-                        target_ing.quantity = remain_std
-                    
-                    target_ing.save()
-                    consumed_items.append({
-                        'name': target_ing.name,
-                        'consumed_quantity': ring.quantity,
-                        'status': 'reduced',
-                        'remaining': f"{int(target_ing.quantity) if target_ing.quantity == int(target_ing.quantity) else target_ing.quantity}{target_ing.unit}"
-                    })
+                # quantity 필드 제거됨: 기본 수량으로 차감
+                # TODO: 사용자가 요리 완료 시 직접 차감량을 입력하도록 수정 필요
+                consumed_items.append({
+                    'name': target_ing.name,
+                    'note': '재료 사용됨 (수량 정보 없음)',
+                    'status': 'used'
+                })
             else:
                 not_found_items.append(ring.name)
         
@@ -307,7 +282,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 
                 for uing in user_unique_names:
                     # uing: 사용자 재료 (공백제거됨)
-                    if any((uing in v or v in uing) for v in ring_variants):
+                    
+                    # 완전 일치만 (동의어 포함)
+                    if uing in ring_variants or ring in get_variants(uing):
                         is_matched = True
                         break
                 
@@ -338,8 +315,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             weighted_score = display_match_ratio + (expiring_match_count * 0.05) + extra_weight
             
             missing_ingredients = [name for name in recipe_ingredients_names if name not in matched_list]
+            # quantity 필드 제거됨: 이름만 반환
             missing_ingredients_detailed = [
-                {'name': ring.name, 'quantity': ring.quantity} 
+                {'name': ring.name} 
                 for ring in recipe_ingredients_objs if ring.name not in matched_list
             ]
             
@@ -513,7 +491,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             
             recipe_data = json.loads(ai_text.strip())
             
-            # 레시피 생성
+            # 레시피 생성 - AI가 만들어도 요청한 유저가 author가 됨
             recipe = Recipe.objects.create(
                 title=recipe_data.get('title', recipe_name),
                 description=recipe_data.get('description', ''),
@@ -521,15 +499,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 difficulty=recipe_data.get('difficulty', '보통'),
                 category=recipe_data.get('category', '기타'),
                 tags=recipe_data.get('tags', []),
-                api_source='ai_generated'
+                api_source='ai_generated',
+                author=request.user  # AI가 생성했지만 요청한 유저가 주인
             )
             
-            # 재료 생성
+            # 재료 생성 (quantity 필드 제거됨)
             for ing in recipe_data.get('ingredients', []):
                 RecipeIngredient.objects.create(
                     recipe=recipe,
-                    name=ing.get('name', ''),
-                    quantity=ing.get('quantity', '')
+                    name=ing.get('name', '')
+                    # quantity 필드 제거됨
                 )
             
             # 조리 단계 생성

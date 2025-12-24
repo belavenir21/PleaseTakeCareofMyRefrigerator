@@ -283,11 +283,11 @@ const cameraInput = ref(null)
 const detectedList = ref([])
 const manualItems = ref([])
 
-// DB와 일치시킨 카테고리 목록
+// DB와 일치시킨 카테고리 목록 (백엔드 MASTER_CATEGORIES와 완전 동일)
 const categories = [
-  '채소', '과일/견과', '수산/건어물', '육류/달걀', 
-  '유제품', '곡류', '면/양념/오일', '가공식품', 
-  '간편식/식단', '음료', '기타'
+  '채소', '과일/견과', '수산물', '육류/달걀', 
+  '유제품', '곡류', '양념/오일', '가공식품', 
+  '간편식', '음료', '기타'
 ]
 
 const selectedCount = computed(() => detectedList.value.filter(item => item.selected).length)

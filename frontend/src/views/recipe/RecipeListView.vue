@@ -13,8 +13,8 @@
             <span class="label-side left" :class="{ active: !showRecommendations }">검색</span>
             <div class="toggle-switch" @click="toggleMode">
               <div class="toggle-track" :class="{ active: showRecommendations }">
-                <div class="toggle-thumb" :class="{ active: showRecommendations }">
-                  <img :src="heartIcon" class="thumb-img-extra" />
+                <div class="toggle-heart" :class="{ active: showRecommendations }">
+                  🤍
                 </div>
               </div>
             </div>
@@ -531,8 +531,8 @@ const showAutoExpandMessage = ref(false)
 const checkAutoExpand = () => {}
 
 const formatMissingIngredient = (ing) => {
-  if (!ing.quantity || ing.quantity.includes('적당량')) return ing.name
-  return `${ing.name}(${ing.quantity})`
+  // quantity 필드 제거됨: 이름만 표시
+  return ing.name
 }
 
 const clearSearch = () => { searchQuery.value = ''; searchResults.value = []; showRecommendations.value = false; }
@@ -599,16 +599,12 @@ const submitManualRecipe = async () => {
   
   generatingRecipe.value = true
   try {
-    // 재료 파싱 (줄바꿈으로 구분)
+    // 수동 입력 시 재료 파싱 (quantity 필드 제거)
     const ingredients = ingredientsText.value.split('\n')
       .filter(line => line.trim())
       .map(line => {
-        // "양파 1개" 형태 파싱
-        const match = line.trim().match(/^(.+?)\s*([\d\/\.]+\s*(?:g|ml|개|큰술|작은술|컵|봉|팩|마리|조각|장|근|모|줄기|송이)?.*)$/i)
-        if (match) {
-          return { name: match[1].trim(), quantity: match[2].trim() || '' }
-        }
-        return { name: line.trim(), quantity: '' }
+        // 이름만 추출 ("1개", "200g" 같은 수량 정보 무시)
+        return { name: line.trim() }
       })
     
     // 조리 단계 파싱
@@ -679,7 +675,7 @@ const submitManualRecipe = async () => {
 .btn-back:hover {
   transform: translateX(-3px);
 }
-/* 스위치 토글 래퍼 - 데스크탑에서는 우측 고정 */
+/* 스위치 토글 래퍼 - 크기 축소 */
 .mode-toggle-wrapper {
   position: absolute;
   right: 20px;
@@ -687,99 +683,99 @@ const submitManualRecipe = async () => {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .mode-label {
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #6D4C41;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
-/* 토글 컨테이너 (라벨 + 스위치) */
+/* 토글 컨테이너 (라벨 + 스위치) - 컴팩트하게 */
 .toggle-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 /* 스위치 */
 .toggle-switch {
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
-/* 토글 트랙 (iOS 스타일) */
+.toggle-switch:hover {
+  transform: scale(1.05);
+}
+
+.toggle-switch:active {
+  transform: scale(0.95);
+}
+
+/* 토글 트랙 - 크기 더 축소 */
 .toggle-track {
-  width: 70px;
-  height: 36px;
-  background: #E0E0E0;
-  border-radius: 18px;
+  width: 55px;
+  height: 28px;
+  background: linear-gradient(135deg, #E0E0E0 0%, #BDBDBD 100%);
+  border-radius: 14px;
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(0, 0, 0, 0.05);
 }
 
 .toggle-track.active {
-  background: linear-gradient(135deg, #A0E1F5 0%, #7AC5E2 100%); /* 하늘색 그라데이션 */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 12px rgba(160, 225, 245, 0.4);
+  background: linear-gradient(135deg, #FF85C1 0%, #FF6B9D 100%);
+  box-shadow: 
+    inset 0 2px 6px rgba(255, 107, 157, 0.4), 
+    0 0 15px rgba(255, 107, 157, 0.25),
+    0 3px 10px rgba(255, 107, 157, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-/* 토글 썸 (동그라미) */
-.toggle-thumb {
-  width: 32px;
-  height: 32px;
-  background: transparent;
-  border-radius: 50%;
+/* 토글 하트 - 위치 조정 (아래로, 왼쪽 시작점 더 왼쪽) */
+.toggle-heart {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
+  top: 1px;
+  left: -2px;
+  font-size: 26px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  user-select: none;
   line-height: 1;
-  padding: 0;
 }
 
-.toggle-thumb.active {
-  left: 36px;
-  transform: rotate(360deg);
+.toggle-heart.active {
+  left: 28px;
+  filter: drop-shadow(0 3px 6px rgba(255, 107, 157, 0.4));
 }
 
-.thumb-img-extra {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  image-rendering: pixelated;
-  /* 흰색 광채 + 그림자 효과 */
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8)) drop-shadow(0 4px 6px rgba(0,0,0,0.2));
-  transform: scale(1.8); /* 하트 크기 대폭 확대 (튀어나오게) */
-  animation: heartPulse 2s infinite ease-in-out;
-}
+/* 기존 thumb 관련 스타일 제거 */
 
-@keyframes heartPulse {
-  0%, 100% { transform: scale(1.8); }
-  50% { transform: scale(2.0); }
-}
-
-/* 양옆 라벨 */
+/* 양옆 라벨 - 폰트 크기 증가 */
 .label-side {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #aaa;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #BDBDBD;
   transition: all 0.3s;
   padding: 4px 8px;
   min-width: 45px;
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-radius: 10px;
 }
 
 .label-side.active {
   color: #FF6B9D;
-  font-weight: 700;
+  font-weight: 900;
+  background: rgba(255, 107, 157, 0.1);
+  transform: scale(1.08);
 }
 
 /* 모바일 해상도 대응 */
@@ -789,13 +785,14 @@ const submitManualRecipe = async () => {
     min-height: 60px;
     padding: 10px 60px !important;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
   }
   
   .mode-toggle-wrapper {
     position: static !important;
-    margin-bottom: 5px;
-    order: 2; /* 제목 아래로 오게 순서 조정 */
+    margin-bottom: 8px;
+    order: 2;
+    padding: 6px 10px;
   }
   
   .view-title {
@@ -808,23 +805,34 @@ const submitManualRecipe = async () => {
   }
   
   .toggle-track {
-    width: 54px;
-    height: 28px;
+    width: 50px;
+    height: 26px;
   }
   
   .toggle-thumb {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
   
   .toggle-thumb.active {
-    left: 26px;
+    left: 24px;
+  }
+  
+  .thumb-img-extra {
+    width: 28px;
+    height: 28px;
+    transform: scale(1.3);
+  }
+  
+  @keyframes heartPulse {
+    0%, 100% { transform: scale(1.3); }
+    50% { transform: scale(1.45); }
   }
   
   .label-side {
-    font-size: 0.75rem;
-    min-width: 35px;
-    padding: 2px 4px;
+    font-size: 0.95rem;
+    min-width: 38px;
+    padding: 3px 6px;
   }
   
   /* 카드 정렬 수정 */

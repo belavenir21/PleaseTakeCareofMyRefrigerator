@@ -201,14 +201,13 @@ const openAdjustModal = async () => {
           return pNorm.includes(normalized) || normalized.includes(pNorm)
         })
         
-        // 수량이 '적당량'인 경우 기본 차감량을 1로 설정 (추후 조절 가능)
-        const isAbstract = isAbstractQuantity(ing.quantity)
-
+        // quantity 필드 제거됨: 모든 재료에 기본값 적용
+        
         return {
           id: ing.id,
           name: ing.name,
-          unit: isAbstract ? '적정량' : (extractUnit(ing.quantity) || '개'),
-          usedAmount: isAbstract ? 1 : (extractNumber(ing.quantity) || 1),
+          unit: '개',
+          usedAmount: 1,
           currentStock: pantryItem?.quantity || 0,
           hasInPantry: !!pantryItem,
           pantryId: pantryItem?.id

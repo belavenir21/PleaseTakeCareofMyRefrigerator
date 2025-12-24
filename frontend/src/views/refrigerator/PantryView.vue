@@ -476,8 +476,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useRefrigeratorStore } from '@/store/refrigerator'
 import { useToastStore } from '@/stores/toast'
 import axios from '@/api' // axios 추가
@@ -495,9 +495,9 @@ const toast = useToastStore()
 
 const viewMode = ref('list') // 'list' or 'calendar'
 const categories = [
-  '전체', '채소', '과일/견과', '수산/건어물', '육류/달걀', 
-  '유제품', '곡류', '면/양념/오일', '가공식품', 
-  '간편식/식단', '음료', '기타'
+  '전체', '채소', '과일/견과', '수산물', '육류/달걀', 
+  '유제품', '곡류', '양념/오일', '가공식품', 
+  '간편식', '음료', '기타'
 ]
 const selectedCategory = ref('전체')
 const localSortBy = ref('expiry_date')
@@ -631,6 +631,17 @@ const selectedCount = computed(() => selectedIds.value.size)
 const isAllSelected = computed(() => filteredIngredients.value.length > 0 && filteredIngredients.value.every(i => selectedIds.value.has(i.id)))
 
 onMounted(() => refrigeratorStore.fetchIngredients())
+
+// 페이지 재진입 시 자동 새로고침
+const route = useRoute()
+let lastPath = ''
+watch(() => route.fullPath, (newPath) => {
+  if (newPath.includes('/refrigerator/pantry') && lastPath && !lastPath.includes('/refrigerator/pantry')) {
+    console.log('[PantryView] Returned - Refreshing')
+    refrigeratorStore.fetchIngredients()
+  }
+  lastPath = newPath
+})
 
 const goBack = () => router.push({ name: 'Main' })
 

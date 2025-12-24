@@ -180,18 +180,18 @@ function normalizeText(text) {
 function hasIngredient(ingredientName) {
   const normalized = normalizeText(ingredientName)
   
-  // 직접 매칭
+  // 완전 일치만 (백엔드와 동일한 로직)
   for (const myIng of myIngredientNames.value) {
-    if (myIng.includes(normalized) || normalized.includes(myIng)) {
+    if (myIng === normalized) {
       return true
     }
   }
   
-  // 동의어 매칭
+  // 동의어 매칭 (완전 일치만)
   for (const [key, values] of Object.entries(synonyms)) {
-    if (normalized.includes(key) || key.includes(normalized)) {
+    if (normalized === key) {
       for (const myIng of myIngredientNames.value) {
-        if (values.some(v => myIng.includes(v) || v.includes(myIng))) {
+        if (values.includes(myIng)) {
           return true
         }
       }

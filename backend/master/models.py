@@ -1,9 +1,14 @@
 from django.db import models
+from config.constants import INGREDIENT_CATEGORY_CHOICES
 
 class IngredientMaster(models.Model):
     """식재료 마스터 데이터"""
     name = models.CharField(max_length=100, unique=True, verbose_name='재료명')
-    category = models.CharField(max_length=50, verbose_name='카테고리')
+    category = models.CharField(
+        max_length=50, 
+        choices=INGREDIENT_CATEGORY_CHOICES,
+        verbose_name='카테고리'
+    )
     default_unit = models.CharField(max_length=10, verbose_name='기본 단위')
     icon = models.CharField(max_length=10, blank=True, null=True, verbose_name='이모지 아이콘')
     image_url = models.URLField(blank=True, null=True, verbose_name='이미지 URL')

@@ -51,10 +51,11 @@ class Recipe(models.Model):
         return self.title
 
 class RecipeIngredient(models.Model):
-    """레시피 재료"""
+    """레시피 재료 (수량 필드 제거: 93.9%가 '적정량'으로 의미 없음)"""
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='ingredients')
     name = models.CharField(max_length=100, verbose_name='재료명')
-    quantity = models.CharField(max_length=50, verbose_name='수량')
+    # quantity 필드 제거됨 (2025.12.24)
+    # 이유: 10,137개 중 9,519개(93.9%)가 "적정량"으로 실질적 정보 제공 불가
     
     class Meta:
         db_table = 'recipe_ingredients'

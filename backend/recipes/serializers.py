@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import Recipe, RecipeIngredient, CookingStep
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """레시피 재료 Serializer"""
+    """레시피 재료 Serializer (quantity 필드 제거)"""
     class Meta:
         model = RecipeIngredient
-        fields = ['id', 'name', 'quantity']
+        fields = ['id', 'name']
 
 class CookingStepSerializer(serializers.ModelSerializer):
     """조리 단계 Serializer"""
@@ -138,8 +138,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for ing in ingredients_data:
             RecipeIngredient.objects.create(
                 recipe=recipe,
-                name=ing.get('name', ''),
-                quantity=ing.get('quantity', '')
+                name=ing.get('name', '')
+                # quantity 필드 제거됨
             )
         
         for idx, step in enumerate(steps_data, 1):
