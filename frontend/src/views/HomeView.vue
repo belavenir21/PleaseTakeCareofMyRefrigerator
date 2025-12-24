@@ -32,12 +32,6 @@
           <div class="btn-img-wrapper" @click="startApp('recipes')">
             <img :src="recipeBtnImg" alt="레시피 찾기" class="nav-btn-img" />
           </div>
-
-          <!-- 챌린지 미니 버튼 (숨겨진 미니게임 느낌) -->
-          <div class="challenge-mini-btn" @click="router.push({ name: 'Challenge' })" title="이번 주 도전과제!">
-            <img :src="challengeBtnImg" alt="주간 챌린지" class="mini-icon-img" />
-            <span class="mini-badge">New!</span>
-          </div>
         </div>
       </div>
     </div>
@@ -148,6 +142,7 @@ const startApp = (page) => {
   width: 100%;
   height: 100%;
   z-index: -1;
+  pointer-events: none; /* 배경 클릭해도 스크롤 가능 */
 }
 
 /* 기본 월페이퍼 레이어 */
@@ -440,43 +435,5 @@ const startApp = (page) => {
   50% { transform: translateY(-8px); }
 }
 
-/* 🎮 챌린지 미니 버튼 스타일 */
-.challenge-mini-btn {
-  position: absolute;
-  bottom: -80px; /* 약간 위로 올림 */
-  right: 0px; /* 컨테이너 오른쪽 라인에 맞춤 */
-  width: 70px; /* 크기 조금 더 작게 */
-  height: auto;
-  transform: rotate(12deg); /* 스티커처럼 기울기 */
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
-  z-index: 10;
-}
 
-.challenge-mini-btn:hover {
-  transform: rotate(0deg) scale(1.15) translateY(-5px);
-  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));
-}
-
-.mini-icon-img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.mini-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #FF6B6B;
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 10px;
-  border: 2px solid white;
-  transform: rotate(15deg);
-  animation: bounce 1s infinite alternate;
-}
 </style>
