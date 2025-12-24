@@ -122,11 +122,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
+import { useToastStore } from '@/stores/toast'
 import { GoogleLogin } from 'vue3-google-login'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const toast = useToastStore()
 
 const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_API_KEY || ''
 
@@ -177,16 +179,16 @@ const closeFindModal = () => {
 
 const handleFindId = async () => {
     if(!findIdEmail.value) {
-        alert('이메일을 입력해주세요.')
+        toast.warning('이메일을 입력해주세요.')
         return
     }
     try {
         findLoading.value = true
         const res = await authStore.findId({ email: findIdEmail.value })
-        alert(`회원님의 아이디는 [ ${res.data.username} ] 입니다.`)
+        toast.success(`회원님의 아이디는 [ ${res.data.username} ] 입니다.`)
         closeFindModal()
     } catch (err) {
-        alert(err.response?.data?.error || '아이디 찾기에 실패했습니다.')
+        toast.error(err.response?.data?.error || '아이디 찾기에 실패했습니다.')
     } finally {
         findLoading.value = false
     }
@@ -194,7 +196,7 @@ const handleFindId = async () => {
 
 const handleFindPw = async () => {
     if(!findPwId.value || !findPwEmail.value) {
-        alert('아이디와 이메일을 모두 입력해주세요.')
+        toast.warning('아이디와 이메일을 모두 입력해주세요.')
         return
     }
     try {
@@ -203,10 +205,10 @@ const handleFindPw = async () => {
             username: findPwId.value,
             email: findPwEmail.value 
         })
-        alert(res.data.message)
+        toast.success(res.data.message)
         closeFindModal()
     } catch (err) {
-        alert(err.response?.data?.error || '비밀번호 찾기에 실패했습니다.')
+        toast.error(err.response?.data?.error || '비밀번호 찾기에 실패했습니다.')
     } finally {
         findLoading.value = false
     }
@@ -245,7 +247,7 @@ const handleGoogleLogin = async (response) => {
 // 카카오 로그인 핸들러
 const handleKakaoLogin = () => {
   if (!window.Kakao) {
-    alert('카카오 SDK를 불러오는 중입니다. 잠시 후 다시 시도해주세요.')
+    toast.warning('카카오 SDK를 불러오는 중입니다. 잠시 후 다시 시도해주세요.')
     return
   }
   
@@ -254,7 +256,7 @@ const handleKakaoLogin = () => {
 
 const proceedToKakaoLogin = () => {
   if (!KAKAO_API_KEY) {
-    alert('아직 카카오 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.')
+    toast.error('아직 카카오 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.')
     return
   }
 
@@ -272,7 +274,7 @@ const proceedToKakaoLogin = () => {
     })
   } catch (e) {
     console.error('Kakao init/login error:', e)
-    alert('카카오 로그인 초기화 중 오류가 발생했습니다.')
+    toast.error('카카오 로그인 초기화 중 오류가 발생했습니다.')
   }
 }
 
