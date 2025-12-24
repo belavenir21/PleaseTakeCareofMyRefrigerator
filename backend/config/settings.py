@@ -302,6 +302,8 @@ if IS_PRODUCTION:
     SECURE_SSL_REDIRECT = False  # Railway 자체적으로 SSL 처리
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'  # Cross-site 쿠키 허용 (Netlify → Railway)
+    CSRF_COOKIE_SAMESITE = 'None'
     
     # CSRF 신뢰 도메인 (Railway + Netlify)
     CSRF_TRUSTED_ORIGINS = [
