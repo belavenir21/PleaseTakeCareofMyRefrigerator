@@ -12,11 +12,23 @@ class UserSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     """사용자 프로필 Serializer"""
     user = UserSerializer(read_only=True)
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = UserProfile
-        fields = ['user', 'nickname', 'diet_goals', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['user', 'nickname', 'diet_goals', 'created_at', 'updated_at', 'profile_image', 'image_url']
+        read_only_fields = ['created_at', 'updated_at', 'image_url']
+        extra_kwargs = {
+            'profile_image': {'write_only': True}  # 이미지는 업로드용, 조회는 image_url 사용
+        }
+
+    def get_image_url(self, obj):
+        if obj.profile_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.profile_image.url)
+            return obj.profile_image.url
+        return None
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     """회원가입 Serializer"""

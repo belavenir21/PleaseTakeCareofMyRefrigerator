@@ -2,10 +2,14 @@
   <div class="recipe-detail-view">
     <header class="header-premium">
       <div class="header-inner">
-        <button @click="$router.back()" class="btn-back-header">
+        <button @click="goBack" class="btn-back-header">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">레시피 상세</h2>
+        <!-- 작성자일 경우 삭제 버튼 -->
+        <button v-if="isAuthor" @click="showDeleteModal = true" class="btn-delete-header">
+           🗑️
+        </button>
         <!-- 즐겨찾기 버튼 -->
         <button v-if="recipe" @click="toggleScrap" class="btn-scrap-header" :class="{ active: recipe.is_scraped }">
           {{ recipe.is_scraped ? '💖' : '🤍' }}
@@ -129,6 +133,28 @@
         </div>
       </div>
     </transition>
+
+
+    <!-- 삭제 확인 모달 -->
+    <div v-if="showDeleteModal" class="modal-overlay" @click="showDeleteModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>🗑️ 레시피 삭제</h3>
+          <button class="close-btn" @click="showDeleteModal = false">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="delete-confirm-text">
+            정말 <strong>"{{ recipe?.title }}"</strong> 레시피를 삭제하시겠습니까?
+            <br>
+            <span class="sub-text">이 작업은되돌릴 수 없습니다.</span>
+          </p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="showDeleteModal = false">취소</button>
+            <button class="btn btn-danger" @click="confirmDelete">삭제하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,6 +248,7 @@ const hasAllIngredients = computed(() => needCount.value === 0)
 
 // 확인 모달 상태
 const showConfirmModal = ref(false)
+const showDeleteModal = ref(false)
 
 onMounted(async () => {
   await recipeStore.fetchRecipe(route.params.id)
@@ -379,6 +406,28 @@ const toggleScrap = async () => {
     }
   }
 }
+
+const confirmDelete = async () => {
+    if (!recipe.value) return
+    try {
+        await recipeAPI.deleteRecipe(recipe.value.id)
+        toast.success('레시피가 삭제되었습니다.')
+        router.push({ name: 'RecipeList', query: { mode: 'recommend' } }) // 또는 ProfileView로 이동
+    } catch (e) {
+        console.error('레시피 삭제 실패:', e)
+        toast.error('레시피 삭제에 실패했습니다.')
+    } finally {
+        showDeleteModal.value = false
+    }
+}
+
+const goBack = () => {
+    if (window.history.state && window.history.state.back) {
+        router.back()
+    } else {
+        router.push({ name: 'RecipeList' })
+    }
+}
 </script>
 
 <style scoped>
@@ -425,6 +474,24 @@ const toggleScrap = async () => {
 }
 
 .btn-scrap-header:hover {
+  transform: scale(1.2);
+}
+
+.btn-delete-header {
+  position: absolute;
+  right: 60px; /* 즐겨찾기 버튼 왼쪽 */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btn-delete-header:hover {
   transform: scale(1.2);
 }
 

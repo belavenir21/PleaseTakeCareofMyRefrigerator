@@ -45,6 +45,10 @@ export const userAPI = {
 
   // 프로필 수정
   updateProfile(data) {
-    return api.put('/users/me/profile/', data)
+    return api.put('/users/me/profile/', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    })
   },
 }

@@ -200,7 +200,17 @@
               <div class="form-row">
                 <div class="group">
                   <label>수량</label>
-                  <input v-model.number="item.quantity" type="number" class="input-field" :disabled="!item.selected" />
+                  <div style="display: flex; gap: 8px;">
+                    <input v-model.number="item.quantity" type="number" class="input-field" :disabled="!item.selected" style="flex: 1; min-width: 60px;" />
+                    <select v-model="item.unit" class="input-field" :disabled="!item.selected" style="width: 80px;">
+                      <option value="개">개</option>
+                      <option value="g">g</option>
+                      <option value="ml">ml</option>
+                      <option value="봉">봉</option>
+                      <option value="팩">팩</option>
+                      <option value="박스">박스</option>
+                    </select>
+                  </div>
                 </div>
                 <div class="group">
                   <label>유통기한</label>

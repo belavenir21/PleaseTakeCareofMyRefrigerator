@@ -626,4 +626,43 @@ const handleLogin = async () => {
 .mt-3 { margin-top: 1rem; }
 
 .full-width { width: 100%; }
+.mt-4 { margin-top: 1.5rem; }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content.find-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 380px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-header { text-align: center; margin-bottom: 20px; }
+.modal-header h3 { font-size: 1.4rem; font-weight: 800; color: #333; margin-bottom: 8px; }
+.modal-header .desc { color: #868e96; font-size: 0.95rem; line-height: 1.5; }
+
+.modal-footer { margin-top: 15px; text-align: center; }
+.btn-text-only { background: none; border: none; color: #adb5bd; font-size: 0.9rem; cursor: pointer; text-decoration: underline; }
+.btn-text-only:hover { color: #495057; }
 </style>

@@ -2,7 +2,7 @@
   <div class="recipe-list-view">
     <header class="header-premium">
       <div class="header-inner">
-        <button @click="$router.push({ name: 'Pantry' })" class="btn-back-header">
+        <button @click="goBack" class="btn-back-header">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">{{ showRecommendations ? '냉장고 추천' : '레시피 검색' }}</h2>
@@ -38,6 +38,12 @@
         <div class="search-bar-solid">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input v-model="searchQuery" type="text" placeholder="어떤 요리가 궁금하신가요?" />
+          <div class="sort-wrapper">
+             <select v-model="sortOption" class="sort-select">
+                <option value="-created_at">최신순</option>
+                <option value="-scrap_count">인기순</option>
+             </select>
+          </div>
         </div>
       </section>
 
@@ -60,6 +66,12 @@
             <div v-else class="thumb-empty-img-wrapper">
               <img :src="potIcon" class="thumb-empty-img" alt="No Image" />
             </div>
+            
+             <!-- 즐겨찾기 수 (하트 카운트) 배지 -->
+            <div v-if="recipe.scrap_count > 0" class="badge-scrap-count">
+               ❤️ {{ recipe.scrap_count }}
+            </div>
+            
             
             <!-- 유저 레시피 배지 -->
             <div v-if="recipe.author || recipe.api_source === 'user'" class="badge-custom">
@@ -347,8 +359,37 @@ const openAIChat = () => {
 const searchQuery = ref('')
 const imageErrors = ref({})
 const showRecommendations = ref(false)
+
+const goBack = () => {
+    if (window.history.state && window.history.state.back) {
+        router.back()
+    } else {
+        router.push({ name: 'Main' })
+    }
+}
 const searchResults = ref([])
 const isSearching = ref(false)
+const sortOption = ref('-created_at')
+
+// 정렬 옵션 변경 감지
+watch(sortOption, async (newVal) => {
+    if (!showRecommendations.value) { // 검색 모드일 때만 적용 (추천 모드는 매칭률 순)
+        await recipeStore.fetchRecipes({ ordering: newVal, search: searchQuery.value })
+    }
+})
+
+// 검색어 변경 시에도 정렬 적용
+watch(searchQuery, async (newQuery) => {
+    if (!showRecommendations.value) {
+         // 디바운싱 없이 예시로 작성 (필요시 디바운스 적용)
+         if(newQuery.length > 0) {
+             isSearching.value = true
+             await recipeStore.fetchRecipes({ search: newQuery, ordering: sortOption.value })
+             isSearching.value = false
+         }
+    }
+})
+
 
 const loading = computed(() => recipeStore.loading || isSearching.value)
 const allRecipes = computed(() => recipeStore.recipes)
@@ -376,16 +417,39 @@ const filteredRecommendations = computed(() => {
 // 다음 단계 정보 (라벨 + 개수)
 const nextTierInfo = computed(() => {
   if (!showRecommendations.value) return null
-  if (accuracyThreshold.value === 80) {
-    const count = serverRecs.value.filter(r => r.match_ratio >= 60 && r.match_ratio < 80).length
-    return count > 0 ? { label: '60~79%', count, nextThreshold: 60 } : null
-  } else if (accuracyThreshold.value === 60) {
-    const count = serverRecs.value.filter(r => r.match_ratio >= 40 && r.match_ratio < 60).length
-    return count > 0 ? { label: '40~59%', count, nextThreshold: 40 } : null
-  } else if (accuracyThreshold.value === 40) {
-    const count = serverRecs.value.filter(r => r.match_ratio >= 20 && r.match_ratio < 40).length
-    return count > 0 ? { label: '20~39%', count, nextThreshold: 20 } : null
+  
+  const current = accuracyThreshold.value
+  // 확인해볼 구간들 (내림차순)
+  const tiers = [
+      { min: 60, max: 80 },
+      { min: 40, max: 60 },
+      { min: 20, max: 40 },
+      { min: 0, max: 20 }
+  ]
+  
+  for (const tier of tiers) {
+      // 현재 임계값보다 낮은 구간이어야 함
+      if (tier.min >= current) continue
+      
+      // 해당 구간에 데이터가 있는지 확인 (범위: [min, current))
+      // 즉, 현재 보고 있는 것보다 정확도가 낮지만 tier.min 보다는 높은 데이터들
+      const count = serverRecs.value.filter(r => r.match_ratio >= tier.min && r.match_ratio < current).length
+      
+      if (count > 0) {
+          // 데이터가 있는 첫 번째 하위 구간 발견
+          return { 
+              label: `${tier.min}~${current - 1}%`, 
+              count, 
+              nextThreshold: tier.min 
+          }
+      }
+      // 데이터가 없으면 더 낮은 구간 탐색 (건너뛰기)
+      // 만약 60~80 구간이 비어있으면 40~60을 탐색하게 됨.
+      // 이때 current는 그대로 유지해야 사용자가 "더 보기" 눌렀을 때 80 -> 40으로 한 번에 갈 수 있음.
+      // 하지만 UI 경험상 단계별로 보여주는 게 나을 수도 있고... 
+      // 사용자 요청은 "버튼이 작동하지 않음"이므로 데이터가 있는 곳으로 점프하는게 확실함.
   }
+  
   return null
 })
 
@@ -453,9 +517,22 @@ const toggleScrap = async (recipe) => {
     const response = await recipeAPI.toggleScrap(recipe.id)
     console.log('[RecipeList] ✅ Scrap toggle response:', response)
     
-    // 리액티비티를 위해 Vue.set 대신 객체 전체를 업데이트
-    Object.assign(recipe, { ...recipe, is_scraped: response.scraped })
-    console.log('[RecipeList] 📝 Updated scrap status:', recipe.is_scraped)
+    // 실시간 카운트 반영
+    let newCount = recipe.scrap_count || 0
+    if (response.scraped) {
+        newCount++
+    } else {
+        newCount = Math.max(0, newCount - 1)
+    }
+
+    // 리액티비티를 위해 업데이트
+    Object.assign(recipe, { ...recipe, is_scraped: response.scraped, scrap_count: newCount })
+    console.log('[RecipeList] 📝 Updated scrap status:', recipe.is_scraped, 'Count:', newCount)
+    
+    // 만약 '인기순' 정렬 중이라면 목록 갱신 (순위 변경 반영)
+    if (sortOption.value === '-scrap_count') {
+         await recipeStore.fetchRecipes({ ordering: sortOption.value, search: searchQuery.value })
+    }
     
     // authStore의 프로필 정보 갱신 (즐겨찾기 목록 동기화)
     await authStore.fetchUserProfile()
@@ -969,6 +1046,39 @@ const submitManualRecipe = async () => {
 .badge-ratio { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); color: white; padding: 12px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 .badge-ratio .num { font-size: 1.3rem; font-weight: 900; color: #FF6B6B; line-height: 1; }
 .badge-ratio .txt { font-size: 0.65rem; font-weight: 800; margin-top: 4px; opacity: 0.8; }
+
+.badge-scrap-count {
+  position: absolute;
+  top: 15px; left: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fa5252;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+
+.sort-wrapper {
+    position: relative;
+    border-left: 2px solid #eee;
+    padding-left: 10px;
+}
+.sort-select {
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #555;
+    background: transparent;
+    cursor: pointer;
+    padding-right: 20px;
+}
+
 
 /* 스크랩 버튼 */
 .btn-scrap {

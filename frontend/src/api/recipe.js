@@ -48,6 +48,11 @@ export const recipeAPI = {
   toggleScrap(id) {
     return api.post(`/recipes/${id}/scrap/`)
   },
+
+  // 레시피 삭제
+  deleteRecipe(id) {
+    return api.delete(`/recipes/${id}/`)
+  },
 }
 
 export const masterAPI = {

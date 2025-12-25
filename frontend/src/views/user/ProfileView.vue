@@ -2,7 +2,7 @@
   <div class="profile-view">
     <header class="header-premium">
       <div class="header-inner">
-        <button @click="$router.push({ name: 'Home' })" class="btn-back-header">
+        <button @click="goBack" class="btn-back-header">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <h2 class="view-title">프로필</h2>
@@ -37,25 +37,25 @@
     </header>
 
     <div class="container" v-if="activeTab === 'info'">
-      <!-- 사용자 정보 카드 (클릭 시 계정 설정 페이지로 이동) -->
+      <!-- 사용자 정보 카드 -->
       <div class="profile-section card">
         <div class="profile-header">
-          <div class="avatar-container" @click="triggerImageUpload">
+          <div class="avatar-container">
             <div class="avatar" v-if="!profile?.image_url">👤</div>
             <img :src="profile?.image_url" v-else class="avatar-img" />
-            <div class="avatar-edit-overlay">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            </div>
           </div>
           <div class="user-info">
             <div class="name-row">
-              <h3>{{ user?.username }}</h3>
+              <h3>{{ profile?.nickname || user?.username }}</h3>
               <button class="btn-settings-icon" @click="$router.push('/settings')" title="설정">⚙️</button>
             </div>
             <p>{{ user?.email }}</p>
+            <!-- 해시태그 표시 -->
+            <div v-if="profile?.diet_goals" class="profile-tags">
+              <span v-for="(tag, index) in profileTags" :key="index" class="profile-tag">{{ tag }}</span>
+            </div>
           </div>
         </div>
-        <input type="file" ref="fileInput" style="display: none" @change="handleImageUpload" accept="image/*" />
       </div>
 
       <!-- 통계 섹션 -->
@@ -87,49 +87,6 @@
           </div>
           <div class="arrow-icon">➜</div>
         </div>
-      </div>
-
-      <!-- 프로필 수정 폼 -->
-      <div class="edit-section card">
-        <h3>✏️ 프로필 설정</h3>
-        
-        <form @submit.prevent="handleSubmit">
-          <div class="input-group">
-            <label>닉네임</label>
-            <input
-              v-model="formData.nickname"
-              type="text"
-              class="input-field"
-              placeholder="닉네임을 입력하세요"
-            />
-          </div>
-
-          <div class="input-group">
-            <label>식단 목표 (엔터로 태그 추가)</label>
-            <div class="tag-input-container" @click="focusTagInput">
-              <span v-for="(tag, index) in tags" :key="index" class="tag-bubble">
-                {{ tag }}
-                <button type="button" @click.stop="removeTag(index)" class="btn-remove-tag">×</button>
-              </span>
-              <input
-                ref="tagInputRef"
-                v-model="tagInput"
-                type="text"
-                class="tag-input-field"
-                placeholder="#다이어트 #비건"
-                @keydown.enter.prevent="addTag"
-                @keydown.backspace="handleBackspace"
-              />
-            </div>
-            <p class="helper-text">💡 예: 다이어트, 저염식, 채식, 글루텐프리 등</p>
-          </div>
-
-          <div class="form-actions-right">
-            <button type="submit" class="btn btn-primary" :disabled="loading">
-              {{ loading ? '저장 중...' : '프로필 수정' }}
-            </button>
-          </div>
-        </form>
       </div>
 
       <!-- 로그아웃 -->
@@ -168,6 +125,10 @@
                     <div v-else class="no-img-wrapper">
                       <img :src="potIcon" class="no-img-pot" alt="No Image" />
                     </div>
+                    <!-- 레시피 삭제 버튼 -->
+                    <button class="btn-delete-card" @click.stop="openDeleteModal(recipe)">
+                      🗑️
+                    </button>
                 </div>
                 <div class="recipe-info">
                     <h4>{{ recipe.title }}</h4>
@@ -235,6 +196,27 @@
         </div>
       </div>
     </div>
+
+    <!-- 레시피 삭제 확인 모달 -->
+    <div v-if="showDeleteModal" class="modal-overlay" @click="showDeleteModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>🗑️ 레시피 삭제</h3>
+          <button class="close-btn" @click="showDeleteModal = false">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="delete-confirm-text">
+            정말 <strong>"{{ recipeToDelete?.title }}"</strong> 레시피를 삭제하시겠습니까?
+            <br>
+            <span class="sub-text">이 작업은 되돌릴 수 없습니다.</span>
+          </p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="showDeleteModal = false">취소</button>
+            <button class="btn btn-danger" @click="confirmDelete">삭제하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -266,21 +248,15 @@ const profile = computed(() => authStore.profile)
 const ingredientCount = computed(() => refrigeratorStore.ingredients.length)
 const expiringCount = computed(() => refrigeratorStore.expiringIngredients.length)
 
-const formData = ref({
-  nickname: '',
-  diet_goals: '',
+// 프로필 해시태그 파싱
+const profileTags = computed(() => {
+  if (!profile.value?.diet_goals) return []
+  return profile.value.diet_goals.split(' ').filter(t => t.startsWith('#'))
 })
 
 onMounted(async () => {
   await refrigeratorStore.fetchIngredients()
   fetchUserRecipes()
-  
-  if (profile.value) {
-    formData.value.nickname = profile.value.nickname || ''
-    if (profile.value.diet_goals) {
-      tags.value = profile.value.diet_goals.split(' ').filter(t => t.startsWith('#'))
-    }
-  }
 })
 
 const fetchUserRecipes = async () => {
@@ -343,72 +319,7 @@ const toggleScrap = async (recipe) => {
   }
 }
 
-// 태그 관련 로직
-const tagInput = ref('')
-const tags = ref([])
-const tagInputRef = ref(null)
 
-const focusTagInput = () => {
-  tagInputRef.value.focus()
-}
-
-const addTag = () => {
-  const val = tagInput.value.trim()
-  if (!val) return
-  const newTag = val.startsWith('#') ? val : `#${val}`
-  if (!tags.value.includes(newTag)) tags.value.push(newTag)
-  tagInput.value = ''
-}
-
-const removeTag = (index) => {
-  tags.value.splice(index, 1)
-}
-
-const handleBackspace = () => {
-  if (tagInput.value === '' && tags.value.length > 0) {
-    tags.value.pop()
-  }
-}
-
-const fileInput = ref(null)
-
-const triggerImageUpload = () => {
-  fileInput.value.click()
-}
-
-const handleImageUpload = async (event) => {
-  const file = event.target.files[0]
-  if (!file) return
-
-  const formData = new FormData()
-  formData.append('profile_image', file)
-
-  try {
-    const response = await userAPI.updateProfile(formData)
-    authStore.profile = response.profile
-    toast.success('프로필 사진이 업데이트되었습니다!')
-  } catch (error) {
-    console.error('이미지 업로드 실패:', error)
-    toast.error('이미지 업로드에 실패했습니다.')
-  }
-}
-
-const handleSubmit = async () => {
-  if (!formData.value.nickname || formData.value.nickname.trim() === '') {
-    toast.warning('닉네임은 필수 입력 항목입니다.')
-    return
-  }
-  loading.value = true
-  try {
-    formData.value.diet_goals = tags.value.join(' ')
-    await authStore.updateProfile(formData.value)
-    toast.success('프로필이 수정되었습니다.')
-  } catch (error) {
-    toast.error('수정에 실패했습니다.')
-  } finally {
-    loading.value = false
-  }
-}
 
 const handleLogout = async () => {
   if (!confirm('로그아웃 하시겠습니까?')) return
@@ -439,6 +350,33 @@ const openExpiringModal = () => {
 const goToRecipes = () => {
   router.push({ name: 'RecipeList', query: { mode: 'recommend' } })
 }
+
+// 레시피 삭제 로직
+const showDeleteModal = ref(false)
+const recipeToDelete = ref(null)
+
+const openDeleteModal = (recipe) => {
+  recipeToDelete.value = recipe
+  showDeleteModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!recipeToDelete.value) return
+  
+  try {
+    await recipeAPI.deleteRecipe(recipeToDelete.value.id)
+    toast.success(`"${recipeToDelete.value.title}" 레시피가 삭제되었습니다.`)
+    
+    // 목록 갱신
+    myRecipes.value = myRecipes.value.filter(r => r.id !== recipeToDelete.value.id)
+    showDeleteModal.value = false
+    recipeToDelete.value = null
+  } catch (error) {
+    console.error('레시피 삭제 실패:', error)
+    toast.error('레시피 삭제에 실패했습니다.')
+  }
+}
+
 
 const getDday = (dateStr) => {
   const target = new Date(dateStr)
@@ -492,6 +430,23 @@ const goBack = () => {
 .btn-settings-icon:hover { background: rgba(0,0,0,0.05); }
 .user-info h3 { margin: 0; font-size: 1.4rem; font-weight: 800; color: #333; }
 .user-info p { margin: 4px 0 0; color: #868e96; font-size: 0.95rem; }
+
+/* 프로필 해시태그 */
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.profile-tag {
+  background: linear-gradient(135deg, #fff0f6 0%, #ffe3f0 100%);
+  color: #e64980;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(230, 73, 128, 0.2);
+}
 
 /* 📊 Stats Section */
 .stats-section h3 { margin-bottom: 20px; color: var(--text-dark); font-size: 1.1rem; }
@@ -583,6 +538,69 @@ const goBack = () => {
   50% { transform: scale(1.2); }
 }
 
+.btn-delete-card {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ffc9c9;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-delete-card:hover {
+  transform: scale(1.1);
+  background: #fff5f5;
+  color: #c92a2a;
+  border-color: #ffa8a8;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-danger {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #fa5252;
+}
+
+.delete-confirm-text {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #343a40;
+  margin-top: 10px;
+}
+
+.sub-text {
+  font-size: 0.85rem;
+  color: #868e96;
+  margin-top: 5px;
+  display: block;
+}
+
+
 .no-img { font-size: 2.5rem; }
 .heart-badge {
     position: absolute; top: 10px; right: 10px;
@@ -614,11 +632,12 @@ const goBack = () => {
     justify-content: center;
     align-items: center;
 }
-.empty-smile-img, .empty-pan-img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    image-rendering: pixelated;
+.empty-smile-img, .avatar-container {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+    position: relative;
+    cursor: default;
 }
 .empty-heart-img {
     width: 80px;

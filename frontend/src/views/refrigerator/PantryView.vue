@@ -1451,6 +1451,7 @@ onMounted(() => {
   flex-direction: row; /* 세로에서 가로로 변경 */
   justify-content: flex-end; /* 우측 정렬 */
   margin-top: 10px;
+  flex-wrap: wrap; 
 }
 .btn-edit,
 .btn-save,

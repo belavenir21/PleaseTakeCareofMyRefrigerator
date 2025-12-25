@@ -528,7 +528,7 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated]
     )
     def identify_ingredients_ai(self, request):
-        """Gemini 2.0 Flash를 사용하여 사진 제로 식재료 및 수량 분석"""
+        """Gemini 2.5 Flash를 사용하여 사진 식재료 및 수량 분석 (중복 병합 및 마스터 매칭 강화)"""
         serializer = IngredientScanSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -540,18 +540,16 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
         image = serializer.validated_data['image']
         import base64
         import json
+        import re
         from master.models import IngredientMaster
         from PIL import Image as PILImage
         from io import BytesIO
+        from difflib import SequenceMatcher
         
         try:
             # 이미지 리사이즈 (GMS API 크기 제한 대응)
             image.seek(0)
             pil_image = PILImage.open(image)
-            
-            original_width, original_height = pil_image.width, pil_image.height
-            print(f"\n[VISION-DEBUG] 📸 이미지 분석 시작 (Gemini 2.5 Flash)")
-            print(f"[VISION-DEBUG]  - 원본 크기: {original_width}x{original_height}")
             
             # RGB 변환 (RGBA나 다른 모드 처리)
             if pil_image.mode != 'RGB':
@@ -561,9 +559,6 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             max_size = 800
             if pil_image.width > max_size or pil_image.height > max_size:
                 pil_image.thumbnail((max_size, max_size), PILImage.Resampling.LANCZOS)
-                print(f"[VISION-DEBUG]  - 압축 후 크기: {pil_image.width}x{pil_image.height} (품질 75%)")
-            else:
-                print(f"[VISION-DEBUG]  - 압축 불필요 (이미 {max_size}px 이하)")
             
             # 압축된 JPEG로 변환 (품질 75%)
             buffer = BytesIO()
@@ -591,92 +586,165 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                 "contents": [{
                     "parts": [
                         {"text": prompt},
-                        {
-                            "inline_data": {
-                                "mime_type": "image/jpeg",
-                                "data": image_data
-                            }
-                        }
+                        {"inline_data": {
+                            "mime_type": "image/jpeg",
+                            "data": image_data
+                        }}
                     ]
                 }]
             }
             
-            print(f"\n[VISION-DEBUG] 📸 이미지 분석 시작")
-            print(f"[VISION-DEBUG]  - 이미지 크기: {pil_image.width}x{pil_image.height}")
-            print(f"[VISION-DEBUG] 🤖 Gemini Vision API 호출 중...")
-            
             import requests
             response = requests.post(url, json=payload, timeout=30)
-            print(f"[VISION-DEBUG] 📡 응답 상태: {response.status_code}")
             
             if response.status_code != 200:
-                print(f"[VISION-DEBUG] ❌ API 에러: {response.text[:500]}")
                 return Response({'error': f'AI 연동 실패: {response.text}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 
             result = response.json()
             raw_text = result['candidates'][0]['content']['parts'][0]['text'].strip()
-            print(f"[VISION-DEBUG] ✅ AI 응답 받음 (길이: {len(raw_text)} chars)")
             
             # Markdown code block 제거
             clean_json = re.sub(r'```json\s*|\s*```', '', raw_text)
-            items_data = json.loads(clean_json)
-            print(f"[VISION-DEBUG] 📦 인식된 아이템 수: {len(items_data)}")
+            try:
+                items_data = json.loads(clean_json)
+            except:
+                match = re.search(r'\[.*\]', clean_json, re.DOTALL) 
+                if match:
+                    items_data = json.loads(match.group(0))
+                else:
+                    items_data = []
             
-            # 마스터 데이터와 매칭하여 상세 정보 보강
+            # 마스터 데이터 로드
             masters = list(IngredientMaster.objects.all())
-            final_items = []
             
-            def normalize_name(name):
-                if not name: return ""
-                name = re.sub(r'\(.*\)', '', name)
-                return name.replace(" ", "").lower()
-
-            def find_best_match(text, masters_list):
-                if not text: return None
-                target = normalize_name(text)
-                
-                synonyms = {'계란': '달걀', '쇠고기': '소고기', '닭': '닭고기', '돼지': '돼지고기'}
-                for k, v in synonyms.items():
-                    if k in target: target = target.replace(k, v)
-
-                for m in masters_list:
-                    if normalize_name(m.name) == target: return m
-                for m in masters_list:
-                    m_norm = normalize_name(m.name)
-                    if m_norm in target or target in m_norm: return m
-                return None
-
+            # 중복 병합용 딕셔너리 (Key -> item data)
+            merged_map = {}
+            
+            from datetime import date, timedelta
+            
             for item in items_data:
-                name = item.get('name')
-                matched_master = find_best_match(name, masters)
+                raw_name = item.get('name', '').strip()
+                if not raw_name: continue
                 
-                category, storage_method, days, unit, icon = '가공식품', '냉장', 14, item.get('unit', '개'), '🍴'
+                # 수량 파싱
+                try:
+                    qty = float(item.get('quantity', 1))
+                except:
+                    qty = 1.0
                 
-                if matched_master:
-                    name = matched_master.name
-                    category = matched_master.category
-                    unit = matched_master.default_unit or unit
-                    icon = matched_master.icon or '📦'
-                    storage_settings = {
-                        '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
-                        '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
-                        '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
-                    }
-                    storage_method, days = storage_settings.get(category, ('냉장', 14))
+                # -- 매칭 로직 (강화됨) --
+                # 1. 정제: 괄호 제거
+                clean_name = re.sub(r'\(.*?\)|\[.*?\]', '', raw_name).strip()
+                target = clean_name.replace(" ", "")
                 
+                matched = None
+                
+                # 2. 정확 매칭
+                for m in masters:
+                    if m.name.replace(" ", "") == target:
+                        matched = m
+                        break
+                        
+                # 3. 포함 검색 (마스터 이름이 입력 이름에 포함됨) 예: "돼지고기전지" -> "돼지고기"
+                if not matched:
+                    candidates = []
+                    for m in masters:
+                        m_clean = m.name.replace(" ", "")
+                        if m_clean and m_clean in target:
+                            candidates.append(m)
+                    if candidates:
+                        # 가장 긴 이름 선택 (정보 손실 최소화)
+                        matched = max(candidates, key=lambda x: len(x.name))
+                
+                # 4. 유사도 매칭 (오타용) -> 무조건 매칭을 위해 임계값을 낮게 설정
+                if not matched:
+                    best_score, best_m = 0, None
+                    for m in masters:
+                        score = SequenceMatcher(None, target, m.name.replace(" ", "")).ratio()
+                        if score > best_score:
+                            best_score = score
+                            best_m = m
+                    
+                    if best_score > 0.4: # 40% 이상 유사하면 매칭
+                        matched = best_m
+
+                # 최종 이름 및 정보 결정
+                from config.constants import normalize_category
+
+                # 보관 방법 및 유통기한 자동 계산을 위한 설정
+                storage_settings = {
+                    '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
+                    '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
+                    '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
+                    '조미료': ('실온', 180), '곡류': ('실온', 180), '반찬': ('냉장', 7), 
+                    '기타': ('냉장', 14)
+                }
+                
+                # 아이콘 매핑 (카테고리별 기본 아이콘)
+                category_icons = {
+                    '채소': '🥬', '과일': '🍎', '육류': '🥩', '수산물': '🐟',
+                    '유제품': '🥛', '음료': '🥤', '면/식품/오일': '🍝', 
+                    '가공식품': '🥫', '조미료': '🧂', '곡류': '🌾', '반찬': '🍱',
+                    '기타': '📦'
+                }
+
+                if matched:
+                    final_name = matched.name
+                    category = matched.category
+                    unit = matched.default_unit or '개'
+                    icon = matched.icon or category_icons.get(category, '📦')
+                else:
+                    # 매칭 실패 시: 마스터 DB에 자동 등록
+                    final_name = clean_name
+                    # 카테고리 자동 추정
+                    category = normalize_category(final_name)
+                    unit = item.get('unit', '개')
+                    icon = category_icons.get(category, '🍴')
+                    
+                    try:
+                        # 이미 존재하는지 재확인 (동시성 문제 방지)
+                        match_exist = IngredientMaster.objects.filter(name=final_name).first()
+                        if match_exist:
+                            matched = match_exist
+                            category = matched.category
+                            icon = matched.icon or category_icons.get(category, '📦')
+                        else:
+                            # 새 마스터 생성 (storage_method 필드 제외)
+                            IngredientMaster.objects.create(
+                                name=final_name,
+                                category=category,
+                                default_unit=unit,
+                                icon=icon,
+                                api_source='GeminiAI_Scan'
+                            )
+                            print(f"[AI-SCAN] ✨ New ingredient added to Master: {final_name} ({category})")
+                    except Exception as e:
+                        print(f"[AI-SCAN] ⚠️ Failed to auto-create master: {e}")
+
+                # 보관 방법 및 유통기한 결정
+                storage_method, days = storage_settings.get(category, ('냉장', 14))
                 expiry_date = (date.today() + timedelta(days=days)).strftime('%Y-%m-%d')
                 
-                final_items.append({
-                    'name': name,
-                    'category': category,
-                    'quantity': item.get('quantity', 1),
-                    'unit': unit,
-                    'icon': icon,
-                    'storage_method': storage_method,
-                    'expiry_date': expiry_date,
-                    'is_ai_identified': True
-                })
+                # 병합 키 생성
+                merge_key = final_name
                 
+                if merge_key in merged_map:
+                    merged_map[merge_key]['quantity'] += qty
+                else:
+                    merged_map[merge_key] = {
+                        'name': final_name,
+                        'category': category,
+                        'quantity': qty,
+                        'unit': unit,
+                        'icon': icon,
+                        'storage_method': storage_method,
+                        'expiry_date': expiry_date,
+                         # 프론트엔드 호환용
+                        'is_ai_identified': True
+                    }
+            
+            final_items = list(merged_map.values())
+            
             return Response({
                 'message': f'AI 분석 완료 ({len(final_items)}개 식별)',
                 'items': final_items

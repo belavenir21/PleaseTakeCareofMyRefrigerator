@@ -11,6 +11,7 @@ from .serializers import (
     RecipeListSerializer, RecipeDetailSerializer, CookingStepSerializer, RecipeCreateSerializer
 )
 from refrigerator.models import UserIngredient
+from config.constants import normalize_category
 
 class RecipeFilter(django_filters.FilterSet):
     """레시피 필터"""
@@ -34,11 +35,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     filter_backends = [django_filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'ingredients__name']
-    ordering_fields = ['cooking_time_minutes', 'created_at']
+    ordering_fields = ['cooking_time_minutes', 'created_at', 'scrap_count']
     
     def get_queryset(self):
         """쿼리셋 필터링 (내 레시피, 스크랩한 레시피)"""
         queryset = super().get_queryset()
+        
+        # 좋아요(스크랩) 수 카운트 (정렬용)
+        from django.db.models import Count
+        queryset = queryset.annotate(scrap_count=Count('scraped_by'))
+        
         user = self.request.user
         
         # ?author=me : 내가 작성한 레시피
@@ -423,6 +429,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def generate_recipe(self, request):
         """AI로 레시피 자동 생성"""
+        from master.models import IngredientMaster
+        
         recipe_name = request.data.get('recipe_name', '')
         
         if not recipe_name:
@@ -453,17 +461,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ]
 }}
 
-중요:
-- 재료는 실제 필요한 것만 포함
-- 조리 단계는 상세하게 5-8단계 정도
-- 한국어로 작성
+중요 규칙:
+1. 재료명은 반드시 "표준 식재료명"을 사용하세요 (예: '달걀' O, '계란' O, '유기농 달걀' X -> '달걀'로 통일).
+2. 브랜드명이나 수식어(신선한, 맛있는 등)를 뺀 순수 재료명만 적으세요.
+3. 한국어로 작성하세요.
 """
         
         try:
             url = f"https://gms.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gms_key}"
             payload = {
                 "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"temperature": 0.7}
+                "generationConfig": {"temperature": 0.3} # 창의성 낮춤 (정확도 UP)
             }
             response = requests.post(url, json=payload, timeout=30)
             
@@ -491,7 +499,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             
             recipe_data = json.loads(ai_text.strip())
             
-            # 레시피 생성 - AI가 만들어도 요청한 유저가 author가 됨
+            # 레시피 생성
             recipe = Recipe.objects.create(
                 title=recipe_data.get('title', recipe_name),
                 description=recipe_data.get('description', ''),
@@ -500,15 +508,84 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 category=recipe_data.get('category', '기타'),
                 tags=recipe_data.get('tags', []),
                 api_source='ai_generated',
-                author=request.user  # AI가 생성했지만 요청한 유저가 주인
+                author=request.user
             )
             
-            # 재료 생성 (quantity 필드 제거됨)
+            # 재료 생성 및 마스터 DB 매칭
             for ing in recipe_data.get('ingredients', []):
+                raw_name = ing.get('name', '').strip()
+                
+                # 1. 괄호 및 특수문자 제거 정제
+                # (예: "돼지고기(뒷다리살)" -> "돼지고기")
+                clean_name = re.sub(r'\(.*?\)|\[.*?\]', '', raw_name).strip()
+                
+                final_name = clean_name
+                master = None
+                
+                # 2. 정확 매칭 시도
+                master = IngredientMaster.objects.filter(name=clean_name).first()
+                
+                if not master:
+                    # 3. 공백 포함된 경우단어별 분리 매칭 시도 (예: "스리라차소스 한큰술" -> "스리라차소스" 찾기)
+                    # 수식어나 단위가 뒤에 붙은 경우를 처리
+                    parts = clean_name.split()
+                    for i in range(len(parts), 0, -1):
+                        sub_name = " ".join(parts[:i])
+                        master = IngredientMaster.objects.filter(name=sub_name).first()
+                        if master:
+                            break
+                
+                if not master:
+                    # 4. 포함 검색 (가장 짧은 것 = 가장 일반적인 것 선택)
+                    # 예: '다진 마늘' -> '마늘'
+                    candidates = IngredientMaster.objects.filter(name__icontains=clean_name)
+                    if not candidates.exists() and len(clean_name) > 1:
+                         # 반대로 마스터 DB의 재료가 AI 생성 재료명에 포함되는지 확인 (단, 너무 짧은 단어 제외)
+                         # 예: "국산 콩나물" -> "콩나물"
+                         # DB 부하를 줄이기 위해 clean_name의 일부로 검색
+                         search_key = clean_name[:2] # 앞 2글자로 검색
+                         candidates = IngredientMaster.objects.filter(name__startswith=search_key)
+                         
+                         # 그 중에서 clean_name에 포함되는 마스터 재료 찾기
+                         valid_candidates = []
+                         for cand in candidates:
+                             if cand.name in clean_name:
+                                 valid_candidates.append(cand)
+                         
+                         if valid_candidates:
+                             # 가장 긴 매칭을 선택 (구체적인 것 우선? 아니면 짧은 것(일반적인 것)? -> 일반적인 것(짧은것)이 안전)
+                             # 예: "청양고추" (4) vs "고추" (2) -> "청양고추"가 "청양고추"에 포함됨. 
+                             # "알배기 배추" -> "배추" 포함됨.
+                             # 문맥상 마스터에 있는걸 쓰는게 목적이므로, 가장 긴 매칭(정보 손실 최소화) 선택?
+                             # 아니면 가장 짧은 매칭(범용성)? "무조건 마스터 DB 매칭"이 목표.
+                             # "돼지고기전지" -> "돼지고기" 매칭되려면 "돼지고기"가 포함되어야 함.
+                             master = sorted(valid_candidates, key=lambda x: len(x.name), reverse=True)[0]
+
+                    if not master and candidates.exists():
+                         # icontains 결과 중 가장 짧은 것 선택
+                         master = sorted(candidates, key=lambda x: len(x.name))[0]
+                
+                if master:
+                    final_name = master.name
+                else:
+                    # 5. 마스터 DB 매칭 실패 시 -> 저장하지 않거나(스킵), 가장 유사한걸 찾거나...
+                    # "무조건 마스터 DB에 있는 재료로" -> 실패하면 "기타 재료"로라도 처리? 
+                    # 일단 스킵하지는 않고 원래 이름을 쓰되, 최대한 정제된 clean_name 사용
+                    # (여기서 마스터에 없으면 유저 재료랑 매칭이 안될 것임)
+                    # 최후의 수단: AI가 인정한 재료명이니 일단 넣음 (마스터에 추가하라는 요청은 없고 '대조'하라고만 함)
+                    # 유저 요청: "마스터 DB와 대조, 없을 경우 마스터 DB에 추가 (X -> 예시 설명에는 추가라고 되어있는데 로직 설명엔 없음?)"
+                    # 아, 예시: "스리라차소스 로 변경 후 마스터 DB와 대조, 없을 경우 마스터 DB에 스리라차소스 추가"
+                    # -> **마스터 DB에 추가**하라는 요청이네요!
+                    # "돼지고기전지 -> 돼지고기 로 매칭" 은 있는 경우 매칭.
+                    
+                    # 마스터 DB에 없으면 추가!
+                    new_cat = normalize_category(clean_name) # 카테고리 추론 필요
+                    master = IngredientMaster.objects.create(name=clean_name, category=new_cat)
+                    final_name = clean_name
+                
                 RecipeIngredient.objects.create(
                     recipe=recipe,
-                    name=ing.get('name', '')
-                    # quantity 필드 제거됨
+                    name=final_name
                 )
             
             # 조리 단계 생성

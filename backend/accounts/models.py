@@ -7,6 +7,7 @@ class UserProfile(models.Model):
     nickname = models.CharField(max_length=50, blank=True, null=True)
     diet_goals = models.CharField(max_length=255, blank=True, null=True, help_text="식단 목표 (해시태그)")
     allergies = models.ManyToManyField('master.AllergyMaster', blank=True, related_name='profiles')
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True, verbose_name='프로필 이미지')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

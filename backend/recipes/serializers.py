@@ -21,12 +21,13 @@ class RecipeListSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
     is_scraped = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    scrap_count = serializers.IntegerField(required=False, read_only=True)
     
     class Meta:
         model = Recipe
         fields = [
             'id', 'title', 'cooking_time_minutes', 'difficulty',
-            'image_url', 'image', 'tags', 'ingredients_count', 'steps_count', 'ingredients', 'author', 'is_scraped'
+            'image_url', 'image', 'tags', 'ingredients_count', 'steps_count', 'ingredients', 'author', 'is_scraped', 'scrap_count'
         ]
     
     def get_image_url(self, obj):

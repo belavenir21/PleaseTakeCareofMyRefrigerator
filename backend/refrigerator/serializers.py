@@ -54,7 +54,7 @@ class UserIngredientSerializer(serializers.ModelSerializer):
             if name in m.name: # "양파" in "빨간양파" (일부 가능)
                 return m.name
 
-        raise serializers.ValidationError(f"'{value}'은(는) 등록되지 않은 식재료입니다. 검색 가능한 재료명을 입력해주세요.")
+        return value.strip()
     
     def get_icon(self, obj):
         """재료의 아이콘을 반환 (개선된 매칭)"""
@@ -163,11 +163,39 @@ class UserIngredientSerializer(serializers.ModelSerializer):
             if not master:
                 master = IngredientMaster.objects.filter(name__icontains=name).first()
             
+            
             if master:
                 validated_data['master_ingredient'] = master
                 # 카테고리가 입력되지 않았다면 마스터 데이터에서 가져옴
                 if not validated_data.get('category'):
                     validated_data['category'] = master.category
+            else:
+                # [NEW] Master에 없는 재료는 자동 생성!
+                try:
+                    category = validated_data.get('category', '기타') or '기타'
+                    unit = validated_data.get('unit', '개')
+                    
+                    # 아이콘 자동 매핑
+                    icon_map = {
+                        '채소': '🥬', '과일/견과': '🍎', '수산/건어물': '🐟',
+                        '육류/달걀': '🥩', '유제품': '🥛', '곡류': '🌾',
+                        '면/양념/오일': '🍜', '가공식품': '🥫', '간편식/식단': '🍱',
+                        '음료': '🧃', '기타': '📦'
+                    }
+                    icon = icon_map.get(category, '📦')
+
+                    new_master = IngredientMaster.objects.create(
+                        name=name,
+                        category=category,
+                        default_unit=unit,
+                        icon=icon,
+                        api_source='User_Manual_Auto'
+                    )
+                    validated_data['master_ingredient'] = new_master
+                    if not validated_data.get('category'):
+                        validated_data['category'] = category
+                except Exception as e:
+                    print(f"Error auto-creating master: {e}")
                 
         return super().create(validated_data)
 
@@ -291,9 +319,48 @@ class IngredientBulkCreateSerializer(serializers.Serializer):
         ingredients_data = validated_data['ingredients']
         user = self.context['request'].user
         
+        from master.models import IngredientMaster
+
         ingredients = []
         for ingredient_data in ingredients_data:
             ingredient_data['user'] = user
+            
+            # Master 연결 및 자동 생성 로직 (UserIngredientSerializer.create와 동일하게 적용)
+            name = ingredient_data.get('name')
+            if name:
+                master = IngredientMaster.objects.filter(name=name).first()
+                if not master:
+                     master = IngredientMaster.objects.filter(name__iexact=name).first()
+                
+                if not master:
+                    # Auto Create Master
+                    try:
+                        category = ingredient_data.get('category', '기타') or '기타'
+                        unit = ingredient_data.get('unit', '개')
+                         # 아이콘 자동 매핑
+                        icon_map = {
+                            '채소': '🥬', '과일/견과': '🍎', '수산/건어물': '🐟',
+                            '육류/달걀': '🥩', '유제품': '🥛', '곡류': '🌾',
+                            '면/양념/오일': '🍜', '가공식품': '🥫', '간편식/식단': '🍱',
+                            '음료': '🧃', '기타': '📦'
+                        }
+                        icon = icon_map.get(category, '📦')
+                        
+                        master = IngredientMaster.objects.create(
+                            name=name,
+                            category=category,
+                            default_unit=unit,
+                            icon=icon,
+                            api_source='User_Bulk_Auto'
+                        )
+                    except Exception as e:
+                        print(f"Bulk Create Master Error: {e}")
+                
+                if master:
+                    ingredient_data['master_ingredient'] = master
+                    if not ingredient_data.get('category'):
+                         ingredient_data['category'] = master.category
+
             ingredient = UserIngredient.objects.create(**ingredient_data)
             ingredients.append(ingredient)
         

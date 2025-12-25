@@ -89,18 +89,23 @@ def user_detail_view(request):
 
 
 
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, parser_classes
+
+# ... (생략)
+
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
 @csrf_exempt
 @api_view(['PUT'])
 @authentication_classes([CsrfExemptSessionAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def user_profile_update_view(request):
-    """프로필 수정 (닉네임 중복 검사 포함)"""
-    print(f"DEBUG: Profile Update Request from user: {request.user}") # 디버깅 로그
-    print(f"DEBUG: Request Data: {request.data}") 
-    print(f"DEBUG: Auth Classes: {request.authenticators}")
-
+    """프로필 수정 (닉네임, 이미지 등)"""
+    print(f"DEBUG: Profile Update Request from user: {request.user}") 
+    
     try:
-        # 프로필이 없으면 생성 (안정성 강화)
+        # 프로필이 없으면 생성
         profile, created = UserProfile.objects.get_or_create(
             user=request.user,
             defaults={'nickname': request.user.username}
@@ -110,28 +115,22 @@ def user_profile_update_view(request):
         new_nickname = request.data.get('nickname')
         if new_nickname:
             if UserProfile.objects.filter(nickname=new_nickname).exclude(user=request.user).exists():
-                print("DEBUG: Nickname duplicate")
                 return Response({'error': '이미 사용 중인 닉네임입니다.'}, status=status.HTTP_400_BAD_REQUEST)
                 
-        # 필요한 데이터만 추출
-        update_data = {}
-        if 'nickname' in request.data:
-            update_data['nickname'] = request.data['nickname']
-        if 'diet_goals' in request.data:
-            update_data['diet_goals'] = request.data['diet_goals']
-
-        serializer = UserProfileSerializer(profile, data=update_data, partial=True)
+        # Serializer에 바로 전달 (이미지 파일 포함)
+        serializer = UserProfileSerializer(profile, data=request.data, partial=True, context={'request': request})
         
         if serializer.is_valid():
             serializer.save()
-            print("DEBUG: Profile Updated Successfully")
             return Response({
                 'message': '프로필이 수정되었습니다.',
                 'profile': serializer.data
             })
         
-        print(f"DEBUG: Serializer Errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # End of valid block
+
         
     except Exception as e:
         import traceback
@@ -257,7 +256,7 @@ def find_password_view(request):
             # 이메일 발송 실패 시에도 비밀번호는 변경되었으므로 사용자에게 알림 (개발용)
             print(f"DEBUG: Email sending failed: {str(e)}")
             return Response({
-                'message': f'이메일 발송에 실패했지만 임시 비밀번호가 생성되었습니다: [{temp_pw}] (개발 확인용)'
+                'message': f'이메일 발송 기능은 현재 개발 중입니다.\n(임시 비밀번호: {temp_pw})'
             })
             
     except User.DoesNotExist:
