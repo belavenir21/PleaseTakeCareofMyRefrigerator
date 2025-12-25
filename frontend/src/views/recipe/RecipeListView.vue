@@ -67,15 +67,14 @@
               <img :src="potIcon" class="thumb-empty-img" alt="No Image" />
             </div>
             
-             <!-- 즐겨찾기 수 (하트 카운트) 배지 -->
-            <div v-if="recipe.scrap_count > 0" class="badge-scrap-count">
-               ❤️ {{ recipe.scrap_count }}
+             <!-- 유저 레시피 배지 (bottom-left) -->
+            <div v-if="recipe.author || recipe.api_source === 'user'" class="badge-custom">
+              🧑‍🍳 {{ recipe.author ? `${recipe.author}` : 'User' }}
             </div>
             
-            
-            <!-- 유저 레시피 배지 -->
-            <div v-if="recipe.author || recipe.api_source === 'user'" class="badge-custom">
-              🧑‍🍳 {{ recipe.author ? `${recipe.author} 레시피` : 'User Recipe' }}
+            <!-- 즐겨찾기 수 배지 (top-left) -->
+            <div v-if="recipe.scrap_count > 0" class="badge-scrap-count">
+               ❤️ {{ recipe.scrap_count }}
             </div>
             
             <!-- 일치율 플로팅 배지 -->
@@ -1049,18 +1048,18 @@ const submitManualRecipe = async () => {
 
 .badge-scrap-count {
   position: absolute;
-  top: 15px; left: 15px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 6px 10px;
-  border-radius: 12px;
-  font-size: 0.85rem;
+  top: 10px; left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #fa5252;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  gap: 4px;
-  z-index: 2;
+  gap: 3px;
+  z-index: 5;
 }
 
 .sort-wrapper {
@@ -1714,17 +1713,17 @@ const submitManualRecipe = async () => {
   transform: translate(-50%, 20px);
 }
 
-/* 유저 레시피 배지 */
+/* 유저 레시피 배지 - bottom left */
 .badge-custom {
   position: absolute;
-  top: 10px;
+  bottom: 10px;
   left: 10px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 3px 7px;
+  border-radius: 10px;
   z-index: 5;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }

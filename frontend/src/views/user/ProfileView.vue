@@ -41,8 +41,8 @@
       <div class="profile-section card">
         <div class="profile-header">
           <div class="avatar-container">
-            <div class="avatar" v-if="!profile?.image_url">👤</div>
-            <img :src="profile?.image_url" v-else class="avatar-img" />
+            <div class="avatar" v-if="!profile?.image_url || profileImageError">👤</div>
+            <img :src="profile?.image_url" v-else class="avatar-img" @error="profileImageError = true" />
           </div>
           <div class="user-info">
             <div class="name-row">
@@ -240,6 +240,7 @@ const toast = useToastStore()
 
 const loading = ref(false)
 const activeTab = ref('info')
+const profileImageError = ref(false) // Added profileImageError ref
 const myRecipes = ref([])
 const scrapedRecipes = ref([])
 const imageErrors = ref({})

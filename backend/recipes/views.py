@@ -138,16 +138,40 @@ class RecipeViewSet(viewsets.ModelViewSet):
         from refrigerator.models import UserIngredient
         
         for ring in recipe_ingredients:
-            # 1. 이름이 완전히 일치하거나 포함하는 재료 찾기 (가장 유통기한 임박한 것 우선)
-            # 공백 제거 후 비교
-            clean_ring_name = ring.name.replace(" ", "")
-            
-            candidates = UserIngredient.objects.filter(user=user).order_by('expiry_date')
+            def check_match(name1, name2):
+                n1 = name1.replace(" ", "")
+                n2 = name2.replace(" ", "")
+                
+                # 동의어 매핑
+                syns = {
+                    '달걀': '계란', '계란': '달걀', 
+                    '소고기': '쇠고기', '쇠고기': '소고기', 
+                    '닭고기': '닭', '돼지고기': '돼지',
+                    '대파': '파', '파': '대파',
+                    '다진마늘': '마늘', '마늘': '다진마늘',
+                    '양파': '생양파', '고춧가루': '고추가루',
+                    '참기름': '들기름', '식용유': '오일',
+                    '간장': '진간장', '진간장': '간장', '국간장': '간장',
+                    '설탕': '올리고당', '올리고당': '설탕'
+                }
+                
+                if n1 == n2: return True
+                if n1 in n2 or n2 in n1: return True
+                
+                for k, v in syns.items():
+                    if k in n1:
+                        alt_n1 = n1.replace(k, v)
+                        if alt_n1 == n2 or alt_n1 in n2 or n2 in alt_n1: return True
+                    if k in n2:
+                        alt_n2 = n2.replace(k, v)
+                        if n1 == alt_n2 or n1 in alt_n2 or alt_n2 in n1: return True
+                return False
+
+            candidates = UserIngredient.objects.filter(user=user, is_deleted=False).order_by('expiry_date')
             target_ing = None
             
             for cing in candidates:
-                clean_cing_name = cing.name.replace(" ", "")
-                if clean_ring_name in clean_cing_name or clean_cing_name in clean_ring_name:
+                if check_match(ring.name, cing.name):
                     target_ing = cing
                     break
             
@@ -240,7 +264,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             unique_recipe_ings = set(ring.name.replace(" ", "") for ring in recipe_ingredients_objs)
             total_kinds_count = len(unique_recipe_ings)
             
-            # 동의어 및 정규화 처리 함수 (루프 밖으로 이동)
             def get_variants(name):
                 name = name.replace(" ", "")
                 variants = [name]
@@ -252,7 +275,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     '다진마늘': '마늘', '마늘': '다진마늘',
                     '양파': '생양파', '고춧가루': '고추가루',
                     '참기름': '들기름', '식용유': '오일',
-                    '간장': '진간장', '진간장': '간장'
+                    '간장': '진간장', '진간장': '간장', '국간장': '간장',
+                    '설탕': '올리고당'
                 }
                 for k, v in syns.items():
                     if k in name:

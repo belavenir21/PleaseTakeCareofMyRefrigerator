@@ -135,7 +135,13 @@
 
           <div class="item-visual">
             <div class="icon-wrapper">
-              <img v-if="group.primary.image_url" :src="getFullImageUrl(group.primary.image_url)" class="ingredient-icon-png" alt="icon" />
+              <img 
+                v-if="group.primary.image_url" 
+                :src="getFullImageUrl(group.primary.image_url)" 
+                class="ingredient-icon-png" 
+                alt="icon" 
+                @error="group.primary.image_url = null"
+              />
               <span v-else class="emoji">{{ group.primary.icon || getIngredientEmoji(group.primary.name) }}</span>
             </div>
             <span v-if="group.primary.is_expired" class="badge-expired">만료</span>
@@ -219,13 +225,16 @@
       <div v-if="showTrashModal" class="modal-overlay" @click="showTrashModal = false">
         <div class="modal-content" @click.stop>
           <div class="modal-header">
-            <h3>휴지통</h3>
+            <div class="header-title-group">
+                <h3>휴지통</h3>
+                <button v-if="trashItems.length > 0" @click="handleEmptyTrash" class="btn-empty-trash">전체 비우기</button>
+            </div>
             <button class="close-btn" @click="showTrashModal = false">✕</button>
           </div>
           <div class="modal-body trash-list">
               <div v-if="trashItems.length === 0" class="empty-msg-sm">휴지통이 비었습니다 📭</div>
               <div v-else class="trash-item" v-for="item in trashItems" :key="item.id">
-                  <span class="emoji-sm">{{ item.icon || '🥘' }}</span>
+                  <span class="emoji-sm">{{ item.icon || getIngredientEmoji(item.name) }}</span>
                   <div class="trash-info">
                       <span class="name">{{ item.name }}</span>
                       <span class="meta">{{ item.quantity }}{{ item.unit }} · {{ formatDate(item.expiry_date) }} 삭제됨</span>
@@ -803,6 +812,18 @@ const checkQuantityAndDelete = async (item) => {
 const showTrashModal = ref(false)
 const trashItems = ref([])
 
+const handleEmptyTrash = async () => {
+    if (!confirm('휴지통의 모든 항목을 영구적으로 삭제하시겠습니까?')) return
+    try {
+        await refrigeratorStore.emptyTrash()
+        trashItems.value = []
+        toast.success('휴지통을 비웠습니다.')
+    } catch (e) {
+        console.error('Failed to empty trash:', e)
+        toast.error('휴지통 비우기에 실패했습니다.')
+    }
+}
+
 const openTrash = async () => {
   try {
     const res = await refrigeratorStore.fetchTrash()
@@ -830,13 +851,21 @@ const formatDate = (dateString) => {
 }
 
 const getIngredientEmoji = (name) => {
-  if (name.includes('사과')) return '🍎'
-  if (name.includes('고기')) return '🥩'
-  if (name.includes('우유')) return '🥛'
-  if (name.includes('계란')) return '🥚'
-  if (name.includes('대파') || name.includes('채소')) return '🥬'
-  if (name.includes('라면')) return '🍜'
-  return '🥘'
+  const n = name || ''
+  if (n.includes('사과') || n.includes('배') || n.includes('포도') || n.includes('과일')) return '🍎'
+  if (n.includes('고기') || n.includes('육류') || n.includes('돈까스') || n.includes('삼겹살')) return '🥩'
+  if (n.includes('우유') || n.includes('치즈') || n.includes('요거트')) return '🥛'
+  if (n.includes('계란') || n.includes('달걀')) return '🥚'
+  if (n.includes('파') || n.includes('무') || n.includes('채소') || n.includes('나물') || n.includes('상추')) return '🥬'
+  if (n.includes('라면') || n.includes('면') || n.includes('파스타')) return '🍜'
+  if (n.includes('생선') || n.includes('참치') || n.includes('어묵') || n.includes('수산')) return '🐟'
+  if (n.includes('간장') || n.includes('설탕') || n.includes('소금') || n.includes('양념')) return '🧂'
+  if (n.includes('물') || n.includes('음료') || n.includes('콜라') || n.includes('주스')) return '🧃'
+  if (n.includes('밥') || n.includes('쌀') || n.includes('햇반')) return '🍚'
+  if (n.includes('곡류')) return '🌾'
+  if (n.includes('햄') || n.includes('참치캔') || n.includes('통조림')) return '🥫'
+  if (n.includes('도시락') || n.includes('간편식')) return '🍱'
+  return '📦'
 }
 
 const getFullImageUrl = (path) => {
@@ -1680,10 +1709,31 @@ onMounted(() => {
   animation: shake 0.5s ease-in-out;
 }
 
+.header-title-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.btn-empty-trash {
+    background: #fff0f0;
+    color: #ff6b6b;
+    border: 1px solid #ffc9c9;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-empty-trash:hover {
+    background: #ff6b6b;
+    color: white;
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+  25% { transform: translateX(-5px) rotate(-5deg); }
+  75% { transform: translateX(5px) rotate(5deg); }
 }
 
 .modal-content-alert h3 {

@@ -136,11 +136,12 @@ class UserIngredientSerializer(serializers.ModelSerializer):
         expiry_date = validated_data.get('expiry_date')
         quantity = validated_data.get('quantity', 0)
         
-        # 중복 체크
+        # 중복 체크: 현재 활성 상태인(is_deleted=False) 항목만 검색
         existing = UserIngredient.objects.filter(
             user=user, 
             name=name, 
-            expiry_date=expiry_date
+            expiry_date=expiry_date,
+            is_deleted=False
         ).first()
         
         if existing:
@@ -216,67 +217,62 @@ class UserIngredientListSerializer(serializers.ModelSerializer):
     
     def get_category(self, obj):
         """재료의 카테고리를 반환 (우선순위: 사용자 지정 > 마스터 > 자동추론)"""
+        from config.constants import normalize_category
+        cat = '기타'
+        
         # 0. 사용자 지정
         if obj.category:
-            return obj.category
-            
+            cat = obj.category
         # 1. master_ingredient가 직접 연결되어 있는 경우
-        if obj.master_ingredient:
-            return obj.master_ingredient.category
+        elif obj.master_ingredient:
+            cat = obj.master_ingredient.category
+        else:
+            # 2. 이름으로 마스터 데이터 검색
+            from master.models import IngredientMaster
+            master = IngredientMaster.objects.filter(name=obj.name).first()
+            if not master:
+                master = IngredientMaster.objects.filter(name__iexact=obj.name).first()
+            if not master:
+                master = IngredientMaster.objects.filter(name__icontains=obj.name).first()
+            
+            if master:
+                cat = master.category
+            else:
+                # 3. 역방향 부분 매칭
+                all_masters = IngredientMaster.objects.all()
+                for m in all_masters:
+                    if m.name in obj.name or obj.name in m.name:
+                        cat = m.category
+                        break
         
-        # 2. 이름으로 마스터 데이터 검색 (정확한 매칭)
-        from master.models import IngredientMaster
-        master = IngredientMaster.objects.filter(name=obj.name).first()
-        if master:
-            return master.category
-        
-        # 3. 대소문자 무시하고 검색
-        master = IngredientMaster.objects.filter(name__iexact=obj.name).first()
-        if master:
-            return master.category
-        
-        # 4. 부분 매칭 시도
-        master = IngredientMaster.objects.filter(name__icontains=obj.name).first()
-        if master:
-            return master.category
-        
-        # 5. 역방향 부분 매칭
-        all_masters = IngredientMaster.objects.all()
-        for m in all_masters:
-            if m.name in obj.name or obj.name in m.name:
-                return m.category
-        
-        return '기타'
+        return normalize_category(cat)
     
     def get_icon(self, obj):
         """재료의 아이콘을 반환 (개선된 매칭)"""
-        # 1. master_ingredient가 직접 연결되어 있는 경우
-        if obj.master_ingredient and obj.master_ingredient.icon:
+        generic_icons = ['🥘', '🍴', '📦', '🛒', '🍽️', '', None]
+        
+        # 1. master_ingredient 확인
+        if obj.master_ingredient and obj.master_ingredient.icon not in generic_icons:
             return obj.master_ingredient.icon
         
         # 2. 이름으로 마스터 데이터 검색
         from master.models import IngredientMaster
         master = IngredientMaster.objects.filter(name=obj.name).first()
-        if master and master.icon:
+        if master and master.icon not in generic_icons:
             return master.icon
-        
-        # 3. 대소문자 무시하고 검색
-        master = IngredientMaster.objects.filter(name__iexact=obj.name).first()
-        if master and master.icon:
-            return master.icon
-        
-        # 4. 카테고리 기반 기본 아이콘
+            
+        # 4. 카테고리 기반 기본 아이콘 (최종 폴백)
         category = self.get_category(obj)
         default_icons = {
             '채소': '🥬',
             '과일/견과': '🍎',
-            '수산/건어물': '🐟',
+            '수산물': '🐟',
             '육류/달걀': '🥩',
             '유제품': '🥛',
             '곡류': '🌾',
-            '면/양념/오일': '🍜',
+            '양념/오일': '🧂',
             '가공식품': '🥫',
-            '간편식/식단': '🍱',
+            '간편식': '🍱',
             '음료': '🧃',
             '기타': '📦'
         }

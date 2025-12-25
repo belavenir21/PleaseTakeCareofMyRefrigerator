@@ -190,13 +190,20 @@ const myIngredientNames = computed(() => {
 
 // 동의어 매핑
 const synonyms = {
-  '계란': ['달걀', '에그', 'egg'],
-  '달걀': ['계란', '에그', 'egg'],
-  '소고기': ['쇠고기', '한우', '소'],
-  '돼지고기': ['돈육', '삼겹살', '목살'],
+  '달걀': ['계란', '에그'],
+  '계란': ['달걀', '에그'],
+  '소고기': ['쇠고기', '한우', '불고기'],
+  '쇠고기': ['소고기', '한우', '불고기'],
+  '돼지고기': ['돈육', '삼겹살', '목살', '제육'],
   '닭고기': ['닭', '치킨'],
-  '양파': ['양파'],
+  '양파': ['생양파'],
   '대파': ['파', '쪽파'],
+  '마늘': ['다진마늘', '통마늘'],
+  '다진마늘': ['마늘', '통마늘'],
+  '간장': ['진간장', '조선간장', '국간장'],
+  '진간장': ['간장', '국간장'],
+  '식용유': ['기름', '오일', '카놀라유'],
+  '설탕': ['올리고당', '꿀']
 }
 
 function normalizeText(text) {
@@ -206,18 +213,19 @@ function normalizeText(text) {
 function hasIngredient(ingredientName) {
   const normalized = normalizeText(ingredientName)
   
-  // 완전 일치만 (백엔드와 동일한 로직)
+  // 1. 완전 일치 또는 부분 포함 확인
   for (const myIng of myIngredientNames.value) {
-    if (myIng === normalized) {
+    if (myIng === normalized || myIng.includes(normalized) || normalized.includes(myIng)) {
       return true
     }
   }
   
-  // 동의어 매칭 (완전 일치만)
+  // 2. 동의어 매칭 (부분 포함 확인)
   for (const [key, values] of Object.entries(synonyms)) {
-    if (normalized === key) {
+    if (normalized === key || normalized.includes(key) || key.includes(normalized)) {
       for (const myIng of myIngredientNames.value) {
-        if (values.includes(myIng)) {
+        // 내 재료가 동의어 중 하나를 포함하거나 포함되는지 확인
+        if (values.some(v => myIng === v || myIng.includes(v) || v.includes(myIng))) {
           return true
         }
       }

@@ -43,8 +43,8 @@
             <div class="step-badge">Step {{ index + 1 }}</div>
             <div class="step-icon">{{ step.icon || '👨‍🍳' }}</div>
             <p class="step-description">{{ cleanDescription(step.description) }}</p>
-            <div class="step-footer">
-              <span class="step-time">⏱️ {{ step.time_minutes || 0 }}분</span>
+            <div v-if="step.time_minutes > 0" class="step-footer">
+              <span class="step-time">⏱️ {{ step.time_minutes }}분</span>
             </div>
           </div>
         </transition-group>
@@ -53,8 +53,18 @@
       <!-- 완료 버튼 (모든 단계를 마친 후 노출) -->
       <div v-if="currentStepIndex >= recipeData.steps.length" class="completion-section">
         <div class="finish-image-container">
-          <img :src="recipeData.image_url" v-if="recipeData.image_url" class="finish-image" />
-          <div v-else class="finish-image-placeholder">🍳</div>
+          <img 
+            v-if="recipeData.image_url && !finishImageError" 
+            :src="recipeData.image_url" 
+            class="finish-image" 
+            @error="finishImageError = true" 
+          />
+          <img 
+            v-else 
+            :src="potIcon" 
+            class="finish-image pot-fallback" 
+            alt="완성" 
+          />
           <div class="confetti-effect"></div>
         </div>
         <div class="finish-celebration">✨ 요리 완성! 고생하셨어요 ✨</div>
@@ -119,17 +129,21 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecipeStore } from '@/store/recipe'
 import { useRefrigeratorStore } from '@/store/refrigerator'
+import { useToastStore } from '@/stores/toast'
+import potIcon from '@/assets/images/pot.png'
 
 const route = useRoute()
 const router = useRouter()
 const recipeStore = useRecipeStore()
 const refrigeratorStore = useRefrigeratorStore()
+const toast = useToastStore()
 
 const recipeData = ref(null)
 const currentStepIndex = ref(0)
 const showAdjustModal = ref(false)
 const showTutorial = ref(true)
 const adjustableIngredients = ref([])
+const finishImageError = ref(false)
 
 const progressPercentage = computed(() => {
   if (!recipeData.value) return 0
@@ -303,7 +317,7 @@ const goToAddMissing = () => {
 
 const skipAdjustment = () => {
   showAdjustModal.value = false
-  alert('요리가 완료되었습니다! 🎉')
+  toast.success('요리가 완료되었습니다! 🎉')
   router.push({ name: 'Pantry' })
 }
 
@@ -320,7 +334,7 @@ const applyAdjustment = async () => {
   }
   
   showAdjustModal.value = false
-  alert('재료가 차감되었습니다! 🎉')
+  toast.success('재료가 차감되었습니다! 🎉')
   router.push({ name: 'Pantry' })
 }
 

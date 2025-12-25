@@ -209,6 +209,12 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     } catch (error) { throw error }
   }
 
+  const emptyTrash = async () => {
+    try {
+      await refrigeratorAPI.emptyTrash()
+    } catch (error) { throw error }
+  }
+
   // 여러 식재료 일괄 삭제
   const bulkDeleteIngredients = async (ids) => {
     try {
@@ -253,5 +259,6 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
     restoreIngredient,
     hardDeleteIngredient,
     discardIngredient,
+    emptyTrash,
   }
 })

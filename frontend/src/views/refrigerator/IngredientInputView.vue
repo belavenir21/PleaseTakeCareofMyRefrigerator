@@ -92,6 +92,13 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label>카테고리</label>
+                <select v-model="item.category" class="input-field">
+                  <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+              </div>
+
               <div class="form-row">
                 <div class="group">
                   <label>수량</label>

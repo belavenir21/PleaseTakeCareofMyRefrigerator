@@ -73,14 +73,35 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def restore(self, request, pk=None):
-        """휴지통 항목 복구"""
+        """휴지통 항목 복구 (이름/유통기한 같은 활성 재료가 있으면 수량 합산)"""
         try:
-            # 삭제된 항목도 포함해서 검색
-            instance = UserIngredient.objects.get(pk=pk, user=request.user)
-            instance.is_deleted = False
-            instance.deleted_at = None
-            instance.save()
-            return Response({'status': 'restored'}, status=status.HTTP_200_OK)
+            # 삭제된 항목 조회
+            instance = UserIngredient.objects.get(pk=pk, user=request.user, is_deleted=True)
+            
+            # 동일한 이름 + 유통기한을 가진 활성 재료가 있는지 확인
+            existing = UserIngredient.objects.filter(
+                user=request.user,
+                name=instance.name,
+                expiry_date=instance.expiry_date,
+                is_deleted=False
+            ).first()
+            
+            if existing:
+                # 기존 재료에 수량 합산 후 휴지통 항목은 영구 삭제
+                existing.quantity += instance.quantity
+                existing.save()
+                instance.delete()  # 영구 삭제
+                return Response({
+                    'status': 'merged',
+                    'message': f'기존 {existing.name}에 {instance.quantity}{instance.unit} 합산되었습니다.',
+                    'merged_quantity': existing.quantity
+                }, status=status.HTTP_200_OK)
+            else:
+                # 기존 동일 재료 없으면 그냥 복구
+                instance.is_deleted = False
+                instance.deleted_at = None
+                instance.save()
+                return Response({'status': 'restored'}, status=status.HTTP_200_OK)
         except UserIngredient.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
             
@@ -93,6 +114,14 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except UserIngredient.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['delete'])
+    def empty_trash(self, request):
+        """휴지통 비우기 (전체 영구 삭제)"""
+        trash_items = UserIngredient.objects.filter(user=request.user, is_deleted=True)
+        count = trash_items.count()
+        trash_items.delete()
+        return Response({'message': f'{count}개의 항목이 영구 삭제되었습니다.'}, status=status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -393,9 +422,17 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
                         unit = matched_master.default_unit or '개'
                         icon = matched_master.icon or '📦'
                         storage_settings = {
-                            '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
-                            '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
-                            '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
+                            '채소': ('냉장', 7), 
+                            '과일/견과': ('냉장', 10), 
+                            '수산물': ('냉장', 2), 
+                            '육류/달걀': ('냉장', 3), 
+                            '유제품': ('냉장', 14), 
+                            '음료': ('냉장', 30),
+                            '양념/오일': ('실온', 60), 
+                            '가공식품': ('냉동', 30),
+                            '간편식': ('냉장', 7),
+                            '곡류': ('실온', 90),
+                            '기타': ('냉장', 14),
                         }
                         storage_method, days = storage_settings.get(category, ('냉장', 14))
                     
@@ -673,18 +710,31 @@ class UserIngredientViewSet(viewsets.ModelViewSet):
 
                 # 보관 방법 및 유통기한 자동 계산을 위한 설정
                 storage_settings = {
-                    '채소': ('냉장', 7), '과일': ('냉장', 10), '육류': ('냉장', 3),
-                    '수산물': ('냉장', 2), '유제품': ('냉장', 14), '음료': ('냉장', 30),
-                    '면/식품/오일': ('실온', 60), '가공식품': ('냉동', 30),
-                    '조미료': ('실온', 180), '곡류': ('실온', 180), '반찬': ('냉장', 7), 
+                    '채소': ('냉장', 7), 
+                    '과일/견과': ('냉장', 10), 
+                    '수산물': ('냉장', 2), 
+                    '육류/달걀': ('냉장', 3), 
+                    '유제품': ('냉장', 14), 
+                    '음료': ('냉장', 30),
+                    '양념/오일': ('실온', 60), 
+                    '가공식품': ('냉동', 30),
+                    '간편식': ('냉장', 7),
+                    '곡류': ('실온', 180),
                     '기타': ('냉장', 14)
                 }
                 
                 # 아이콘 매핑 (카테고리별 기본 아이콘)
                 category_icons = {
-                    '채소': '🥬', '과일': '🍎', '육류': '🥩', '수산물': '🐟',
-                    '유제품': '🥛', '음료': '🥤', '면/식품/오일': '🍝', 
-                    '가공식품': '🥫', '조미료': '🧂', '곡류': '🌾', '반찬': '🍱',
+                    '채소': '🥬', 
+                    '과일/견과': '🍎', 
+                    '수산물': '🐟',
+                    '육류/달걀': '🥩',
+                    '유제품': '🥛', 
+                    '음료': '🧃', 
+                    '양념/오일': '🧂', 
+                    '가공식품': '🥫', 
+                    '간편식': '🍱',
+                    '곡류': '🌾',
                     '기타': '📦'
                 }
 

@@ -89,6 +89,10 @@ export const refrigeratorAPI = {
     return api.post(`/refrigerator/ingredients/${id}/discard/`, { quantity })
   },
 
+  // 휴지통 비우기
+  emptyTrash() {
+    return api.delete('/refrigerator/ingredients/empty_trash/')
+  },
   // 식재료 마스터 검색
   searchMasterIngredients(query) {
     return api.get('/master/ingredients/', { params: { search: query } })
