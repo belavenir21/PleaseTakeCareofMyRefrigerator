@@ -175,7 +175,7 @@ except ImportError:
     pass  # 로컬에서는 기본 정적 파일 핸들러 사용
 
 # Media files
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # File upload settings (이미지 업로드 크기 제한 증가)

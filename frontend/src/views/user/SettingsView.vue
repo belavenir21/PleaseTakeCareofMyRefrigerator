@@ -10,8 +10,10 @@
     </header>
 
     <div class="container">
+      <!-- 프로필 설정 카드 -->
       <div class="card settings-card">
         <form @submit.prevent="handleSubmit">
+          <h3 class="card-title">기본 정보</h3>
           <!-- 프로필 사진 섹션 -->
           <div class="profile-header-edit">
             <div class="avatar-container" @click="triggerImageUpload">
@@ -29,6 +31,18 @@
 
           <!-- 정보 수정 섹션 -->
           <div class="edit-fields">
+            <div class="input-group">
+                <label>아이디</label>
+                <input
+                  type="text"
+                  class="input-field"
+                  :value="user?.username"
+                  disabled
+                  readonly
+                  style="background-color: #f8f9fa; color: #868e96;"
+                />
+            </div>
+
             <div class="input-group">
               <label>닉네임 <span class="required">*</span></label>
               <input
@@ -63,15 +77,39 @@
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary" :disabled="loading">
-              {{ loading ? '저장 중...' : '저장하기' }}
+              {{ loading ? '저장 중...' : '프로필 저장' }}
             </button>
           </div>
         </form>
       </div>
 
+      <!-- 비밀번호 변경 카드 (Toggle 방식) -->
+      <div v-if="showPasswordChange" class="card settings-card slide-down">
+        <h3 class="card-title">비밀번호 변경</h3>
+        <form @submit.prevent="handlePasswordUpdate">
+            <div class="input-group">
+                <label>현재 비밀번호</label>
+                <input type="password" v-model="pwData.old_password" class="input-field" placeholder="현재 비밀번호 (필수)" required />
+            </div>
+            <div class="input-group" style="margin-top: 15px;">
+                <label>새 비밀번호</label>
+                <input type="password" v-model="pwData.new_password1" class="input-field" placeholder="새 비밀번호 (8자 이상)" required minlength="8" />
+            </div>
+            <div class="input-group" style="margin-top: 15px;">
+                <label>새 비밀번호 확인</label>
+                <input type="password" v-model="pwData.new_password2" class="input-field" placeholder="새 비밀번호 확인" required minlength="8" />
+            </div>
+            <button type="submit" class="btn btn-secondary" style="margin-top: 20px;" :disabled="pwLoading">
+                {{ pwLoading ? '변경 중...' : '비밀번호 변경' }}
+            </button>
+        </form>
+      </div>
+
       <!-- 계정 관련 (하단 배치) -->
       <div class="account-actions">
-        <button class="text-btn" @click="handlePasswordChange">비밀번호 변경</button>
+        <button class="text-btn" @click="togglePasswordChange">
+           {{ showPasswordChange ? '비밀번호 변경 닫기' : '비밀번호 변경' }}
+        </button>
         <span class="divider">|</span>
         <button class="text-btn danger" @click="handleDeleteAccount">회원 탈퇴</button>
       </div>
@@ -84,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useToastStore } from '@/stores/toast'
@@ -95,13 +133,23 @@ const toast = useToastStore()
 
 const loading = ref(false)
 const profile = computed(() => authStore.profile)
+const user = computed(() => authStore.user)
 
-// Form Data
+// Form Data - Profile
 const inputNickname = ref('')
 const tags = ref([])
 const tagInput = ref('')
 const selectedImageFile = ref(null)
 const previewUrl = ref(null)
+
+// Form Data - Password
+const showPasswordChange = ref(false)
+const pwLoading = ref(false)
+const pwData = reactive({
+    old_password: '',
+    new_password1: '',
+    new_password2: ''
+})
 
 // Refs
 const tagInputRef = ref(null)
@@ -147,7 +195,7 @@ const handleImageChange = (event) => {
   previewUrl.value = URL.createObjectURL(file)
 }
 
-// Submit Logic
+// Submit Logic - Profile
 const handleSubmit = async () => {
   if (!inputNickname.value || inputNickname.value.trim() === '') {
     toast.warning('닉네임은 필수입니다.')
@@ -161,14 +209,11 @@ const handleSubmit = async () => {
     formData.append('diet_goals', tags.value.join(' '))
     
     if (selectedImageFile.value) {
-      formData.append('profile_image', selectedImageFile.value) // Django Serializer 필드명
+      formData.append('profile_image', selectedImageFile.value)
     }
 
     await authStore.updateProfile(formData)
     toast.success('프로필이 성공적으로 저장되었습니다!')
-    
-    // 뒤로가기? or Stay
-    // router.push({ name: 'Profile' }) 
   } catch (error) {
     console.error('Update failed:', error)
     if (error.response?.data?.error) {
@@ -181,15 +226,51 @@ const handleSubmit = async () => {
   }
 }
 
+// Password Logic
+const togglePasswordChange = () => {
+    showPasswordChange.value = !showPasswordChange.value
+    // 접을 때 초기화 안 함 (입력 중일 수 있으니)
+}
+
+const handlePasswordUpdate = async () => {
+    if (pwData.new_password1 !== pwData.new_password2) {
+        toast.error('새 비밀번호가 일치하지 않습니다.')
+        return
+    }
+    
+    pwLoading.value = true
+    try {
+        await authStore.changePassword(pwData)
+        toast.success('비밀번호가 변경되었습니다!')
+        
+        // 입력 초기화 및 닫기
+        pwData.old_password = ''
+        pwData.new_password1 = ''
+        pwData.new_password2 = ''
+        showPasswordChange.value = false
+        
+    } catch (error) {
+        console.error('PW Change failed:', error)
+        const errData = error.response?.data
+        if (errData?.old_password) {
+            toast.error('현재 비밀번호가 일치하지 않습니다.')
+        } else if (errData?.new_password1) {
+            toast.error(`새 비밀번호 오류: ${errData.new_password1[0]}`)
+        } else {
+            toast.error(errData?.error || '비밀번호 변경에 실패했습니다.')
+        }
+    } finally {
+        pwLoading.value = false
+    }
+}
+
 const goBack = () => {
   if (window.history.state && window.history.state.back) {
     router.back()
   } else {
-    router.push({ name: 'Profile' })
+    router.push({ name: 'Main' })
   }
 }
-
-const handlePasswordChange = () => toast.info('비밀번호 변경 기능은 준비 중입니다.')
 
 const handleDeleteAccount = () => {
   if (confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
@@ -221,6 +302,24 @@ const handleDeleteAccount = () => {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
+}
+
+.slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f1f3f5;
+    padding-bottom: 10px;
 }
 
 /* Profile Header (Image) */
@@ -348,7 +447,18 @@ const handleDeleteAccount = () => {
   border-radius: 14px;
   font-weight: 800;
   box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  background: var(--primary); color: white; border: none; cursor: pointer;
 }
+
+.btn-secondary {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+  border-radius: 14px;
+  font-weight: 800;
+  background: #f8f9fa; color: #495057; border: 1px solid #dee2e6; cursor: pointer;
+}
+.btn-secondary:hover { background: #e9ecef; }
 
 .account-actions {
   display: flex;

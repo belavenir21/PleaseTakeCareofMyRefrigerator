@@ -35,6 +35,15 @@ export const authAPI = {
   findPassword(data) {
     return api.post('/auth/find-password/', data)
   },
+
+  // 중복 확인
+  checkDuplication(field, value) {
+    return api.get(`/auth/check/?field=${field}&value=${value}`)
+  },
+
+  changePassword(data) {
+    return api.post('/auth/password/change/', data)
+  },
 }
 
 export const userAPI = {

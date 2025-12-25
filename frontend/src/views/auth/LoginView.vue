@@ -206,7 +206,7 @@ const handleFindId = async () => {
     try {
         findLoading.value = true
         const res = await authStore.findId({ email: findIdEmail.value })
-        toast.success(`회원님의 아이디는 [ ${res.data.username} ] 입니다.`)
+        toast.success(`회원님의 아이디는 [ ${res.username} ] 입니다.`)
         closeFindModal()
     } catch (err) {
         toast.error(err.response?.data?.error || '아이디 찾기에 실패했습니다.')
@@ -226,7 +226,7 @@ const handleFindPw = async () => {
             username: findPwId.value,
             email: findPwEmail.value 
         })
-        toast.success(res.data.message)
+        toast.success(res.message)
         closeFindModal()
     } catch (err) {
         toast.error(err.response?.data?.error || '비밀번호 찾기에 실패했습니다.')

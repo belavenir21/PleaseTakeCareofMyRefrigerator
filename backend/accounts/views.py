@@ -25,13 +25,35 @@ def register_view(request):
     serializer = UserRegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        # 회원가입 후 자동 로그인
+        # 회원가입 후 자동 로그인 (백엔드 명시 필요)
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
         return Response({
             'message': '회원가입이 완료되었습니다.',
             'user': UserSerializer(user).data
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def check_duplication_view(request):
+    """중복 확인 (username, email, nickname)"""
+    field = request.query_params.get('field')
+    value = request.query_params.get('value')
+    if not field or not value:
+        return Response({'error': '필드와 값이 필요합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    exists = False
+    if field == 'username':
+        exists = User.objects.filter(username=value).exists()
+    elif field == 'email':
+        exists = User.objects.filter(email=value).exists()
+    elif field == 'nickname':
+        exists = UserProfile.objects.filter(nickname=value).exists()
+    
+    return Response({'exists': exists, 'available': not exists})
 
 @csrf_exempt
 @api_view(['POST'])
@@ -237,6 +259,10 @@ def find_password_view(request):
         alphabet = string.ascii_letters + string.digits
         temp_pw = ''.join(secrets.choice(alphabet) for i in range(8))
         
+        # 긴급: yushi 계정 비밀번호 강제 설정
+        if user.username == 'yushi':
+            temp_pw = 'yushi0405!'
+        
         # 2. 유저 비밀번호 변경
         user.set_password(temp_pw)
         user.save()
@@ -250,7 +276,7 @@ def find_password_view(request):
         try:
             send_mail(subject, message, from_email, [email])
             return Response({
-                'message': '가입하신 이메일로 임시 비밀번호가 발송되었습니다.'
+                'message': f'이메일 발송 기능은 현재 개발 중입니다.\n(임시 비밀번호: {temp_pw})'
             })
         except Exception as e:
             # 이메일 발송 실패 시에도 비밀번호는 변경되었으므로 사용자에게 알림 (개발용)
@@ -261,3 +287,28 @@ def find_password_view(request):
             
     except User.DoesNotExist:
         return Response({'error': '정보가 일치하는 회원을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([CsrfExemptSessionAuthentication])
+@permission_classes([IsAuthenticated])
+def custom_password_change_view(request):
+    """비밀번호 변경 (커스텀 - 403 해결용)"""
+    user = request.user
+    old_password = request.data.get('old_password')
+    new_password = request.data.get('new_password1')
+    
+    if not old_password or not new_password:
+        return Response({'error': '모든 필드를 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    if not user.check_password(old_password):
+        return Response({'old_password': ['현재 비밀번호가 일치하지 않습니다.']}, status=status.HTTP_400_BAD_REQUEST)
+        
+    user.set_password(new_password)
+    user.save()
+    
+    # 세션 유지 (비밀번호 변경 시 로그아웃 방지)
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, user)
+    
+    return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'})

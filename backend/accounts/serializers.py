@@ -32,12 +32,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     """회원가입 Serializer"""
-    password = serializers.CharField(write_only=True, min_length=8)
-    password_confirm = serializers.CharField(write_only=True, min_length=8)
-    
+    nickname = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password_confirm']
+        fields = ['username', 'email', 'password', 'password_confirm', 'nickname']
     
     def validate(self, data):
         if data['password'] != data['password_confirm']:
@@ -46,10 +45,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data.pop('password_confirm')
+        nickname = validated_data.pop('nickname')
         user = User.objects.create_user(**validated_data)
         
-        # 프로필 자동 생성
-        UserProfile.objects.create(user=user, nickname=user.username)
+        # 프로필 생성 (입력받은 닉네임 사용)
+        UserProfile.objects.create(user=user, nickname=nickname)
         
         return user
 

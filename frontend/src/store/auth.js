@@ -158,6 +158,16 @@ export const useAuthStore = defineStore('auth', () => {
     return await authAPI.findPassword(data)
   }
 
+  // 중복 확인
+  const checkDuplication = async (field, value) => {
+    return await authAPI.checkDuplication(field, value)
+  }
+
+  // 비밀번호 변경
+  const changePassword = async (data) => {
+    return await authAPI.changePassword(data)
+  }
+
   return {
     user,
     profile,
@@ -171,5 +181,8 @@ export const useAuthStore = defineStore('auth', () => {
     updateProfile,
     findId,
     findPassword,
+    findPassword,
+    checkDuplication,
+    changePassword,
   }
 })

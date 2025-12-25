@@ -121,7 +121,7 @@
 
             <div v-for="recipe in myRecipes" :key="recipe.id" class="recipe-card" @click="goToRecipeDetail(recipe.id)">
                 <div class="recipe-thumb">
-                    <img v-if="recipe.image_url" :src="recipe.image_url" :alt="recipe.title" />
+                    <img v-if="recipe.image_url && !imageErrors[recipe.id]" :src="recipe.image_url" :alt="recipe.title" @error="handleImageError(recipe.id)" />
                     <div v-else class="no-img-wrapper">
                       <img :src="potIcon" class="no-img-pot" alt="No Image" />
                     </div>
@@ -151,8 +151,8 @@
         <div class="recipe-grid">
             <div v-for="recipe in scrapedRecipes" :key="recipe.id" class="recipe-card">
                 <div class="recipe-thumb" @click="goToRecipeDetail(recipe.id)">
-                    <img v-if="recipe.image_url" :src="recipe.image_url" :alt="recipe.title" />
-                    <div v-if="!recipe.image_url" class="no-img-wrapper">
+                    <img v-if="recipe.image_url && !imageErrors[recipe.id]" :src="recipe.image_url" :alt="recipe.title" @error="handleImageError(recipe.id)" />
+                    <div v-else class="no-img-wrapper">
                       <img :src="potIcon" class="no-img-pot" alt="No Image" />
                     </div>
                     <!-- 즐겨찾기 취소 버튼 -->
@@ -242,6 +242,11 @@ const loading = ref(false)
 const activeTab = ref('info')
 const myRecipes = ref([])
 const scrapedRecipes = ref([])
+const imageErrors = ref({})
+
+const handleImageError = (id) => {
+    imageErrors.value[id] = true
+}
 
 const user = computed(() => authStore.user)
 const profile = computed(() => authStore.profile)
