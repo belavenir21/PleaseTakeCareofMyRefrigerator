@@ -1,0 +1,86 @@
+{% if site.user_custom_theme %}
+<style>
+  /* 1. 웹폰트 Import */
+  {% if site.user_custom_theme.font_import_url %}
+    @import url('{{ site.user_custom_theme.font_import_url }}');
+  {% endif %}
+
+  /* 2. 폰트 설정 */
+  :root {
+    {% if site.user_custom_theme.font_family_base %}
+      --font-family-sans: {{ site.user_custom_theme.font_family_base }};
+    {% endif %}
+  }
+
+  /* =================================================================
+     [Just the Docs Color Overrides]
+     1. Sidebar Background
+     2. Main Background
+     3. Accent (Theme) Color
+     ================================================================= */
+
+  /* [1] Sidebar Background */
+  {% if site.user_custom_theme.sidebar_bg %}
+    .site-nav, 
+    .site-header, 
+    .site-footer { 
+      /* 모바일에서는 헤더가 사이드바 역할을 일부 수행 */
+      background-color: {{ site.user_custom_theme.sidebar_bg }} !important;
+      background-image: none !important;
+    }
+    
+    /* 사이드바 경계선 조정 (배경색이 어두울 경우 대비) */
+    .site-nav { border-right: 1px solid rgba(0,0,0,0.05); }
+  {% endif %}
+
+
+  /* [2] Main Background */
+  {% if site.user_custom_theme.main_bg %}
+    body, 
+    .main-content, 
+    .site-footer {
+      background-color: {{ site.user_custom_theme.main_bg }} !important;
+    }
+  {% endif %}
+
+
+  /* [3] Theme Accent Color (글자 테마색) */
+  /* Just the Docs는 보라색(#7253ed)을 기본으로 사용. 이를 덮어씁니다. */
+  {% if site.user_custom_theme.sidebar_active_color %}
+    
+    /* (A) 링크 색상 */
+    a, a:visited {
+      color: {{ site.user_custom_theme.sidebar_active_color }};
+    }
+    
+    /* (B) 사이드바 활성 메뉴 & 호버 */
+    .site-nav .nav-list .nav-list-item .nav-list-link.active,
+    .site-nav .nav-list .nav-list-item .nav-list-link:hover {
+      color: {{ site.user_custom_theme.sidebar_active_color }} !important;
+      /* JtD 특유의 활성 상태 배경 이미지(그라데이션) 제거 혹은 조정 */
+      background-image: none !important; 
+      background-color: rgba(0,0,0,0.03); /* 아주 연한 회색 배경 추가 */
+      border-left: 3px solid {{ site.user_custom_theme.sidebar_active_color }}; /* 왼쪽에 포인트 선 추가 */
+    }
+
+    /* (C) 사이드바 제목 (로고) */
+    .site-title {
+      color: {{ site.user_custom_theme.sidebar_active_color }} !important;
+    }
+
+    /* (D) 버튼 및 기타 강조 요소 */
+    .btn-primary {
+      background-color: {{ site.user_custom_theme.sidebar_active_color }} !important;
+      border-color: {{ site.user_custom_theme.sidebar_active_color }} !important;
+    }
+    
+    /* (E) 검색창 포커스 링 */
+    .search-input:focus {
+      border-color: {{ site.user_custom_theme.sidebar_active_color }} !important;
+      box-shadow: 0 0 0 3px rgba(114, 83, 237, 0.2); /* 포인트 컬러의 투명도 조절이 어렵다면 기본값 유지하거나 제외 */
+    }
+
+  {% endif %}
+
+</style>
+{% endif %}

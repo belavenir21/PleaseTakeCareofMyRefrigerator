@@ -1,0 +1,13 @@
+title: Docs-SSAFY-PJT1
+description: 냉장고 관리 웹 서비스
+remote_theme: just-the-docs/just-the-docs
+plugins:
+- jekyll-remote-theme
+url: https://belavenir21.github.io
+baseurl: /PleaseTakeCareofMyRefrigerator
+aux_links:
+  PleaseTakeCareofMyRefrigerator on GitHub: https://github.com/belavenir21/PleaseTakeCareofMyRefrigerator
+color_scheme: eggit_custom
+permalink: pretty
+search_enabled: true
+heading_anchors: true
