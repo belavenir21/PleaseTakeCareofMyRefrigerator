@@ -29,6 +29,10 @@ requests==2.31.0
 httpx==0.28.1
 urllib3==2.5.0
 
+# AI APIs
+groq>=0.4.0
+urllib3==2.5.0
+
 # Image Processing (경량)
 pillow==10.4.0
 

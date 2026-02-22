@@ -301,6 +301,7 @@ HUGGINGFACE_API_TOKEN = config('HUGGINGFACE_API_TOKEN', default='')
 GOOGLE_CLOUD_VISION_API_KEY = config('GOOGLE_CLOUD_VISION_API_KEY', default='')
 GMS_KEY = config('GMS_KEY', default='')
 GOOGLE_GEMINI_API_KEY = config('GOOGLE_GEMINI_API_KEY', default='')
+GROQ_API_KEY = config('GROQ_API_KEY', default='')  # 무료 AI API (권장)
 
 # --- RAILWAY DEPLOY FIX SECTION ---
 # 프로덕션 환경 감지 (Railway는 자동으로 DATABASE_URL 설정)

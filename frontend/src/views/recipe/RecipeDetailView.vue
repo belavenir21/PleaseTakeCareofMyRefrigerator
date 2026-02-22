@@ -65,7 +65,7 @@
         <div class="recipe-meta">
           <div class="meta-item">
             <span class="label">조리시간</span>
-            <span class="value">{{ recipe.cooking_time_minutes }}분</span>
+            <span class="value">{{ recipe.cooking_time }}분</span>
           </div>
           <div class="meta-item">
             <span class="label">난이도</span>
@@ -213,19 +213,43 @@ function normalizeText(text) {
 function hasIngredient(ingredientName) {
   const normalized = normalizeText(ingredientName)
   
-  // 1. 완전 일치 또는 부분 포함 확인
+  // 🔧 백엔드와 동일한 정확한 매칭 로직 (부분 포함 제거)
+  // 1. 정확한 일치 확인
   for (const myIng of myIngredientNames.value) {
-    if (myIng === normalized || myIng.includes(normalized) || normalized.includes(myIng)) {
+    if (myIng === normalized) {
       return true
     }
   }
   
-  // 2. 동의어 매칭 (부분 포함 확인)
+  // 2. 동의어 정확 매칭 (백엔드 get_variants 로직과 일치)
+  // 레시피 재료의 모든 동의어 버전 생성
+  const recipeVariants = [normalized]
+  
   for (const [key, values] of Object.entries(synonyms)) {
-    if (normalized === key || normalized.includes(key) || key.includes(normalized)) {
-      for (const myIng of myIngredientNames.value) {
-        // 내 재료가 동의어 중 하나를 포함하거나 포함되는지 확인
-        if (values.some(v => myIng === v || myIng.includes(v) || v.includes(myIng))) {
+    if (normalized.includes(key)) {
+      // normalized가 key를 포함하면, key를 각 동의어로 치환
+      for (const syn of values) {
+        recipeVariants.push(normalized.replace(key, syn))
+      }
+    }
+  }
+  
+  // 내 재료도 동의어 버전 생성
+  for (const myIng of myIngredientNames.value) {
+    const myVariants = [myIng]
+    
+    for (const [key, values] of Object.entries(synonyms)) {
+      if (myIng.includes(key)) {
+        for (const syn of values) {
+          myVariants.push(myIng.replace(key, syn))
+        }
+      }
+    }
+    
+    // 두 재료의 동의어 버전들이 정확히 일치하는지 확인
+    for (const rv of recipeVariants) {
+      for (const mv of myVariants) {
+        if (rv === mv) {
           return true
         }
       }
@@ -309,7 +333,7 @@ const isAuthor = computed(() => {
     console.log('[RecipeDetail] User profile:', profile)
     console.log('[RecipeDetail] User nickname:', profile?.nickname)
     console.log('[RecipeDetail] User username:', user.username)
-    console.log('[RecipeDetail] API source:', recipe.value.api_source)
+    console.log('[RecipeDetail] API source:', recipe.value.source)
     
     // 작성자 닉네임 또는 username 비교
     const nickname = profile?.nickname
@@ -319,7 +343,7 @@ const isAuthor = computed(() => {
     if (isMatch) return true
     
     // 혹은 api_source가 user/ai_generated인데 author 정보가 없을 때
-    if ((recipe.value.api_source === 'user' || recipe.value.api_source === 'ai_generated') && !recipe.value.author) {
+    if ((recipe.value.source === 'user' || recipe.value.source === 'ai') && !recipe.value.author) {
         console.log('[RecipeDetail] ✅ User recipe without author')
         return true
     }
@@ -353,15 +377,16 @@ const handleImageUpload = async (event) => {
             }
         })
         
-        // 성공 시 데이터 갱신
-        // recipeStore update
-        if(res.data) {
-             // Store 업데이트 (이미지 URL 반영)
-             // recipe.value.image_url = res.data.image_url // 반응형 갱신
-             await recipeStore.fetchRecipe(recipe.value.id)
+        // 성공 시 데이터 갱신 (즉시 반영!)
+        if(res.data && res.data.image_url) {
+             // recipe.value 직접 업데이트 (즉시 화면 반영)
+             recipe.value.image_url = res.data.image_url
              imageError.value = false // 에러 상태 초기화
              toast.success('레시피 이미지가 등록되었습니다! 📸')
         }
+        
+        // Store도 업데이트 (목록 페이지에서도 보이도록)
+        await recipeStore.fetchRecipe(recipe.value.id)
     } catch (e) {
         console.error('Image upload failed:', e)
         toast.error('이미지 업로드에 실패했습니다.')
@@ -417,10 +442,16 @@ const toggleScrap = async () => {
 
 const confirmDelete = async () => {
     if (!recipe.value) return
+    const recipeId = recipe.value.id
     try {
-        await recipeAPI.deleteRecipe(recipe.value.id)
+        await recipeAPI.deleteRecipe(recipeId)
+        
+        // Store에서 해당 레시피 제거 (캐시 문제 해결)
+        await recipeStore.fetchRecipes() // 전체 목록 새로고침
+        await recipeStore.fetchRecommendations() // 추천 목록도 새로고침
+        
         toast.success('레시피가 삭제되었습니다.')
-        router.push({ name: 'RecipeList', query: { mode: 'recommend' } }) // 또는 ProfileView로 이동
+        router.push({ name: 'RecipeList' })
     } catch (e) {
         console.error('레시피 삭제 실패:', e)
         toast.error('레시피 삭제에 실패했습니다.')

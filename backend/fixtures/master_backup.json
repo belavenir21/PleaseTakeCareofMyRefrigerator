@@ -1,0 +1,8924 @@
+{
+  "ingredient_master": [
+    {
+      "id": 1804,
+      "name": "가공란",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2307,
+      "name": "가라지",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2458,
+      "name": "가리비",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/가리비.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2308,
+      "name": "가물치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2309,
+      "name": "가시망둑",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1984,
+      "name": "가시오갈피",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2310,
+      "name": "가오리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2311,
+      "name": "가자미",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2474,
+      "name": "가재",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1985,
+      "name": "가지",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍆",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2459,
+      "name": "각시수랑",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1773,
+      "name": "간장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/간장.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2492,
+      "name": "갈래곰보",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2674,
+      "name": "갈색 거저리",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1823,
+      "name": "갈치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2177,
+      "name": "감 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2550,
+      "name": "감잎차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1904,
+      "name": "감자",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1905,
+      "name": "감자 과자",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1907,
+      "name": "감자 샐러드",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1906,
+      "name": "감자 튀김",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1934,
+      "name": "강낭콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2312,
+      "name": "강달이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2595,
+      "name": "강황",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2475,
+      "name": "개불",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1953,
+      "name": "개암",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1987,
+      "name": "갯기름나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1988,
+      "name": "갯나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2270,
+      "name": "거위 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2269,
+      "name": "거위고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2302,
+      "name": "거위알",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2153,
+      "name": "검은비늘버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1815,
+      "name": "게",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1989,
+      "name": "게걸무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2313,
+      "name": "게르치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2476,
+      "name": "게맛살",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1990,
+      "name": "겨자",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2596,
+      "name": "겨자 페이스트",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1835,
+      "name": "견과류",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1733,
+      "name": "결명자차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1991,
+      "name": "경수채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2717,
+      "name": "계란",
+      "category": "기타",
+      "default_unit": "",
+      "icon": null,
+      "image_url": null,
+      "api_source": null
+    },
+    {
+      "id": 2597,
+      "name": "계피",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2551,
+      "name": "계피차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1842,
+      "name": "고구마",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍠",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2598,
+      "name": "고기 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1720,
+      "name": "고다치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2460,
+      "name": "고둥",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1992,
+      "name": "고들빼기",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1822,
+      "name": "고등어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🐟",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2271,
+      "name": "고래고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1993,
+      "name": "고려엉겅퀴",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2675,
+      "name": "고로쇠나무",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1994,
+      "name": "고비",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1995,
+      "name": "고사리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1996,
+      "name": "고수",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1855,
+      "name": "고추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🌶️",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2524,
+      "name": "고추기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🌶️",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1999,
+      "name": "고추냉이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🌶️",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1774,
+      "name": "고추장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/고추장.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1997,
+      "name": "고추장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🌶️",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2599,
+      "name": "고춧가루",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/고춧가루.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1998,
+      "name": "고춧잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2000,
+      "name": "곤달비",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1908,
+      "name": "곤약",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2600,
+      "name": "골든세이지",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2493,
+      "name": "곰피",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2001,
+      "name": "공심채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1918,
+      "name": "과당",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1755,
+      "name": "과일음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1746,
+      "name": "과일차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2701,
+      "name": "과일통조림",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1877,
+      "name": "과자",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2314,
+      "name": "괴도라치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2003,
+      "name": "구기자",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2552,
+      "name": "구기자차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2180,
+      "name": "구스베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2178,
+      "name": "구아바",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2179,
+      "name": "구아바 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2553,
+      "name": "구절초차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2706,
+      "name": "국간장 또는 새우젓",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1878,
+      "name": "국수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2004,
+      "name": "국화꽃",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2554,
+      "name": "국화차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2477,
+      "name": "군소",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2315,
+      "name": "군평선이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1826,
+      "name": "굴",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦪",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1777,
+      "name": "굴소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🦪",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1862,
+      "name": "귀리",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1833,
+      "name": "귤",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2181,
+      "name": "귤 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2182,
+      "name": "귤 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2183,
+      "name": "귤 착즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2005,
+      "name": "근대",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2184,
+      "name": "금귤",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2303,
+      "name": "기러기알",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2316,
+      "name": "기름종개",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1863,
+      "name": "기장",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1818,
+      "name": "김",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/김.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2659,
+      "name": "김말이튀김",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/김.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2006,
+      "name": "김치",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/김치.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2317,
+      "name": "까나리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1722,
+      "name": "까망베르치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1859,
+      "name": "깻잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/깻잎.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2318,
+      "name": "꺽저기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2461,
+      "name": "꼬막",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2494,
+      "name": "꼬시래기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2319,
+      "name": "꼬치고기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2478,
+      "name": "꼴뚜기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2320,
+      "name": "꼼치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2321,
+      "name": "꽁치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/꽁치.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2154,
+      "name": "꽃송이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2007,
+      "name": "꽃양배추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1745,
+      "name": "꽃차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2002,
+      "name": "꾸지뽕",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2008,
+      "name": "꿀풀",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍯",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2272,
+      "name": "꿩고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2155,
+      "name": "나도팽나무버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1811,
+      "name": "낙지",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2009,
+      "name": "날개콩",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2322,
+      "name": "날치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2323,
+      "name": "납지리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2602,
+      "name": "낫토",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2660,
+      "name": "냉면 육수",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2010,
+      "name": "냉이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2324,
+      "name": "넙치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2325,
+      "name": "네동가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2326,
+      "name": "노랑촉수",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2327,
+      "name": "노래미",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2156,
+      "name": "노루궁뎅이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1935,
+      "name": "녹두",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1938,
+      "name": "녹두 국수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1936,
+      "name": "녹두 빈대떡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1937,
+      "name": "녹두 빈대떡가루",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1939,
+      "name": "녹두묵",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1742,
+      "name": "녹차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2555,
+      "name": "녹차라테",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2328,
+      "name": "놀래기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2329,
+      "name": "농어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1870,
+      "name": "누룽지",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2011,
+      "name": "누리장나무잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2676,
+      "name": "누에",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2330,
+      "name": "누치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2331,
+      "name": "눈볼대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2332,
+      "name": "눈퉁멸",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2157,
+      "name": "느타리버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2012,
+      "name": "는쟁이냉이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2333,
+      "name": "능성어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2158,
+      "name": "능이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2334,
+      "name": "다금바리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2335,
+      "name": "다랑어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2185,
+      "name": "다래",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2556,
+      "name": "다래나무순차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2462,
+      "name": "다슬기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2495,
+      "name": "다시마",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/다시마.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2496,
+      "name": "다시마 육수",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/다시마.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2497,
+      "name": "다시마 튀각",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/다시마.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1896,
+      "name": "다식",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2707,
+      "name": "다진 마늘",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2677,
+      "name": "단백질 보충제",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2337,
+      "name": "달강어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2304,
+      "name": "달걀",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2338,
+      "name": "달고기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2013,
+      "name": "달래",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2678,
+      "name": "달팽이",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2274,
+      "name": "닭 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2275,
+      "name": "닭 육수",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2277,
+      "name": "닭가슴살",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2278,
+      "name": "닭가슴살 패티",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2273,
+      "name": "닭고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2525,
+      "name": "닭기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2279,
+      "name": "닭꼬치",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2276,
+      "name": "닭뼈 육수",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2463,
+      "name": "담치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2014,
+      "name": "당귀",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2015,
+      "name": "당근",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥕",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2016,
+      "name": "당근 주스",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥕",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1763,
+      "name": "당면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/당면.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1919,
+      "name": "당밀",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2339,
+      "name": "대구",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2340,
+      "name": "대구 튀김",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/김.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2341,
+      "name": "대구횟대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2679,
+      "name": "대나무",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2017,
+      "name": "대나무순",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1940,
+      "name": "대두",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2342,
+      "name": "대두어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2464,
+      "name": "대수리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2186,
+      "name": "대추",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/대추.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2187,
+      "name": "대추야자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/대추.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1738,
+      "name": "대추차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1850,
+      "name": "대파",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/대파.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2465,
+      "name": "대합",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2498,
+      "name": "대황",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2018,
+      "name": "더덕",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/더덕.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2603,
+      "name": "데리야끼 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2343,
+      "name": "도다리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2344,
+      "name": "도도바리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2019,
+      "name": "도라지",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/도라지.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2557,
+      "name": "도라지차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2345,
+      "name": "도루묵",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1784,
+      "name": "도시락",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2346,
+      "name": "도치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1954,
+      "name": "도토리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1955,
+      "name": "도토리묵",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2347,
+      "name": "독가시치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1796,
+      "name": "돈까스",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2661,
+      "name": "돈저냐",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2020,
+      "name": "돌나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1944,
+      "name": "동부",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2348,
+      "name": "동사리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2021,
+      "name": "동아",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2349,
+      "name": "동자개",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2466,
+      "name": "동죽",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2159,
+      "name": "동충하초",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2282,
+      "name": "돼지 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1909,
+      "name": "돼지감자",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2281,
+      "name": "돼지고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥓",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2703,
+      "name": "돼지고기 (목살 또는 삼겹살)",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2526,
+      "name": "돼지기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2283,
+      "name": "돼지불고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2604,
+      "name": "돼지불고기 양념",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1775,
+      "name": "된장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/된장.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2022,
+      "name": "두릅",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2188,
+      "name": "두리안",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2605,
+      "name": "두반장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1941,
+      "name": "두부",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🧈",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1712,
+      "name": "두유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2558,
+      "name": "두충차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2350,
+      "name": "둑중개",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2023,
+      "name": "둥굴레",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🦪",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1736,
+      "name": "둥굴레차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🦪",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2351,
+      "name": "드렁허리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1769,
+      "name": "들기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1956,
+      "name": "들깨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/깨.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2024,
+      "name": "들깻잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/깻잎.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2025,
+      "name": "들깻잎장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/깻잎.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2352,
+      "name": "등가시치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1831,
+      "name": "딸기",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍓",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1957,
+      "name": "땅콩",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2527,
+      "name": "땅콩 버터",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧈",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2528,
+      "name": "땅콩기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1958,
+      "name": "때죽",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1789,
+      "name": "떡볶이",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2499,
+      "name": "뜸부기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1758,
+      "name": "라면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2606,
+      "name": "라면 건더기 스프",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2607,
+      "name": "라면 스프",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2608,
+      "name": "라벤더",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2189,
+      "name": "라임",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2190,
+      "name": "라임 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2191,
+      "name": "라즈베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2192,
+      "name": "람부탄",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1816,
+      "name": "랍스터",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦞",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2579,
+      "name": "레모네이드",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2193,
+      "name": "레몬",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2194,
+      "name": "레몬 착즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2609,
+      "name": "레몬그라스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1749,
+      "name": "레몬청",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍋",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1946,
+      "name": "렌즈콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1920,
+      "name": "로열 젤리",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2610,
+      "name": "로즈메리",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2195,
+      "name": "롱안",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2026,
+      "name": "루꼴라",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1945,
+      "name": "리마콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2196,
+      "name": "리치",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1719,
+      "name": "리코타치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2027,
+      "name": "리크",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2529,
+      "name": "마가린",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2197,
+      "name": "마가목 열매",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2028,
+      "name": "마늘",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2029,
+      "name": "마늘 장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2030,
+      "name": "마늘종",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2031,
+      "name": "마늘종 장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2611,
+      "name": "마라 육수",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1959,
+      "name": "마름",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1778,
+      "name": "마요네즈",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/마요네즈.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1960,
+      "name": "마카다미아",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1879,
+      "name": "마카로니",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2033,
+      "name": "마타리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2160,
+      "name": "만가닥버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1795,
+      "name": "만두",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/냉동만두.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2353,
+      "name": "만새기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2285,
+      "name": "말고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2697,
+      "name": "맛소금",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧂",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2612,
+      "name": "맛술",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1839,
+      "name": "망고",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥭",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2198,
+      "name": "망고 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥭",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2199,
+      "name": "망고스틴",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥭",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2354,
+      "name": "망둑어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2500,
+      "name": "매생이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2200,
+      "name": "매실",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2580,
+      "name": "매실 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2202,
+      "name": "매실 절임",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1740,
+      "name": "매실차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2201,
+      "name": "매실청",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2355,
+      "name": "매퉁이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2710,
+      "name": "맥주",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2203,
+      "name": "머루",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1961,
+      "name": "머루씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2613,
+      "name": "머스타드 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2034,
+      "name": "머위",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2479,
+      "name": "멍게",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/멍게.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2356,
+      "name": "메기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2680,
+      "name": "메뚜기",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1864,
+      "name": "메밀",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1865,
+      "name": "메밀 국수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1866,
+      "name": "메밀 냉면",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1867,
+      "name": "메밀묵",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2286,
+      "name": "메추리고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2305,
+      "name": "메추리알",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2204,
+      "name": "멜론",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍈",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1868,
+      "name": "멥쌀",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1872,
+      "name": "멥쌀 과자",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1873,
+      "name": "멥쌀 국수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1874,
+      "name": "멥쌀떡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1869,
+      "name": "멥쌀밥",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2287,
+      "name": "멧돼지고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥓",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2530,
+      "name": "면실유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1820,
+      "name": "멸치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2705,
+      "name": "멸치 다시마 육수 또는 쌀뜨물",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2357,
+      "name": "멸치 볶음",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2358,
+      "name": "멸치 육수",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1817,
+      "name": "명란",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/명란.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2359,
+      "name": "명태",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2205,
+      "name": "모과",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2360,
+      "name": "모래무지",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2035,
+      "name": "모링가",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2036,
+      "name": "모시풀",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/풀.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2513,
+      "name": "모유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2501,
+      "name": "모자반",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1718,
+      "name": "모짜렐라치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2161,
+      "name": "목이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1962,
+      "name": "목화씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2361,
+      "name": "몽치다래",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2039,
+      "name": "무 절임",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2042,
+      "name": "무국물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2040,
+      "name": "무말랭이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2041,
+      "name": "무말랭이 무침",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2038,
+      "name": "무순",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2037,
+      "name": "무청",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2206,
+      "name": "무화과",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1812,
+      "name": "문어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🐙",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2362,
+      "name": "문절망둑",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2043,
+      "name": "물냉이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2044,
+      "name": "물쑥",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1921,
+      "name": "물엿",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2363,
+      "name": "물치다래",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2364,
+      "name": "미꾸리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2045,
+      "name": "미나리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2046,
+      "name": "미나리청",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2147,
+      "name": "미니파프리카",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🫑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2480,
+      "name": "미더덕",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/더덕.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2614,
+      "name": "미소",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1875,
+      "name": "미숫가루",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1819,
+      "name": "미역",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/미역.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2502,
+      "name": "미역 튀각",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/미역.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2662,
+      "name": "미트볼",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2365,
+      "name": "민달고기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2047,
+      "name": "민들레",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2559,
+      "name": "민들레차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2366,
+      "name": "민어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2367,
+      "name": "민태",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2615,
+      "name": "민트",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1765,
+      "name": "밀가루",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/밀가루.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1876,
+      "name": "밀떡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1747,
+      "name": "밀크티",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1829,
+      "name": "바나나",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍌",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2207,
+      "name": "바나나칩",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍌",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2617,
+      "name": "바비큐 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2048,
+      "name": "바젤라",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1824,
+      "name": "바지락",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/바지락.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2049,
+      "name": "바질",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2050,
+      "name": "박고지",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2368,
+      "name": "박대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2051,
+      "name": "박쥐나무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2618,
+      "name": "발사믹 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2593,
+      "name": "발효주",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2162,
+      "name": "밤버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1947,
+      "name": "밤콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌰",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2052,
+      "name": "방가지똥",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍆",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2369,
+      "name": "방어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2053,
+      "name": "방울다다기양배추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1828,
+      "name": "배",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2209,
+      "name": "배 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2054,
+      "name": "배암차즈기",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2208,
+      "name": "배즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2055,
+      "name": "배초향",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1852,
+      "name": "배추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2056,
+      "name": "백모근",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2370,
+      "name": "백연",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2057,
+      "name": "백합",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2210,
+      "name": "백향과",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2211,
+      "name": "백향과 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2371,
+      "name": "밴댕이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2372,
+      "name": "뱅어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2163,
+      "name": "버들송이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2212,
+      "name": "버찌",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2531,
+      "name": "버터",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧈",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2373,
+      "name": "베도라치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2374,
+      "name": "베로치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2375,
+      "name": "베스",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1805,
+      "name": "베이컨",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥓",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2376,
+      "name": "벤자리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1948,
+      "name": "병아리콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2377,
+      "name": "병어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2378,
+      "name": "보구치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1838,
+      "name": "보리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2379,
+      "name": "보리멸",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2213,
+      "name": "보리밥 열매",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1732,
+      "name": "보리차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1743,
+      "name": "보이차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2214,
+      "name": "복분자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2215,
+      "name": "복숭아",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2532,
+      "name": "복숭아씨기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2380,
+      "name": "복어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2663,
+      "name": "볶음밥",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2381,
+      "name": "볼기우럭",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2382,
+      "name": "볼락",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2383,
+      "name": "부세",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2384,
+      "name": "부시리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2059,
+      "name": "부지깽이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2060,
+      "name": "부추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/부추.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2385,
+      "name": "부치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1766,
+      "name": "부침가루",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2514,
+      "name": "분유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2503,
+      "name": "불등풀가사리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/풀.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2386,
+      "name": "붉바리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2387,
+      "name": "붕어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1963,
+      "name": "브라질너트",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1846,
+      "name": "브로콜리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2216,
+      "name": "블랙베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2217,
+      "name": "블랙커런트",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2388,
+      "name": "블루길",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2218,
+      "name": "블루베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🫐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1986,
+      "name": "비름",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2061,
+      "name": "비비추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1942,
+      "name": "비지",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2062,
+      "name": "비타민채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2063,
+      "name": "비트",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/비트.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2064,
+      "name": "비트 피클",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥒",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2219,
+      "name": "비파",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2389,
+      "name": "빙어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2164,
+      "name": "뽕나무버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2058,
+      "name": "뽕잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2664,
+      "name": "사골국",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2220,
+      "name": "사과",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍎",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2221,
+      "name": "사과 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍎",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2222,
+      "name": "사과 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍎",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2560,
+      "name": "사과차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍎",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1922,
+      "name": "사탕",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2065,
+      "name": "사탕무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2066,
+      "name": "사탕수수",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2619,
+      "name": "사프란",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2223,
+      "name": "산딸기",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍓",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2067,
+      "name": "산마늘",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2068,
+      "name": "산마늘장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2224,
+      "name": "산수유",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2515,
+      "name": "산양유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2229,
+      "name": "산자나무 열매",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2390,
+      "name": "산천어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2620,
+      "name": "산초",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2225,
+      "name": "살구",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2391,
+      "name": "살살치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2069,
+      "name": "삼나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2681,
+      "name": "삼백초",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2070,
+      "name": "삼붕냐와",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2392,
+      "name": "삼세기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1964,
+      "name": "삼씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2071,
+      "name": "삼채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2393,
+      "name": "삼치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2394,
+      "name": "상어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2561,
+      "name": "상지차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1858,
+      "name": "상추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2165,
+      "name": "상황버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2395,
+      "name": "새다래",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1814,
+      "name": "새우",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦐",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2481,
+      "name": "새우 볶음",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2482,
+      "name": "새우 튀김용",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2665,
+      "name": "샌드위치",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥪",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1783,
+      "name": "샐러드",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2621,
+      "name": "샐러드 드레싱",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2396,
+      "name": "샛멸",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2072,
+      "name": "생강",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/생강.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2622,
+      "name": "생강 페이스트",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/생강.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2073,
+      "name": "생강 피클",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥒",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1737,
+      "name": "생강차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2562,
+      "name": "생강청",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/생강.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2581,
+      "name": "생수",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1714,
+      "name": "생크림",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2397,
+      "name": "서대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2226,
+      "name": "석류",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2504,
+      "name": "석묵",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2166,
+      "name": "석이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1786,
+      "name": "선식",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2074,
+      "name": "선인장",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1772,
+      "name": "설탕",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/설탕.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2075,
+      "name": "섬초롱",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2483,
+      "name": "성게",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2398,
+      "name": "성대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2076,
+      "name": "셀러리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2516,
+      "name": "셔벗",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2582,
+      "name": "셰이크",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2289,
+      "name": "소 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2288,
+      "name": "소고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2227,
+      "name": "소귀나무 열매",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1771,
+      "name": "소금",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧂",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2467,
+      "name": "소라",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2077,
+      "name": "소리쟁이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1760,
+      "name": "소면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/소면.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2290,
+      "name": "소불고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2623,
+      "name": "소불고기 양념",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1806,
+      "name": "소시지",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2682,
+      "name": "솔잎",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2295,
+      "name": "송아지 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2294,
+      "name": "송아지고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2399,
+      "name": "송어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2167,
+      "name": "송이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2683,
+      "name": "송화",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2078,
+      "name": "쇠귀나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2533,
+      "name": "쇠기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2534,
+      "name": "쇼트닝",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2624,
+      "name": "수끼 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2468,
+      "name": "수랑",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2079,
+      "name": "수리취",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1832,
+      "name": "수박",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍉",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1965,
+      "name": "수박씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍉",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2684,
+      "name": "수세미",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1886,
+      "name": "수수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1887,
+      "name": "수수떡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2583,
+      "name": "수정과",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1880,
+      "name": "수제비면",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1857,
+      "name": "숙주",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🌱",
+      "image_url": "/media/ingredient_icons/콩나물.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1791,
+      "name": "순대",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2700,
+      "name": "순두부",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🧈",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2081,
+      "name": "순무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2505,
+      "name": "순채",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2400,
+      "name": "숭어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2625,
+      "name": "스리라차 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2082,
+      "name": "스테비아",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2666,
+      "name": "스튜",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1725,
+      "name": "스트링치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2667,
+      "name": "스파게티",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍝",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2626,
+      "name": "스파게티 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1881,
+      "name": "스파게티면",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🦀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1754,
+      "name": "스포츠음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2668,
+      "name": "스프",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1723,
+      "name": "슬라이스치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": "/media/ingredient_icons/슬라이스치즈.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1845,
+      "name": "시금치",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1923,
+      "name": "시럽",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/시럽.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1785,
+      "name": "시리얼",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1781,
+      "name": "식용유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/식용유.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1770,
+      "name": "식초",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2584,
+      "name": "식초 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2585,
+      "name": "식혜",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2083,
+      "name": "신선초",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2168,
+      "name": "싸리버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1836,
+      "name": "쌀",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2586,
+      "name": "쌀 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2535,
+      "name": "쌀겨기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2699,
+      "name": "쌀국수소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2713,
+      "name": "쌀밥",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1776,
+      "name": "쌈장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/쌈장.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2084,
+      "name": "쌈추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2401,
+      "name": "쌍동가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2685,
+      "name": "쌍별귀뚜라미",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2402,
+      "name": "쌍뿔달재",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2563,
+      "name": "쌍화차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2403,
+      "name": "쏘가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2404,
+      "name": "쏨뱅이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2405,
+      "name": "쑤기미",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2406,
+      "name": "쑥감펭",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/쑥.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2085,
+      "name": "쑥갓",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/쑥.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2086,
+      "name": "쑥부쟁이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/쑥.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2564,
+      "name": "쑥차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2087,
+      "name": "씀바귀",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2407,
+      "name": "아귀",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2230,
+      "name": "아떼모야",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2231,
+      "name": "아로니아",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1888,
+      "name": "아마란스",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1966,
+      "name": "아마씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2536,
+      "name": "아마씨유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1967,
+      "name": "아몬드",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/아몬드.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2537,
+      "name": "아몬드유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/아몬드.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2232,
+      "name": "아보카도",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2538,
+      "name": "아보카도유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2233,
+      "name": "아세로라",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2234,
+      "name": "아세로라 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2088,
+      "name": "아스파라거스",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2089,
+      "name": "아욱",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2169,
+      "name": "아위버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2090,
+      "name": "아이비카",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2517,
+      "name": "아이스밀크",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1716,
+      "name": "아이스크림",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🍦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2091,
+      "name": "아주까리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2092,
+      "name": "아티초크",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1910,
+      "name": "아피오스감자",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2408,
+      "name": "아홉동가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2093,
+      "name": "알로에",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2094,
+      "name": "알로에 음료",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2095,
+      "name": "알팔파",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2409,
+      "name": "애꼬치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2170,
+      "name": "애느타리버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2616,
+      "name": "애플민트",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2228,
+      "name": "애플수박",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍉",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2715,
+      "name": "애호박",
+      "category": "기타",
+      "default_unit": "",
+      "icon": null,
+      "image_url": null,
+      "api_source": null
+    },
+    {
+      "id": 2235,
+      "name": "앵두",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2708,
+      "name": "야채모음",
+      "category": "가공식품",
+      "default_unit": "봉",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1756,
+      "name": "야채음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1911,
+      "name": "야콘",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2565,
+      "name": "야콘차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1924,
+      "name": "양갱",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1800,
+      "name": "양고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2627,
+      "name": "양념닭 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2410,
+      "name": "양미리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1848,
+      "name": "양배추",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2096,
+      "name": "양배추 샐러드",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍐",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2171,
+      "name": "양송이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2291,
+      "name": "양지국물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2411,
+      "name": "양태",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2097,
+      "name": "양파",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2099,
+      "name": "양파 장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2098,
+      "name": "양파링",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2628,
+      "name": "양파시즈닝",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2100,
+      "name": "양하",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2297,
+      "name": "어린양 부산물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2296,
+      "name": "어린양고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2412,
+      "name": "어묵",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/어묵.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2413,
+      "name": "어묵 국물",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2414,
+      "name": "어묵국",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/어묵.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2101,
+      "name": "어수리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2415,
+      "name": "어육소시지",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2416,
+      "name": "얼룩통구멍",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1752,
+      "name": "얼음",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2103,
+      "name": "엉겅퀴",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1882,
+      "name": "에그누들",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2236,
+      "name": "엘더베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2417,
+      "name": "여덟동가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2104,
+      "name": "여주",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2105,
+      "name": "연근",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/연근.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2106,
+      "name": "연근 조림",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/연근.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1968,
+      "name": "연씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2418,
+      "name": "연어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🐟",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2539,
+      "name": "연어기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🐟",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2518,
+      "name": "연유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2669,
+      "name": "연잎밥",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2107,
+      "name": "열대비름",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2108,
+      "name": "열무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2419,
+      "name": "열쌍동가리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2109,
+      "name": "염교",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2298,
+      "name": "염소고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2110,
+      "name": "영아자",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2172,
+      "name": "영지버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2237,
+      "name": "오디",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2629,
+      "name": "오레가노",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1834,
+      "name": "오렌지",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2238,
+      "name": "오렌지 마멀레이드",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2239,
+      "name": "오렌지 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2240,
+      "name": "오렌지 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2241,
+      "name": "오렌지 착즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍊",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2242,
+      "name": "오렴자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1802,
+      "name": "오리고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2306,
+      "name": "오리알",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2243,
+      "name": "오미자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2566,
+      "name": "오미자차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2244,
+      "name": "오미자청",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2469,
+      "name": "오분자기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1853,
+      "name": "오이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥒",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2111,
+      "name": "오이 피클",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥒",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2112,
+      "name": "오이지",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥒",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1810,
+      "name": "오징어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦑",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2484,
+      "name": "오징어 튀김",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2485,
+      "name": "오징어채 볶음",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🦑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2113,
+      "name": "오크라",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1889,
+      "name": "옥수수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1890,
+      "name": "옥수수 과자",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1892,
+      "name": "옥수수 샐러드",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2540,
+      "name": "옥수수기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1891,
+      "name": "옥수수묵",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2567,
+      "name": "옥수수수염차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1734,
+      "name": "옥수수차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🌽",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2245,
+      "name": "올리브 절임",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🫒",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1780,
+      "name": "올리브유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/올리브유.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1912,
+      "name": "올방개묵",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2630,
+      "name": "올스파이스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1949,
+      "name": "완두",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1713,
+      "name": "요거트",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": "/media/ingredient_icons/요거트.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2519,
+      "name": "요구르트",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2246,
+      "name": "용과",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2420,
+      "name": "우각바리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2631,
+      "name": "우동 건더기 스프",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1762,
+      "name": "우동면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2470,
+      "name": "우렁이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2568,
+      "name": "우롱차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2506,
+      "name": "우뭇가사리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2507,
+      "name": "우뭇가사리묵",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2632,
+      "name": "우스터 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2114,
+      "name": "우엉",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/우엉.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2520,
+      "name": "우유",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🥛",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2292,
+      "name": "우족국물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2115,
+      "name": "울금",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2116,
+      "name": "울외장아찌",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2421,
+      "name": "웅어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1727,
+      "name": "원두커피",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2117,
+      "name": "원추리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2633,
+      "name": "월계수",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2247,
+      "name": "유자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1739,
+      "name": "유자차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2569,
+      "name": "유자청",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2118,
+      "name": "유채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2541,
+      "name": "유채씨기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2634,
+      "name": "육두구",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1893,
+      "name": "율무",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2570,
+      "name": "율무차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2248,
+      "name": "으름",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2422,
+      "name": "은어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1969,
+      "name": "은행",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/은행.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2102,
+      "name": "음나무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2587,
+      "name": "이온 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2686,
+      "name": "인삼",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/인삼.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2571,
+      "name": "인삼차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2423,
+      "name": "인상어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1731,
+      "name": "인스턴트커피",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2424,
+      "name": "임연수어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2119,
+      "name": "잇꽃",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2542,
+      "name": "잇꽃씨기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2425,
+      "name": "잉어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2173,
+      "name": "잎새버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2249,
+      "name": "자두",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2299,
+      "name": "자라고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2250,
+      "name": "자몽",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2251,
+      "name": "자몽 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2252,
+      "name": "자몽 착즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1750,
+      "name": "자몽청",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2120,
+      "name": "자운영",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1950,
+      "name": "작두",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2121,
+      "name": "잔대",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2702,
+      "name": "잘 익은 김치",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1951,
+      "name": "잠두",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1894,
+      "name": "잡곡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/잡곡.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2293,
+      "name": "잡뼈국물",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1970,
+      "name": "잣두부",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧈",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1971,
+      "name": "잣죽",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/잣.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2426,
+      "name": "장갱이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2427,
+      "name": "장문볼락",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2687,
+      "name": "장수풍뎅이",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2428,
+      "name": "장어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2472,
+      "name": "재첩",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2253,
+      "name": "잭프루트",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2122,
+      "name": "적양무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2429,
+      "name": "전갱이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/전.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2430,
+      "name": "전갱이 튀김",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/김.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1813,
+      "name": "전복",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/전복.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1913,
+      "name": "전분",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/전.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2431,
+      "name": "전어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/전.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2123,
+      "name": "전호",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/전.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2432,
+      "name": "점감펭",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2433,
+      "name": "점줄우럭",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2434,
+      "name": "정어리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2635,
+      "name": "정향",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2588,
+      "name": "젖산 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2124,
+      "name": "제비쑥",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/쑥.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1925,
+      "name": "젤라틴",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1926,
+      "name": "젤리",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2473,
+      "name": "조개",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/조개.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2435,
+      "name": "조기",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1764,
+      "name": "조리용떡",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/떡.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2636,
+      "name": "조미료",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2125,
+      "name": "조뱅이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1927,
+      "name": "조청",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2486,
+      "name": "주꾸미",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2436,
+      "name": "준치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2126,
+      "name": "줄나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2694,
+      "name": "중력",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1883,
+      "name": "중식면",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1952,
+      "name": "쥐눈이콩",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2437,
+      "name": "쥐치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1871,
+      "name": "즉석밥",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2594,
+      "name": "증류주",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2712,
+      "name": "진간장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2127,
+      "name": "진달래꽃",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2509,
+      "name": "진두발",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2128,
+      "name": "질경이",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1787,
+      "name": "짜장",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2637,
+      "name": "짜장 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1788,
+      "name": "짬뽕",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1884,
+      "name": "쫄면",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1757,
+      "name": "차음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1768,
+      "name": "참기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1972,
+      "name": "참깨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/깨.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1973,
+      "name": "참깨 과자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/깨.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1782,
+      "name": "참깨드레싱",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/깨.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1974,
+      "name": "참깨죽",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/깨.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2129,
+      "name": "참나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2336,
+      "name": "참다랑어 샐러드",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2438,
+      "name": "참마자",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2130,
+      "name": "참반디",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2131,
+      "name": "참빗살나무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2254,
+      "name": "참외",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2132,
+      "name": "참죽나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1809,
+      "name": "참치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "🐟",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1895,
+      "name": "찹쌀",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1897,
+      "name": "찹쌀 과자",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1898,
+      "name": "찹쌀 국수",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1899,
+      "name": "찹쌀떡",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1900,
+      "name": "찹쌀빵",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍞",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2589,
+      "name": "채소 주스",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1914,
+      "name": "천마",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2510,
+      "name": "청각",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2133,
+      "name": "청경채",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2638,
+      "name": "청국장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2439,
+      "name": "청새치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2704,
+      "name": "청양고추",
+      "category": "기타",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2440,
+      "name": "청어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1717,
+      "name": "체다치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1840,
+      "name": "체리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍒",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2639,
+      "name": "초고추장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🌶️",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2670,
+      "name": "초밥",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍚",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2134,
+      "name": "초석잠",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2441,
+      "name": "초어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1928,
+      "name": "초코바",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1929,
+      "name": "초콜릿",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2135,
+      "name": "총각무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/총각무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2136,
+      "name": "취나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1975,
+      "name": "치아씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2688,
+      "name": "치자꽃",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2521,
+      "name": "치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2671,
+      "name": "치즈스틱",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2640,
+      "name": "치즈시즈닝",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2137,
+      "name": "치커리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2572,
+      "name": "치커리차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1792,
+      "name": "치킨",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2641,
+      "name": "치킨 스톡",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2280,
+      "name": "치킨너겟",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "🍗",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2643,
+      "name": "칠리",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2642,
+      "name": "칠리 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2300,
+      "name": "칠면조고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/면.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1915,
+      "name": "칡즙",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2644,
+      "name": "카레 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2573,
+      "name": "카모마일차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2575,
+      "name": "카페라테",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1761,
+      "name": "칼국수면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍜",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1930,
+      "name": "캐러멜",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1976,
+      "name": "캐슈너트",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1728,
+      "name": "캡슐커피",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1931,
+      "name": "커스터드",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2574,
+      "name": "커피",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1730,
+      "name": "커피음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2522,
+      "name": "커피크리머",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "☕",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2709,
+      "name": "컬리플라워",
+      "category": "채소",
+      "default_unit": "팩",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1885,
+      "name": "케이크",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🎂",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2138,
+      "name": "케일",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/케일.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1779,
+      "name": "케첩",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2693,
+      "name": "코카콜라제로",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1977,
+      "name": "코코넛",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥥",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1978,
+      "name": "코코넛수",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥥",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2543,
+      "name": "코코넛유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥥",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1748,
+      "name": "코코아",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1729,
+      "name": "콜드브루",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2711,
+      "name": "콜라",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍴",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2139,
+      "name": "콜라비",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/콜라비.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2544,
+      "name": "콩기름",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1856,
+      "name": "콩나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🌱",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2140,
+      "name": "콩잎",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1943,
+      "name": "콩조림",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1901,
+      "name": "퀴노아",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1726,
+      "name": "큐브치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2255,
+      "name": "크랜베리",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2256,
+      "name": "크랜베리 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2672,
+      "name": "크로켓",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2487,
+      "name": "크릴",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2488,
+      "name": "크릴 페이스트",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2523,
+      "name": "크림",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🍦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1724,
+      "name": "크림치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2174,
+      "name": "큰느타리버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2471,
+      "name": "큰우슬우렁이 무침",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2511,
+      "name": "클로렐라",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1841,
+      "name": "키위",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥝",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2257,
+      "name": "키위 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🥝",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2645,
+      "name": "타라곤",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2646,
+      "name": "타임",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2590,
+      "name": "탄산 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1753,
+      "name": "탄산수",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2647,
+      "name": "탕수육 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2258,
+      "name": "탱자",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2648,
+      "name": "템페",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2301,
+      "name": "토끼고기",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2592,
+      "name": "토닉워터",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🧃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1916,
+      "name": "토란",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2141,
+      "name": "토란대",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2142,
+      "name": "토마토",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2649,
+      "name": "토마토 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2143,
+      "name": "토마토 음료",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2650,
+      "name": "토마토 케첩",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍅",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2144,
+      "name": "토스카노",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2716,
+      "name": "통깨",
+      "category": "기타",
+      "default_unit": "",
+      "icon": null,
+      "image_url": null,
+      "api_source": null
+    },
+    {
+      "id": 2442,
+      "name": "통치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2443,
+      "name": "투라치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1790,
+      "name": "튀김",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/김.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1767,
+      "name": "튀김가루",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/튀김가루.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2444,
+      "name": "틸라피아",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2145,
+      "name": "파드득나물",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2512,
+      "name": "파래",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1721,
+      "name": "파마산치즈",
+      "category": "유제품",
+      "default_unit": "개",
+      "icon": "🧀",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1759,
+      "name": "파스타면",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍝",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2146,
+      "name": "파슬리",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2259,
+      "name": "파인애플",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍍",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2260,
+      "name": "파인애플 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍍",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2261,
+      "name": "파파야",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1847,
+      "name": "파프리카",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🫑",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2545,
+      "name": "팜유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2651,
+      "name": "팟타이 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2695,
+      "name": "팥",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/단팥빵.png",
+      "api_source": "UserScan"
+    },
+    {
+      "id": 1861,
+      "name": "팽이버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2689,
+      "name": "팽창제",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2652,
+      "name": "페퍼민트",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1830,
+      "name": "포도",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2262,
+      "name": "포도 음료",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2263,
+      "name": "포도 주스",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1932,
+      "name": "포도당",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2546,
+      "name": "포도씨유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2264,
+      "name": "포도즙",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🍇",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2284,
+      "name": "포크커틀릿",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2653,
+      "name": "포크커틀릿 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2175,
+      "name": "포타벨라",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1860,
+      "name": "표고버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1933,
+      "name": "푸딩",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2445,
+      "name": "푸렁통구멍",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2446,
+      "name": "풀반지",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/풀.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2176,
+      "name": "풀버섯",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🍄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2032,
+      "name": "풋마늘",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🧄",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2690,
+      "name": "프로폴리스",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2266,
+      "name": "프루트샐러드",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2267,
+      "name": "프루트칵테일",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2268,
+      "name": "프루트펀치",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2265,
+      "name": "플럼코트",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2447,
+      "name": "피라미",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2148,
+      "name": "피망",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🫑",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1979,
+      "name": "피스타치오",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1793,
+      "name": "피자",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "🍕",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1980,
+      "name": "피칸",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2654,
+      "name": "하이라이스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2448,
+      "name": "학공치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2508,
+      "name": "한천",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2489,
+      "name": "한치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2149,
+      "name": "할라페뇨",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1797,
+      "name": "함박스테이크",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "🥩",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2655,
+      "name": "핫 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1794,
+      "name": "핫도그",
+      "category": "간편식",
+      "default_unit": "개",
+      "icon": "🌭",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2150,
+      "name": "해바라기",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1981,
+      "name": "해바라기씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2547,
+      "name": "해바라기유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2490,
+      "name": "해삼",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/해삼.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2656,
+      "name": "해선장",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2491,
+      "name": "해파리",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1807,
+      "name": "햄",
+      "category": "육류/달걀",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/햄.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2673,
+      "name": "햄버거",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🍔",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2449,
+      "name": "향어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2657,
+      "name": "허니머스타드 소스",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1744,
+      "name": "허브차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2576,
+      "name": "헛개 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1837,
+      "name": "현미",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1735,
+      "name": "현미차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1982,
+      "name": "호두",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/호두.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2548,
+      "name": "호두유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/호두.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1902,
+      "name": "호밀",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🌾",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1903,
+      "name": "호밀빵",
+      "category": "곡류",
+      "default_unit": "개",
+      "icon": "🍞",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1854,
+      "name": "호박",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🎃",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 1983,
+      "name": "호박씨",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "🎃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2151,
+      "name": "호박즙",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🎃",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2591,
+      "name": "혼합 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2549,
+      "name": "혼합식물성유",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "💧",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2450,
+      "name": "홍감펭",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2578,
+      "name": "홍삼 음료",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🥤",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2577,
+      "name": "홍삼차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2451,
+      "name": "홍어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1741,
+      "name": "홍차",
+      "category": "음료",
+      "default_unit": "개",
+      "icon": "🍵",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2698,
+      "name": "홍초",
+      "category": "과일/견과",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "UserScan"
+    },
+    {
+      "id": 2452,
+      "name": "홍치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1825,
+      "name": "홍합",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/홍합.png",
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2691,
+      "name": "화분",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2152,
+      "name": "화살나무",
+      "category": "채소",
+      "default_unit": "개",
+      "icon": "🥬",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2714,
+      "name": "화이트 와인",
+      "category": "기타",
+      "default_unit": "병",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "GeminiAI_Scan"
+    },
+    {
+      "id": 2453,
+      "name": "황매퉁이",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2454,
+      "name": "황새치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2455,
+      "name": "황어",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1821,
+      "name": "황태",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "Manual_Perfect"
+    },
+    {
+      "id": 2456,
+      "name": "횟대",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2658,
+      "name": "후추",
+      "category": "양념/오일",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": "/media/ingredient_icons/후추.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2692,
+      "name": "흰점박이 꽃무지",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": "/media/ingredient_icons/무.png",
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 2457,
+      "name": "히메치",
+      "category": "수산물",
+      "default_unit": "개",
+      "icon": "📦",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    },
+    {
+      "id": 1917,
+      "name": "히카마",
+      "category": "가공식품",
+      "default_unit": "개",
+      "icon": "🥫",
+      "image_url": null,
+      "api_source": "ExternalDB"
+    }
+  ],
+  "allergy_master": []
+}

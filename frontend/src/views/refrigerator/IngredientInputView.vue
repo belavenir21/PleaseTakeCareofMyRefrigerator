@@ -406,11 +406,15 @@ const selectManualItemAutocomplete = (index, res) => {
   
   const daysMap = { 
     '채소': 7, 
+    '과일/견과': 10,
     '육류/달걀': 5, 
-    '수산/건어물': 3, 
+    '수산물': 3, 
     '유제품': 10,
+    '곡류': 90,
+    '양념/오일': 180,
     '가공식품': 60,
-    '면/양념/오일': 180 
+    '간편식': 14,
+    '음료': 30
   }
   const days = daysMap[res.category] || 14
   
@@ -464,7 +468,12 @@ const handleReceiptScan = async (event) => {
       autocompleteResults: [] 
     }))
     showDetectedList.value = true
-  } catch (err) { toast.error('인식 실패') } finally { loading.value = false }
+  } catch (err) { 
+    const msg = err.response?.data?.error || '인식 실패'
+    toast.error(msg)
+  } finally { 
+    loading.value = false 
+  }
 }
 
 const handleCameraCapture = async (event) => {
@@ -481,7 +490,12 @@ const handleCameraCapture = async (event) => {
       autocompleteResults: [] 
     }))
     showDetectedList.value = true
-  } catch (err) { toast.error('분석 실패') } finally { loading.value = false }
+  } catch (err) { 
+    const msg = err.response?.data?.error || '분석 실패'
+    toast.error(msg)
+  } finally { 
+    loading.value = false 
+  }
 }
 
 const removeDetectedItem = (idx) => {
@@ -524,9 +538,12 @@ const submitAll = async () => {
 const getFullImageUrl = (path) => {
   if (!path) return null
   if (path.startsWith('http')) return path
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-  // path가 /media/로 시작하면 그대로 붙이고, 아니면 /media/ 추가 필요할 수 있음
-  return `${baseUrl}${path}`
+  // baseURL에서 /api 제거
+  let baseUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+  baseUrl = baseUrl.replace(/\/api\/?$/, '')  // /api 또는 /api/ 제거
+  // path가 /로 시작하지 않으면 추가
+  const fullPath = path.startsWith('/') ? path : `/${path}`
+  return `${baseUrl}${fullPath}`
 }
 </script>
 

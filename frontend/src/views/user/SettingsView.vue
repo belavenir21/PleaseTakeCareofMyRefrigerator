@@ -213,6 +213,14 @@ const handleSubmit = async () => {
     }
 
     await authStore.updateProfile(formData)
+    
+    // 프로필 새로고침 (업로드한 이미지 반영)
+    await authStore.fetchUserProfile()
+    
+    // ❌ Preview 초기화 제거 - 서버 이미지 로드될 때까지 preview 유지
+    // previewUrl.value = null
+    // selectedImageFile.value = null
+    
     toast.success('프로필이 성공적으로 저장되었습니다!')
   } catch (error) {
     console.error('Update failed:', error)

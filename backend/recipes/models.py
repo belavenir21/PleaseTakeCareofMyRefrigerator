@@ -1,27 +1,43 @@
+"""
+레시피 모델
+"""
 from django.db import models
 from django.conf import settings
+from config.constants import DIFFICULTY_CHOICES, RECIPE_CATEGORIES, SOURCE_CHOICES
+
 
 class Recipe(models.Model):
     """레시피"""
     title = models.CharField(max_length=200, verbose_name='레시피명')
     description = models.TextField(verbose_name='설명')
-    cooking_time_minutes = models.IntegerField(verbose_name='조리시간(분)')
-    difficulty = models.CharField(max_length=20, verbose_name='난이도')
+    cooking_time = models.IntegerField(default=30, verbose_name='조리시간(분)')
+    difficulty = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_CHOICES,
+        default='보통',
+        verbose_name='난이도'
+    )
     image_url = models.URLField(blank=True, null=True, verbose_name='이미지 URL')
-    image = models.ImageField(upload_to='recipe_images/', blank=True, null=True, verbose_name='업로드 이미지')  # Pillow 필요
+    image = models.ImageField(
+        upload_to='recipe_images/',
+        blank=True,
+        null=True,
+        verbose_name='업로드 이미지'
+    )
     tags = models.JSONField(default=list, blank=True, verbose_name='태그')
-    category = models.CharField(max_length=50, default='기타', verbose_name='카테고리')
-    
-    # 외부 API 데이터
-    api_source = models.CharField(max_length=50, blank=True, null=True, verbose_name='데이터 출처')
-    api_id = models.CharField(max_length=100, blank=True, null=True, verbose_name='외부 API ID')
+    category = models.CharField(
+        max_length=50,
+        choices=RECIPE_CATEGORIES,
+        default='기타',
+        verbose_name='카테고리'
+    )
     
     # 작성자 (유저 레시피인 경우)
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='recipes',
         verbose_name='작성자'
     )
@@ -34,9 +50,20 @@ class Recipe(models.Model):
         verbose_name='스크랩한 유저'
     )
     
+    # 공개 여부
+    is_public = models.BooleanField(default=True, verbose_name='공개여부')
+    
+    # 출처
+    source = models.CharField(
+        max_length=50,
+        choices=SOURCE_CHOICES,
+        default='api',
+        verbose_name='출처'
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         db_table = 'recipes'
         verbose_name = '레시피'
@@ -45,39 +72,70 @@ class Recipe(models.Model):
         indexes = [
             models.Index(fields=['title']),
             models.Index(fields=['difficulty']),
+            models.Index(fields=['category']),
         ]
-    
+
     def __str__(self):
         return self.title
 
+
 class RecipeIngredient(models.Model):
-    """레시피 재료 (수량 필드 제거: 93.9%가 '적정량'으로 의미 없음)"""
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='ingredients')
-    name = models.CharField(max_length=100, verbose_name='재료명')
-    # quantity 필드 제거됨 (2025.12.24)
-    # 이유: 10,137개 중 9,519개(93.9%)가 "적정량"으로 실질적 정보 제공 불가
+    """레시피 재료"""
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='ingredients'
+    )
     
+    # 마스터 연결 (매칭 정확도 향상)
+    master = models.ForeignKey(
+        'master.IngredientMaster',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='recipe_ingredients',
+        verbose_name='마스터 식재료'
+    )
+    
+    # name은 마스터 없을 때 폴백용 또는 원본 표시용
+    name = models.CharField(max_length=100, verbose_name='재료명')
+    
+    # 분량 (문자열로 저장: "2큰술", "적당량" 등)
+    amount = models.CharField(max_length=50, blank=True, default='', verbose_name='분량')
+
     class Meta:
         db_table = 'recipe_ingredients'
         verbose_name = '레시피 재료'
         verbose_name_plural = '레시피 재료'
-    
+
     def __str__(self):
         return f"{self.recipe.title} - {self.name}"
+    
+    def save(self, *args, **kwargs):
+        # 마스터 자동 연결 시도
+        if not self.master and self.name:
+            from master.models import find_master_by_name
+            self.master = find_master_by_name(self.name)
+        super().save(*args, **kwargs)
+
 
 class CookingStep(models.Model):
     """조리 단계"""
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='steps'
+    )
     step_number = models.IntegerField(verbose_name='단계 번호')
     description = models.TextField(verbose_name='설명')
-    icon = models.CharField(max_length=10, blank=True, null=True, verbose_name='아이콘')
+    icon = models.CharField(max_length=10, blank=True, default='🍳', verbose_name='아이콘')
     time_minutes = models.IntegerField(default=0, verbose_name='소요시간(분)')
-    
+
     class Meta:
         db_table = 'cooking_steps'
         verbose_name = '조리 단계'
         verbose_name_plural = '조리 단계'
         ordering = ['recipe', 'step_number']
-    
+
     def __str__(self):
         return f"{self.recipe.title} - Step {self.step_number}"

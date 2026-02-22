@@ -27,10 +27,20 @@
     <main class="container">
       <!-- 추천 상태 배너 -->
       <section v-if="showRecommendations" class="rec-hero animate-up">
-        <div class="hero-content">
-          <span class="hero-tag">Best Matching</span>
-          <h1 class="game-title">내 재료 <strong>{{ totalIngredientCount }}가지</strong>로<br/>만드는 맞춤 레시피</h1>
-          <p v-if="displayRecipes.length > 0">지금 바로 요리 가능한 레시피를 찾았어요!</p>
+        <div class="hero-row">
+          <div class="hero-content">
+            <span class="hero-tag">Best Matching</span>
+            <h1 class="game-title">내 재료 <strong>{{ totalIngredientCount }}가지</strong>로<br/>만드는 맞춤 레시피</h1>
+            <p v-if="displayRecipes.length > 0">지금 바로 요리 가능한 레시피를 찾았어요!</p>
+          </div>
+          <!-- 추천 모드 정렬 옵션 (컴팩트, 오른쪽 배치) -->
+          <div class="rec-sort-wrapper">
+            <select v-model="recommendSortOption" class="sort-select-compact">
+              <option value="match_ratio">매칭률 순</option>
+              <option value="expiring_first">유통기한 임박</option>
+              <option value="cooking_time">빠른 조리</option>
+            </select>
+          </div>
         </div>
       </section>
 
@@ -68,7 +78,7 @@
             </div>
             
              <!-- 유저 레시피 배지 (bottom-left) -->
-            <div v-if="recipe.author || recipe.api_source === 'user'" class="badge-custom">
+            <div v-if="recipe.author || recipe.source === 'user'" class="badge-custom">
               🧑‍🍳 {{ recipe.author ? `${recipe.author}` : 'User' }}
             </div>
             
@@ -98,10 +108,10 @@
           <div class="body-box">
             <h4 class="title">{{ recipe.title }}</h4>
             <div class="meta-info">
-              <span class="time">⏱ {{ recipe.cooking_time_minutes }}분</span>
+              <span class="time">⏱ {{ recipe.cooking_time }}분</span>
               <span class="level">⭐ {{ recipe.difficulty }}</span>
               <span v-if="recipe.author" class="author-tag">by {{ recipe.author }}</span>
-              <span v-else-if="recipe.api_source === 'user'" class="author-tag">Custom</span>
+              <span v-else-if="recipe.source === 'user'" class="author-tag">Custom</span>
             </div>
             
             <div v-if="showRecommendations" class="matching-status">
@@ -164,14 +174,14 @@
 
         <!-- 60~79% 레시피 보기 버튼 (expand-section) -->
         <div v-if="showRecommendations && nextTierInfo" class="expand-section" style="margin-top: 20px;">
-          <button @click="lowerAccuracy" class="btn-expand">
+          <button @click="loadMore" class="btn-expand">
             <div class="expand-icon-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             </div>
             <div class="expand-text">
               <strong>더 많은 레시피 보기</strong>
               <p>
-                <span class="highlight">{{ nextTierInfo.label }}</span> 매칭 레시피 
+                <span class="highlight">매칭률 50% 미만</span> 레시피 
                 <span class="highlight">{{ nextTierInfo.count}}개</span> 더보기
               </p>
             </div>
@@ -254,7 +264,7 @@
                 <div class="form-row">
                   <div class="form-group">
                     <label>조리시간(분)</label>
-                    <input v-model.number="newRecipe.cooking_time_minutes" type="number" class="input-field" placeholder="30"/>
+                    <input v-model.number="newRecipe.cooking_time" type="number" class="input-field" placeholder="30"/>
                   </div>
                   <div class="form-group">
                     <label>난이도</label>
@@ -369,6 +379,7 @@ const goBack = () => {
 const searchResults = ref([])
 const isSearching = ref(false)
 const sortOption = ref('-created_at')
+const recommendSortOption = ref('match_ratio') // 추천 모드 정렬 옵션
 
 // 정렬 옵션 변경 감지
 watch(sortOption, async (newVal) => {
@@ -407,65 +418,68 @@ const totalIngredientCount = computed(() => {
   return uniqueNames.size
 })
 
-// 단계별 필터링된 추천 레시피
-const filteredRecommendations = computed(() => {
-  if (!showRecommendations.value) return []
-  return serverRecs.value.filter(r => r.match_ratio >= accuracyThreshold.value)
+// 단계별 필터링 제거 -> 전체 리스트 사용
+const moreRecipesLoaded = ref(false)
+
+// 더 보기 가능 여부
+const canLoadMore = computed(() => {
+  return recipeStore.hasMoreRecommendations && !moreRecipesLoaded.value
 })
 
-// 다음 단계 정보 (라벨 + 개수)
 const nextTierInfo = computed(() => {
   if (!showRecommendations.value) return null
   
-  const current = accuracyThreshold.value
-  // 확인해볼 구간들 (내림차순)
-  const tiers = [
-      { min: 60, max: 80 },
-      { min: 40, max: 60 },
-      { min: 20, max: 40 },
-      { min: 0, max: 20 }
-  ]
-  
-  for (const tier of tiers) {
-      // 현재 임계값보다 낮은 구간이어야 함
-      if (tier.min >= current) continue
-      
-      // 해당 구간에 데이터가 있는지 확인 (범위: [min, current))
-      // 즉, 현재 보고 있는 것보다 정확도가 낮지만 tier.min 보다는 높은 데이터들
-      const count = serverRecs.value.filter(r => r.match_ratio >= tier.min && r.match_ratio < current).length
-      
-      if (count > 0) {
-          // 데이터가 있는 첫 번째 하위 구간 발견
-          return { 
-              label: `${tier.min}~${current - 1}%`, 
-              count, 
-              nextThreshold: tier.min 
-          }
-      }
-      // 데이터가 없으면 더 낮은 구간 탐색 (건너뛰기)
-      // 만약 60~80 구간이 비어있으면 40~60을 탐색하게 됨.
-      // 이때 current는 그대로 유지해야 사용자가 "더 보기" 눌렀을 때 80 -> 40으로 한 번에 갈 수 있음.
-      // 하지만 UI 경험상 단계별로 보여주는 게 나을 수도 있고... 
-      // 사용자 요청은 "버튼이 작동하지 않음"이므로 데이터가 있는 곳으로 점프하는게 확실함.
+  if (canLoadMore.value) {
+     return {
+         label: '매칭률 50% 미만',
+         count: recipeStore.moreRecommendations.length
+     }
   }
-  
   return null
 })
 
-// 정확도 낮추기
-const lowerAccuracy = () => {
-  if (nextTierInfo.value) {
-    accuracyThreshold.value = nextTierInfo.value.nextThreshold
-  }
+// 더 보기 실행
+const loadMore = () => {
+  moreRecipesLoaded.value = true
 }
 
 const displayRecipes = computed(() => {
   if (showRecommendations.value) {
-    return [...filteredRecommendations.value].sort((a,b) => (b.match_ratio - a.match_ratio))
+    // 기본 추천 (50% 이상)
+    let recipes = [...serverRecs.value]
+    
+    // 더보기 클릭 시 추가 (50% 미만)
+    if (moreRecipesLoaded.value) {
+        recipes = [...recipes, ...recipeStore.moreRecommendations]
+    }
+    
+    // 정렬
+    switch (recommendSortOption.value) {
+      case 'match_ratio':
+        return recipes.sort((a, b) => b.match_ratio - a.match_ratio)
+      
+      case 'expiring_first':
+        return recipes.sort((a, b) => {
+          if (a.uses_expiring_ingredients && !b.uses_expiring_ingredients) return -1
+          if (!a.uses_expiring_ingredients && b.uses_expiring_ingredients) return 1
+          return b.match_ratio - a.match_ratio
+        })
+      
+      case 'cooking_time':
+        return recipes.sort((a, b) => {
+          const timeA = a.cooking_time || 999
+          const timeB = b.cooking_time || 999
+          if (timeA === timeB) return b.match_ratio - a.match_ratio
+          return timeA - timeB
+        })
+      
+      default:
+        return recipes.sort((a, b) => b.match_ratio - a.match_ratio)
+    }
   } else if (searchQuery.value.trim() && searchResults.value.length > 0) {
     return searchResults.value
   } else if (searchQuery.value.trim()) {
-    // 클라이언트 측 필터: 제목 또는 재료명에 검색어 포함
+    // ... 기존 검색 로직
     return allRecipes.value.filter(r => {
       const titleMatch = r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
       const ingredientMatch = r.ingredients?.some(ing => 
@@ -582,7 +596,9 @@ onMounted(async () => {
     
     await recipeStore.fetchRecommendations(params)
   } else {
-    await recipeStore.fetchRecipes()
+    // 검색 모드: 기본 레시피 목록 불러오기 (await로 확실하게)
+    showRecommendations.value = false
+    await recipeStore.fetchRecipes({ ordering: sortOption.value })
   }
 })
 
@@ -627,7 +643,7 @@ const stepsText = ref('')
 const newRecipe = ref({
   title: '',
   description: '',
-  cooking_time_minutes: 30,
+  cooking_time: 30,
   difficulty: '보통',
   category: '기타',
   tags: []
@@ -675,12 +691,31 @@ const submitManualRecipe = async () => {
   
   generatingRecipe.value = true
   try {
-    // 수동 입력 시 재료 파싱 (quantity 필드 제거)
+    // 수동 입력 시 재료 파싱 - 수량/단위 제거하고 재료명만 추출
     const ingredients = ingredientsText.value.split('\n')
       .filter(line => line.trim())
       .map(line => {
-        // 이름만 추출 ("1개", "200g" 같은 수량 정보 무시)
-        return { name: line.trim() }
+        // "쌈장 한숟갈" → "쌈장", "양파 1개" → "양파"
+        let cleaned = line.trim()
+        
+        // 패턴: 숫자+단위, 한글 수량 표현 제거
+        cleaned = cleaned
+          .replace(/\d+\.?\d*\s*(개|g|kg|ml|L|큰술|작은술|T|t|컵|숟갈|스푼|팩|봉지|조각|알|통|캔|병)/gi, '') // 숫자+단위
+          .replace(/(한|두|세|네|다섯|여섯|일곱|여덟|아홉|열)\s*(개|숟갈|스푼|컵|조각|알|통)/g, '') // 한글 수량
+          .replace(/적당량|약간|조금|적당히/g, '') // 추상적 수량
+          .trim()
+        
+        // 첫 단어만 추출 (예: "다진 마늘" → "마늘"은 유지하되, 너무 긴 건 첫 단어)
+        // 단, 2글자 이상 단어들은 유지 (복합 재료명 고려)
+        const words = cleaned.split(/\s+/).filter(w => w.length > 0)
+        
+        // 수식어 제거 (신선한, 국산, 유기농 등)
+        const modifiers = ['신선한', '국산', '유기농', '생', '냉동', '건조', '다진', '썬', '채썬']
+        const finalWords = words.filter(w => !modifiers.includes(w))
+        
+        const finalName = finalWords.length > 0 ? finalWords.join(' ') : words.join(' ')
+        
+        return { name: finalName || cleaned || line.trim() }
       })
     
     // 조리 단계 파싱
@@ -940,6 +975,19 @@ const submitManualRecipe = async () => {
   box-shadow: var(--shadow-premium);
   border: 3px solid rgba(255, 255, 255, 0.6);
 }
+
+/* 히어로 row 레이아웃 (왼쪽: 콘텐츠, 오른쪽: 정렬) */
+.hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.hero-content {
+  flex: 1;
+}
+
 .hero-tag { 
   background: rgba(255,255,255,0.95); 
   padding: 6px 16px; 
@@ -983,6 +1031,71 @@ const submitManualRecipe = async () => {
   font-size: 1.1rem;
   color: white;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 추천 모드 정렬 옵션 (컴팩트, 오른쪽 정렬) */
+.rec-sort-wrapper {
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 8px;
+}
+
+.sort-select-compact {
+  background: white;
+  border: 2px solid rgba(255, 107, 157, 0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #FF6B9D;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 
+    0 3px 0 rgba(255, 107, 157, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 140px;
+}
+
+.sort-select-compact:hover {
+  border-color: #FF6B9D;
+  box-shadow: 
+    0 3px 0 rgba(255, 107, 157, 0.5),
+    0 6px 16px rgba(255, 107, 157, 0.3);
+  transform: translateY(-1px);
+}
+
+.sort-select-compact:focus {
+  outline: none;
+  border-color: #FF1493;
+  box-shadow: 
+    0 0 0 3px rgba(255, 107, 157, 0.2),
+    0 3px 0 rgba(255, 107, 157, 0.5);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .hero-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .rec-sort-wrapper {
+    align-self: stretch;
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+  
+  .sort-select-compact {
+    width: 100%;
+  }
+  
+  .hero-content h1.game-title {
+    font-size: 1.6rem;
+  }
+  
+  .hero-content h1.game-title strong {
+    font-size: 2.2rem;
+  }
 }
 
 .search-hero { 

@@ -152,6 +152,16 @@ export const useRefrigeratorStore = defineStore('refrigerator', () => {
         ingredients.value.push(...response.created)
       }
 
+      // 업데이트된 항목들 반영 (수량 합산된 경우)
+      if (response.updated && response.updated.length > 0) {
+        response.updated.forEach(updatedItem => {
+          const index = ingredients.value.findIndex(i => i.id === updatedItem.id)
+          if (index !== -1) {
+            ingredients.value[index] = updatedItem
+          }
+        })
+      }
+
       return response
     } catch (error) {
       throw error

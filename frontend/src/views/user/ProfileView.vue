@@ -132,7 +132,7 @@
                 </div>
                 <div class="recipe-info">
                     <h4>{{ recipe.title }}</h4>
-                    <span class="meta">{{ recipe.difficulty }} · {{ recipe.cooking_time_minutes }}분</span>
+                    <span class="meta">{{ recipe.difficulty }} · {{ recipe.cooking_time }}분</span>
                 </div>
             </div>
         </div>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="recipe-info" @click="goToRecipeDetail(recipe.id)">
                     <h4>{{ recipe.title }}</h4>
-                    <span class="meta">{{ recipe.difficulty }} · {{ recipe.cooking_time_minutes }}분</span>
+                    <span class="meta">{{ recipe.difficulty }} · {{ recipe.cooking_time }}분</span>
                     <span class="author" v-if="recipe.author">by {{ recipe.author }}</span>
                 </div>
             </div>

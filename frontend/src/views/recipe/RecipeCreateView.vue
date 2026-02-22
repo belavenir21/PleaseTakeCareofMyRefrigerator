@@ -70,7 +70,7 @@
             <div class="form-row">
                 <div class="form-group">
                 <label>조리시간 (분)</label>
-                <input v-model.number="newRecipe.cooking_time_minutes" type="number" class="input-field" placeholder="30"/>
+                <input v-model.number="newRecipe.cooking_time" type="number" class="input-field" placeholder="30"/>
                 </div>
                 <div class="form-group">
                 <label>난이도</label>
@@ -172,7 +172,7 @@ const generateWithAI = async () => {
 const newRecipe = ref({
   title: '',
   description: '',
-  cooking_time_minutes: 30,
+  cooking_time: 30,
   difficulty: '보통',
   category: '기타',
   tags: []
